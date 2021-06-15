@@ -1,0 +1,8 @@
+type StakeEntity @entity {
+  # account address
+  id: ID!
+  stakeTime: BigDecimal
+  holdTimeOption: BigDecimal
+  amount: BigDecimal
+  user: String
+}

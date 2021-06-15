@@ -1,0 +1,27 @@
+specVersion: 0.0.3
+description: SmartPad
+repository: https://github.com/Pragma-Technologies/smartpad-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Factory
+    network: mainnet
+    source:
+      address: '0x008d9baff91c6b10301f27edb10bd21426efb082'
+      abi: Presale
+      startBlock: 12271900
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/factory.ts
+      entities:
+        - Factory
+        - User
+      abis:
+        - name: Presale
+          file: ./abis/Presale.json
+      eventHandlers:
+        - event: Stake(indexed address,uint256,indexed uint256,uint256,uint256)
+          handler: handleStake

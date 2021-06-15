@@ -1,0 +1,26 @@
+{
+  "name": "smartpad-subgraph",
+  "version": "1.0.0",
+  "repository": "https://github.com/Pragma-Technologies/smartpad-subgraph",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "codegen": "graph codegen --output-dir src/types/",
+    "build": "graph build",
+    "start": "graph create gastonovich/ropsten --node http://graph-node-mainnet:8020 && graph deploy gastonovich/ropsten --debug --ipfs http://ipfs:5001 --node http://graph-node-mainnet:8020",
+    "create-local": "graph create gastonovich/ropsten --node http://graph-node-mainnet:8020",
+    "deploy-local": "graph deploy gastonovich/ropsten --debug --ipfs http://ipfs:5001 --node http://graph-node-mainnet:8020",
+    "deploy": "graph deploy gastonovich/disciplina-subgraph --access-token 8a3c7ad3c8474a21b5abd5de94d21844 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --debug",
+    "deploy-staging": "graph deploy gastonovich/ropsten /Uniswap --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
+    "watch-local": "graph deploy gastonovich/ropsten --watch --debug --node http://127.0.0.1:8020/ --ipfs http://ipfs:5001"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.20.0",
+    "@graphprotocol/graph-ts": "^0.20.0",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
+    "eslint": "^6.2.2",
+    "eslint-config-prettier": "^6.1.0",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.2"
+  }
+}
