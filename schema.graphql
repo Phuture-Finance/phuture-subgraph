@@ -1,8 +1,26 @@
-type StakeEntity @entity {
-  # account address
-  id: ID!
-  stakeTime: BigDecimal
-  holdTimeOption: BigDecimal
-  amount: BigDecimal
-  user: String
+type Asset @entity {
+    "Address (hash)"
+    id: ID!
+
+    indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+
+    prev: String!
+    marketCap: BigInt!
+}
+
+type Index @entity {
+    "Address (hash)"
+    id: ID!
+
+    assets: [IndexAsset!]! @derivedFrom(field: "index")
+
+    weights: [BigInt!]!
+    indexCount: BigInt!
+}
+
+type IndexAsset @entity {
+    id: ID! # Set to `${index.id}-${asset.id}`
+
+    index: Index!
+    asset: Asset!
 }

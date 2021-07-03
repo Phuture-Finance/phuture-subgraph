@@ -1,0 +1,49 @@
+specVersion: 0.0.3
+description: Phuture
+repository: https://github.com/Phuturedao/phuture-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Asset
+    network: {{network}}
+    source:
+      abi: Asset
+      address: '{{assetContractAddress}}'
+      startBlock: {{assetStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Asset
+      abis:
+        - name: Asset
+          file: ./abis/Asset.json
+      eventHandlers:
+        - event: RemoveAsset(address,indexed address)
+          handler: handleRemoveAsset
+        - event: UpdateAsset(address,indexed address,uint256)
+          handler: handleUpdateAsset
+      file: ./src/mappings/asset.ts
+  - kind: ethereum/contract
+    name: Index
+    network: {{network}}
+    source:
+      abi: Index
+      address: '{{indexContractAddress}}'
+      startBlock: {{indexStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Index
+        - IndexAsset
+      abis:
+        - name: Index
+          file: ./abis/Index.json
+      eventHandlers:
+        - event: IndexCreated(address,address[],uint8[],uint256)
+          handler: handleIndexCreated
+      file: ./src/mappings/index.ts

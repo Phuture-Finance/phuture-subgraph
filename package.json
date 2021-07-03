@@ -1,26 +1,32 @@
 {
-  "name": "smartpad-subgraph",
-  "version": "1.0.0",
-  "repository": "https://github.com/Pragma-Technologies/smartpad-subgraph",
+  "name": "phuture-subgraph",
+  "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
-    "start": "graph create gastonovich/ropsten --node http://graph-node-mainnet:8020 && graph deploy gastonovich/ropsten --debug --ipfs http://ipfs:5001 --node http://graph-node-mainnet:8020",
-    "create-local": "graph create gastonovich/ropsten --node http://graph-node-mainnet:8020",
-    "deploy-local": "graph deploy gastonovich/ropsten --debug --ipfs http://ipfs:5001 --node http://graph-node-mainnet:8020",
-    "deploy": "graph deploy gastonovich/disciplina-subgraph --access-token 8a3c7ad3c8474a21b5abd5de94d21844 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --debug",
-    "deploy-staging": "graph deploy gastonovich/ropsten /Uniswap --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
-    "watch-local": "graph deploy gastonovich/ropsten --watch --debug --node http://127.0.0.1:8020/ --ipfs http://ipfs:5001"
+    "codegen": "graph codegen --output-dir src/types/",
+    "env:dev": "npm i && tail -f /dev/null",
+    "prepare:subgraph": "mustache ./config/${NETWORK:-local}.json subgraph.template.yaml > subgraph.yaml",
+    "create:local": "graph create phuture/ia --node http://localhost:8020",
+    "deploy:local": "graph deploy $SLUG --ipfs http://localhost:5001 --node http://localhost:8020",
+    "deploy:hosted": "graph deploy $SLUG --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token $ACCESS_TOKEN",
+    "deploy:local:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph && SLUG=phuture/ia env-cmd npm run deploy:local",
+    "deploy:hosted:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph && SLUG=phuture/ia env-cmd npm run deploy:hosted",
+    "deploy:hosted:rinkeby": "NETWORK=rinkeby env-cmd npm run prepare:subgraph && SLUG=phuture/ia-rinkeby env-cmd npm run deploy:hosted"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.20.0",
-    "@graphprotocol/graph-ts": "^0.20.0",
+    "@graphprotocol/graph-ts": "^0.20.0"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.20.1",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
-    "eslint": "^6.2.2",
+    "typescript": "^3.5.2",
     "eslint-config-prettier": "^6.1.0",
+    "lint-staged": "^9.2.5",
     "prettier": "^1.18.2",
-    "typescript": "^3.5.2"
+    "mustache": "^3.1.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^6.2.2"
   }
 }

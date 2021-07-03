@@ -14,6 +14,7 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   for (let i = ZERO_BI; i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
     bd = bd.times(BigDecimal.fromString('10'))
   }
+
   return bd
 }
 
@@ -25,16 +26,15 @@ export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: Big
   if (exchangeDecimals == ZERO_BI) {
     return tokenAmount.toBigDecimal()
   }
+
   return tokenAmount.toBigDecimal().div(exponentToBigDecimal(exchangeDecimals))
 }
 
 export function equalToZero(value: BigDecimal): boolean {
   const formattedVal = parseFloat(value.toString())
   const zero = parseFloat(ZERO_BD.toString())
-  if (zero == formattedVal) {
-    return true
-  }
-  return false
+
+  return zero == formattedVal
 }
 
 export function isNullEthValue(value: string): boolean {

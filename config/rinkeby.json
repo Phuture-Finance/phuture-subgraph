@@ -1,0 +1,7 @@
+{
+  "network": "rinkeby",
+  "assetContractAddress": "0xa0C42a8A115aF102b65F23656A3e11Ff006a8414",
+  "assetStartBlock": 8859304,
+  "indexContractAddress": "0x15903F0E0a218651E6015ab1337E44883f61483d",
+  "indexStartBlock": 8859310
+}

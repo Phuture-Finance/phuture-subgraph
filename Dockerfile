@@ -1,14 +1,9 @@
 FROM node:14
 
-RUN mkdir -p /app
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY . /app
+COPY package*.json ./
 
 RUN npm install
-RUN npm run codegen
-RUN npm run build
-#RUN npm run create-local
-#RUN npm run deploy-local
 
-CMD [ "npm", "run", "start"]
+COPY . .
