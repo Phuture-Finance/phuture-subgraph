@@ -1,5 +1,10 @@
-build/
+yarn-error.log
+subgraph.yaml
 node_modules/
 src/types/
 .DS_STORE
-yarn-error.log
+.vscode
+build/
+.idea
+dist/
+.env
