@@ -9,8 +9,8 @@ dataSources:
     network: {{network}}
     source:
       abi: Asset
-      address: '{{assetContractAddress}}'
-      startBlock: {{assetStartBlock}}
+      address: '{{indexRegistryContractAddress}}'
+      startBlock: {{indexRegistryStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -19,7 +19,13 @@ dataSources:
         - Asset
       abis:
         - name: Asset
-          file: ./abis/Asset.json
+          file: ./abis/IndexRegistry.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
       eventHandlers:
         - event: RemoveAsset(address,indexed address)
           handler: handleRemoveAsset
@@ -31,8 +37,8 @@ dataSources:
     network: {{network}}
     source:
       abi: Index
-      address: '{{indexContractAddress}}'
-      startBlock: {{indexStartBlock}}
+      address: '{{indexFactoryContractAddress}}'
+      startBlock: {{indexFactoryStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -42,8 +48,86 @@ dataSources:
         - IndexAsset
       abis:
         - name: Index
-          file: ./abis/Index.json
+          file: ./abis/IndexFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
       eventHandlers:
         - event: IndexCreated(address,address[],uint8[],uint256)
           handler: handleIndexCreated
       file: ./src/mappings/index.ts
+  - kind: ethereum/contract
+    name: Uniswap
+    network: {{network}}
+    source:
+      abi: Uniswap
+      address: '{{uniswapFactoryAddress}}'
+      startBlock: {{uniswapFactoryStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Pair
+        - Asset
+      abis:
+        - name: Uniswap
+          file: ./abis/UniswapFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: handleNewPair
+      file: ./src/mappings/uniswap.ts
+templates:
+  - kind: ethereum/contract
+    name: Transfer
+    network: {{network}}
+    source:
+      abi: MBTransfer
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/transfer.ts
+      entities:
+        - Index
+        - Asset
+      abis:
+        - name: Asset
+          file: ./abis/IndexRegistry.json
+        - name: Index
+          file: ./abis/IndexFactory.json
+        - name: MBTransfer
+          file: ./abis/Transfer.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: Pair
+    network: {{network}}
+    source:
+      abi: Pair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/uniswap.ts
+      entities:
+        - Asset
+        - Pair
+      abis:
+        - name: Pair
+          file: ./abis/UniswapPair.json
+        - name: Factory
+          file: ./abis/UniswapFactory.json
+      eventHandlers:
+        - event: Sync(uint112,uint112)
+          handler: handleSync

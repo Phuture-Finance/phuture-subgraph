@@ -1,31 +1,26 @@
 import { RemoveAsset, UpdateAsset } from '../types/Asset/Asset'
-import { Asset } from '../types/schema'
-import { ZERO_BI } from './helpers'
+import { createAsset, createTransaction, ZERO_BI } from './helpers'
 
 export function handleRemoveAsset(event: RemoveAsset): void {
-  let id = event.params.asset.toHexString()
+  createTransaction(event)
 
-  let asset = Asset.load(id)
-  if (asset == null) {
-    asset = new Asset(id)
-  }
+  let asset = createAsset(event.params.asset)
 
   asset.prev = event.params.prev.toHexString()
   asset.marketCap = ZERO_BI
+  asset.isWhitelisted = false
 
   asset.save()
 }
 
 export function handleUpdateAsset(event: UpdateAsset): void {
-  let id = event.params.asset.toHexString()
+  createTransaction(event)
 
-  let asset = Asset.load(id)
-  if (asset == null) {
-    asset = new Asset(id)
-  }
+  let asset = createAsset(event.params.asset)
 
   asset.prev = event.params.prev.toHexString()
   asset.marketCap = event.params.marketCap
+  asset.isWhitelisted = true
 
   asset.save()
 }

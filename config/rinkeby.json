@@ -1,7 +1,9 @@
 {
   "network": "rinkeby",
-  "assetContractAddress": "0xa0C42a8A115aF102b65F23656A3e11Ff006a8414",
-  "assetStartBlock": 8859304,
-  "indexContractAddress": "0x15903F0E0a218651E6015ab1337E44883f61483d",
-  "indexStartBlock": 8859310
+  "indexRegistryContractAddress": "0x6da7d508c6fcb8ba68965b03803673d8e6a47fdf",
+  "indexRegistryStartBlock": 8905722,
+  "indexFactoryContractAddress": "0x257796026ef347c4024210b3e2c74f799b0ac2d9",
+  "indexFactoryStartBlock": 8905728,
+  "uniswapFactoryAddress": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+  "uniswapFactoryStartBlock": 8899842
 }

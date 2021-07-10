@@ -1,18 +1,55 @@
 type Asset @entity {
     "Address (hash)"
     id: ID!
+    "Address (hash) of contract's internal linked list prev asset"
+    prev: String
 
-    indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+    # mirrored from the smart contract
+    symbol: String!
+    name: String!
+    decimals: BigInt!
 
-    prev: String!
+    # used for other stats like marketcap
+    totalSupply: BigInt!
+
+    indexes: [IndexAsset]! @derivedFrom(field: "asset")
+
     marketCap: BigInt!
+    priceUSDC: BigDecimal!
+
+    isWhitelisted: Boolean!
+}
+
+type Pair @entity {
+    id: ID!
+
+    asset0: Asset!
+    asset1: Asset!
+
+    reserve0: BigDecimal!
+    reserve1: BigDecimal!
+
+    asset0Price: BigDecimal!
+    asset1Price: BigDecimal!
 }
 
 type Index @entity {
     "Address (hash)"
     id: ID!
 
+    # metadata
+    name: String
+    symbol: String
+    pictureUrl: String
+
+    users: [UserIndex!]! @derivedFrom(field: "index")
     assets: [IndexAsset!]! @derivedFrom(field: "index")
+
+    transfers: [Transfer]! @derivedFrom(field: "index")
+
+    # creation stats
+    createdAtTimestamp: BigInt!
+    createdAtBlockNumber: BigInt!
 
     weights: [BigInt!]!
     indexCount: BigInt!
@@ -23,4 +60,53 @@ type IndexAsset @entity {
 
     index: Index!
     asset: Asset!
+}
+
+type User @entity {
+    id: ID!
+
+    indexes: [UserIndex!]! @derivedFrom(field: "user")
+}
+
+type UserIndex @entity {
+    id: ID!
+
+    user: User!
+    index: Index!
+
+    total: BigInt!
+}
+
+type Transaction @entity {
+    id: ID! # txn hash
+
+    blockNumber: BigInt!
+    timestamp: BigInt!
+
+    value: BigInt!
+    gasUsed: BigInt!
+    gasPrice: BigInt!
+
+    transfers: [Transfer]!
+}
+
+enum TransferType {
+    Send
+    Mint
+    Burn
+}
+
+type Transfer @entity {
+    id: ID! # Set to `${tx.id}-${transfer.id}`
+
+    transaction: Transaction!
+    timestamp: BigInt!
+
+    index: Index!
+
+    from: Bytes
+    to: Bytes
+    value: BigInt
+
+    type: TransferType!
 }
