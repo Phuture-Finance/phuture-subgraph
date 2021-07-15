@@ -4,20 +4,25 @@ type Asset @entity {
     "Address (hash) of contract's internal linked list prev asset"
     prev: String
 
-    # mirrored from the smart contract
-    symbol: String!
-    name: String!
-    decimals: BigInt!
+    isWhitelisted: Boolean!
 
     # used for other stats like marketcap
     totalSupply: BigInt!
+    # mirrored from the smart contract
+    decimals: BigInt!
+    symbol: String!
+    name: String!
 
     indexes: [IndexAsset]! @derivedFrom(field: "asset")
 
+    basePrice: BigDecimal!
     marketCap: BigInt!
-    priceUSDC: BigDecimal!
 
-    isWhitelisted: Boolean!
+    vaultReserve: BigDecimal!
+    vaultBaseReserve: BigDecimal!
+
+    pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
+    pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
 }
 
 type Pair @entity {
@@ -26,33 +31,40 @@ type Pair @entity {
     asset0: Asset!
     asset1: Asset!
 
-    reserve0: BigDecimal!
-    reserve1: BigDecimal!
+    asset0Reserve: BigDecimal!
+    asset1Reserve: BigDecimal!
 
     asset0Price: BigDecimal!
     asset1Price: BigDecimal!
 }
 
+# TODO: ChainLink Price Oracle
+
 type Index @entity {
     "Address (hash)"
     id: ID!
 
+    # used for other stats like marketcap
+    totalSupply: BigInt!
     # metadata
-    name: String
-    symbol: String
-    pictureUrl: String
+    imageUrl: String
+    symbol: String!
+    name: String!
+
+    marketCap: BigDecimal!
 
     users: [UserIndex!]! @derivedFrom(field: "index")
     assets: [IndexAsset!]! @derivedFrom(field: "index")
 
-    transfers: [Transfer]! @derivedFrom(field: "index")
+    transaction: Transaction!
 
-    # creation stats
-    createdAtTimestamp: BigInt!
-    createdAtBlockNumber: BigInt!
-
-    weights: [BigInt!]!
     indexCount: BigInt!
+
+    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
+    #    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+    #    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+    #    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+    #    allTimeStats: [AllTimeIndexStat]! @derivedFrom(field: "index")
 }
 
 type IndexAsset @entity {
@@ -60,6 +72,9 @@ type IndexAsset @entity {
 
     index: Index!
     asset: Asset!
+    weight: BigInt!
+
+    vaultTotalSupply: BigDecimal!
 }
 
 type User @entity {
@@ -74,7 +89,15 @@ type UserIndex @entity {
     user: User!
     index: Index!
 
-    total: BigInt!
+    balance: BigDecimal!
+}
+
+type Stat @entity {
+    # timestamp
+    id: ID!
+    date: Int!
+
+    totalValueLocked: BigDecimal!
 }
 
 type Transaction @entity {
@@ -98,15 +121,81 @@ enum TransferType {
 
 type Transfer @entity {
     id: ID! # Set to `${tx.id}-${transfer.id}`
+    index: Index!
 
     transaction: Transaction!
-    timestamp: BigInt!
-
-    index: Index!
 
     from: Bytes
     to: Bytes
-    value: BigInt
+    value: BigInt!
 
     type: TransferType!
+}
+
+type DailyIndexStat @entity {
+    id: ID!
+    date: Int!
+    index: Index!
+
+    marketCap: BigDecimal!
+    uniqueHolders: BigInt!
+    basePrice: BigDecimal!
+    baseVolume: BigDecimal!
+}
+
+#type WeeklyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type MonthlyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type YearlyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type AllTimeIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+# LM
+
+type VestingRange @entity {
+    id: ID!
+    timestamp: BigInt!
+    account: User!
+
+    amount: BigInt!
+
+    rangeStartIndex: BigInt!
+    rangeEndIndex: BigInt!
 }

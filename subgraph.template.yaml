@@ -5,10 +5,10 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Asset
+    name: IndexRegistry
     network: {{network}}
     source:
-      abi: Asset
+      abi: IndexRegistry
       address: '{{indexRegistryContractAddress}}'
       startBlock: {{indexRegistryStartBlock}}
     mapping:
@@ -17,8 +17,9 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Asset
+        - Stat
       abis:
-        - name: Asset
+        - name: IndexRegistry
           file: ./abis/IndexRegistry.json
         - name: ERC20
           file: ./abis/ERC20.json
@@ -31,12 +32,12 @@ dataSources:
           handler: handleRemoveAsset
         - event: UpdateAsset(address,indexed address,uint256)
           handler: handleUpdateAsset
-      file: ./src/mappings/asset.ts
+      file: ./src/mappings/indexRegistry.ts
   - kind: ethereum/contract
     name: Index
     network: {{network}}
     source:
-      abi: Index
+      abi: StaticIndexFactory
       address: '{{indexFactoryContractAddress}}'
       startBlock: {{indexFactoryStartBlock}}
     mapping:
@@ -47,8 +48,8 @@ dataSources:
         - Index
         - IndexAsset
       abis:
-        - name: Index
-          file: ./abis/IndexFactory.json
+        - name: StaticIndexFactory
+          file: ./abis/StaticIndexFactory.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20SymbolBytes
@@ -58,13 +59,35 @@ dataSources:
       eventHandlers:
         - event: IndexCreated(address,address[],uint8[],uint256)
           handler: handleIndexCreated
-      file: ./src/mappings/index.ts
+      file: ./src/mappings/staticIndexFactory.ts
   - kind: ethereum/contract
-    name: Uniswap
+    name: Vault
     network: {{network}}
     source:
-      abi: Uniswap
-      address: '{{uniswapFactoryAddress}}'
+      abi: Vault
+      address: '{{vaultContractAddress}}'
+      startBlock: {{vaultStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Asset
+        - Index
+        - IndexAsset
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/vault.ts
+  - kind: ethereum/contract
+    name: UniswapFactory
+    network: {{network}}
+    source:
+      abi: UniswapFactory
+      address: '{{uniswapFactoryContractAddress}}'
       startBlock: {{uniswapFactoryStartBlock}}
     mapping:
       kind: ethereum/events
@@ -74,7 +97,7 @@ dataSources:
         - Pair
         - Asset
       abis:
-        - name: Uniswap
+        - name: UniswapFactory
           file: ./abis/UniswapFactory.json
         - name: ERC20
           file: ./abis/ERC20.json
@@ -88,45 +111,72 @@ dataSources:
       file: ./src/mappings/uniswap.ts
 templates:
   - kind: ethereum/contract
-    name: Transfer
+    name: Asset
     network: {{network}}
     source:
-      abi: MBTransfer
+      abi: Asset
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/transfer.ts
+      file: ./src/mappings/indexRegistry.ts
       entities:
-        - Index
         - Asset
       abis:
         - name: Asset
-          file: ./abis/IndexRegistry.json
-        - name: Index
-          file: ./abis/IndexFactory.json
-        - name: MBTransfer
-          file: ./abis/Transfer.json
+          file: ./abis/ERC20.json
+      #        - name: StaticIndex
+      #          file: ./abis/StaticIndex.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
   - kind: ethereum/contract
-    name: Pair
+    name: StaticIndex
     network: {{network}}
     source:
-      abi: Pair
+      abi: StaticIndex
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/staticIndex.ts
+      entities:
+        - Index
+        - Asset
+        - DailyIndexStat
+      abis:
+        - name: IndexRegistry
+          file: ./abis/IndexRegistry.json
+        - name: StaticIndexFactory
+          file: ./abis/StaticIndexFactory.json
+        - name: StaticIndex
+          file: ./abis/StaticIndex.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: SetImageURL(indexed address,string)
+          handler: handleSetImageURL
+        - event: SetName(indexed address,string)
+          handler: handleSetName
+        - event: SetSymbol(indexed address,string)
+          handler: handleSetSymbol
+  - kind: ethereum/contract
+    name: UniswapPair
+    network: {{network}}
+    source:
+      abi: UniswapPair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/uniswap.ts
       entities:
         - Asset
         - Pair
       abis:
-        - name: Pair
+        - name: UniswapPair
           file: ./abis/UniswapPair.json
-        - name: Factory
+        - name: UniswapFactory
           file: ./abis/UniswapFactory.json
       eventHandlers:
         - event: Sync(uint112,uint112)
