@@ -1,21 +1,70 @@
 type Asset @entity {
     "Address (hash)"
     id: ID!
+    "Address (hash) of contract's internal linked list prev asset"
+    prev: String
 
-    indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+    isWhitelisted: Boolean!
 
-    prev: String!
+    # used for other stats like marketcap
+    totalSupply: BigInt!
+    # mirrored from the smart contract
+    decimals: BigInt!
+    symbol: String!
+    name: String!
+
+    indexes: [IndexAsset]! @derivedFrom(field: "asset")
+
+    basePrice: BigDecimal!
     marketCap: BigInt!
+
+    vaultReserve: BigDecimal!
+    vaultBaseReserve: BigDecimal!
+
+    pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
+    pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
 }
+
+type Pair @entity {
+    id: ID!
+
+    asset0: Asset!
+    asset1: Asset!
+
+    asset0Reserve: BigDecimal!
+    asset1Reserve: BigDecimal!
+
+    asset0Price: BigDecimal!
+    asset1Price: BigDecimal!
+}
+
+# TODO: ChainLink Price Oracle
 
 type Index @entity {
     "Address (hash)"
     id: ID!
 
+    # used for other stats like marketcap
+    totalSupply: BigInt!
+    # metadata
+    imageUrl: String
+    symbol: String!
+    name: String!
+
+    marketCap: BigDecimal!
+
+    users: [UserIndex!]! @derivedFrom(field: "index")
     assets: [IndexAsset!]! @derivedFrom(field: "index")
 
-    weights: [BigInt!]!
+    transaction: Transaction!
+
     indexCount: BigInt!
+
+    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
+    #    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+    #    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+    #    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+    #    allTimeStats: [AllTimeIndexStat]! @derivedFrom(field: "index")
 }
 
 type IndexAsset @entity {
@@ -23,4 +72,130 @@ type IndexAsset @entity {
 
     index: Index!
     asset: Asset!
+    weight: BigInt!
+
+    vaultTotalSupply: BigDecimal!
+}
+
+type User @entity {
+    id: ID!
+
+    indexes: [UserIndex!]! @derivedFrom(field: "user")
+}
+
+type UserIndex @entity {
+    id: ID!
+
+    user: User!
+    index: Index!
+
+    balance: BigDecimal!
+}
+
+type Stat @entity {
+    # timestamp
+    id: ID!
+    date: Int!
+
+    totalValueLocked: BigDecimal!
+}
+
+type Transaction @entity {
+    id: ID! # txn hash
+
+    blockNumber: BigInt!
+    timestamp: BigInt!
+
+    value: BigInt!
+    gasUsed: BigInt!
+    gasPrice: BigInt!
+
+    transfers: [Transfer]!
+}
+
+enum TransferType {
+    Send
+    Mint
+    Burn
+}
+
+type Transfer @entity {
+    id: ID! # Set to `${tx.id}-${transfer.id}`
+    index: Index!
+
+    transaction: Transaction!
+
+    from: Bytes
+    to: Bytes
+    value: BigInt!
+
+    type: TransferType!
+}
+
+type DailyIndexStat @entity {
+    id: ID!
+    date: Int!
+    index: Index!
+
+    marketCap: BigDecimal!
+    uniqueHolders: BigInt!
+    basePrice: BigDecimal!
+    baseVolume: BigDecimal!
+}
+
+#type WeeklyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type MonthlyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type YearlyIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+#type AllTimeIndexStat @entity {
+#    id: ID!
+#    date: Int!
+#    index: Index!
+#
+#    basePrice: BigDecimal!
+#    marketCap: BigDecimal!
+#    baseVolume: BigDecimal!
+#    uniqueHolders: BigInt!
+#}
+
+# LM
+
+type VestingRange @entity {
+    id: ID!
+    timestamp: BigInt!
+    account: User!
+
+    amount: BigInt!
+
+    rangeStartIndex: BigInt!
+    rangeEndIndex: BigInt!
 }

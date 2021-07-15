@@ -1,7 +1,0 @@
-{
-  "network": "mainnet",
-  "assetContractAddress": "0x0000000000000000000000000000000000000001",
-  "assetStartBlock": 1,
-  "indexContractAddress": "0x0000000000000000000000000000000000000002",
-  "indexStartBlock": 1
-}
