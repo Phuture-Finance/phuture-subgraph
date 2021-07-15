@@ -1,9 +1,8 @@
 /* eslint-disable prefer-const */
 import { Asset, Pair } from "../types/schema";
 import { Address, BigDecimal } from "@graphprotocol/graph-ts/index";
-import { ADDRESS_ZERO, factoryContract, ONE_BD, ZERO_BD } from "./helpers";
-
-const BASE_ADDRESS = "0xa191bcbd21f3e36670f65d3e2153a8df3299df2c";
+import { factoryContract, ONE_BD, ZERO_BD } from "./helpers";
+import { ADDRESS_ZERO, BASE_ADDRESS } from "./consts";
 
 export function findBASEPerAsset(asset: Asset): BigDecimal {
   if (asset.id == BASE_ADDRESS) {

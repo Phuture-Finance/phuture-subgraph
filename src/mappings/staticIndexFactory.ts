@@ -25,7 +25,7 @@ export function handleIndexCreated(event: IndexCreated): void {
     indexAsset.save();
   }
 
-  // ∑_i->n = Vault.balances(assets(i), index) * vaultReserves(assets(i)) / Vault.totalSupplies(assets(i), index) * P(base/asset)
+  // TODO:  ∑_i->n = Vault.balances(assets(i), index) * vaultReserves(assets(i)) / Vault.totalSupplies(assets(i), index) * P(base/asset)
   index.marketCap = ZERO_BD;
   index.totalSupply = ZERO_BI;
   index.symbol = fetchTokenSymbol(event.params.index);

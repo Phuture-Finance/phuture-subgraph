@@ -5,10 +5,7 @@ import { ERC20 } from "../types/UniswapFactory/ERC20";
 import { ERC20SymbolBytes } from "../types/Index/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../types/Index/ERC20NameBytes";
 import { UniswapFactory as FactoryContract } from "../types/templates/UniswapPair/UniswapFactory";
-
-export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
-export const FACTORY_ADDRESS = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f";
-export const VAULT_ADDRESS = "0x3a757d567d871ef9771da2466d180e196322893b";
+import { FACTORY_ADDRESS } from "./consts";
 
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);
