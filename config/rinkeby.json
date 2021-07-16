@@ -7,5 +7,6 @@
   "vaultContractAddress": "0x3a757d567d871ef9771da2466d180e196322893b",
   "vaultStartBlock": 8923558,
   "uniswapFactoryContractAddress": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
-  "uniswapFactoryStartBlock": 8923550
+  "uniswapFactoryStartBlock": 8923550,
+  "baseAssetAddress": "0xa191bcbd21f3e36670f65d3e2153a8df3299df2c"
 }

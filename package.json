@@ -6,7 +6,7 @@
     "build": "graph build",
     "codegen": "graph codegen --output-dir src/types/",
     "env:dev": "npm i && tail -f /dev/null",
-    "prepare:subgraph": "mustache ./config/${NETWORK:-local}.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:subgraph": "mustache ./config/${NETWORK:-rinkeby}.json subgraph.template.yaml > subgraph.yaml && mustache ./config/${NETWORK:-rinkeby}.json ./src/mappings/consts.template.ts > ./src/mappings/consts.ts",
     "create:local": "graph create phuture/ia --node http://localhost:8020",
     "deploy:local": "graph deploy $SLUG --ipfs http://localhost:5001 --node http://localhost:8020",
     "deploy:hosted": "graph deploy $SLUG --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token $ACCESS_TOKEN",
