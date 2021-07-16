@@ -1,4 +1,3 @@
-// TODO: generate from config
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 export const FACTORY_ADDRESS = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f";
 export const VAULT_ADDRESS = "0x3a757d567d871ef9771da2466d180e196322893b";
