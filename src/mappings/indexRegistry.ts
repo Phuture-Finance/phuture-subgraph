@@ -4,6 +4,7 @@ import { Transfer } from "../types/templates/Asset/Asset";
 import { Asset } from "../types/schema";
 import { Asset as AssetTemplate } from "../types/templates";
 import { VAULT_ADDRESS } from "./consts";
+import { updateStat } from "./stats";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
@@ -38,10 +39,9 @@ export function handleTransfer(event: Transfer): void {
 
   asset.save();
 
-  // TODO:
-  // let stat = updateStat(event);
-  // stat.totalValueLocked = stat.totalValueLocked.plus(
-  //   convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
-  // );
-  // stat.save();
+  let stat = updateStat(event);
+  stat.totalValueLocked = stat.totalValueLocked.plus(
+    convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
+  );
+  stat.save();
 }

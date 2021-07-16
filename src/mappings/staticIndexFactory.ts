@@ -1,5 +1,5 @@
 import { IndexCreated } from "../types/Index/StaticIndexFactory";
-import { Index, IndexAsset, UserIndex } from "../types/schema";
+import { Asset, Index, IndexAsset, UserIndex } from "../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../types/templates";
 import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ZERO_BD, ZERO_BI } from "./helpers";
@@ -25,8 +25,6 @@ export function handleIndexCreated(event: IndexCreated): void {
     indexAsset.save();
   }
 
-  // TODO:  ∑_i->n = Vault.balances(assets(i), index) * vaultReserves(assets(i)) / Vault.totalSupplies(assets(i), index) * P(base/asset)
-  index.marketCap = ZERO_BD;
   index.totalSupply = ZERO_BI;
   index.symbol = fetchTokenSymbol(event.params.index);
   index.name = fetchTokenName(event.params.index);
