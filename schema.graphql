@@ -51,8 +51,6 @@ type Index @entity {
     symbol: String!
     name: String!
 
-    marketCap: BigDecimal!
-
     users: [UserIndex!]! @derivedFrom(field: "index")
     assets: [IndexAsset!]! @derivedFrom(field: "index")
 

@@ -2,7 +2,6 @@ import { Index, Transfer, UserIndex } from "../types/schema";
 import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../types/templates/StaticIndex/StaticIndex";
 import { createTransaction, createUser, ZERO_BD } from "./helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
-import { updateDailyIndexStat, updateStat } from "./stats";
 import { ADDRESS_ZERO } from "./consts";
 
 export function handleTransfer(event: TransferEvent): void {
