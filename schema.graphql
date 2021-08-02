@@ -189,11 +189,10 @@ type DailyIndexStat @entity {
 
 type VestingRange @entity {
     id: ID!
-    timestamp: BigInt!
-    account: User!
-
+    account: String!
     amount: BigInt!
 
     rangeStartIndex: BigInt!
     rangeEndIndex: BigInt!
+    unstaked: Boolean!
 }

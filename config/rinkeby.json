@@ -1,12 +1,14 @@
 {
   "network": "rinkeby",
-  "indexRegistryContractAddress": "0x37e085c9700e8afe75001cf558c3a3f2c15acedd",
-  "indexRegistryStartBlock": 8923558,
-  "indexFactoryContractAddress": "0xb1b1ae390f8d2457ab3f6c9835d5fe5bac2fe6c7",
-  "indexFactoryStartBlock": 8923562,
-  "vaultContractAddress": "0x3a757d567d871ef9771da2466d180e196322893b",
-  "vaultStartBlock": 8923558,
+  "indexRegistryContractAddress": "0x0524076981709c1ea2bf3a25b540902e6c2de8d5",
+  "indexRegistryStartBlock": 9004812,
+  "indexFactoryContractAddress": "0xa62958df7260a4232bbf7caa601173b38e1a4ffc",
+  "indexFactoryStartBlock": 9004812,
+  "vaultContractAddress": "0x5d72a183195a5660d7826c2034f2f8634dbdffab",
+  "vaultStartBlock": 9004812,
   "uniswapFactoryContractAddress": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
-  "uniswapFactoryStartBlock": 8923550,
-  "baseAssetAddress": "0xa191bcbd21f3e36670f65d3e2153a8df3299df2c"
+  "uniswapFactoryStartBlock": 9004812,
+  "liquidityMiningContractAddress": "0x8fb6CE744673D2D6e07ec38B9Fa66a66874C45a8",
+  "liquidityMiningStartBlock": 9004812,
+  "baseAssetAddress": "0x45befd5876b27255679cf3445d10b91d7cc8982a"
 }
