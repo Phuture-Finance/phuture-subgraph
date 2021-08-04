@@ -4,7 +4,7 @@ import { Transfer } from "../types/templates/Asset/Asset";
 import { Asset } from "../types/schema";
 import { Asset as AssetTemplate } from "../types/templates";
 import { VAULT_ADDRESS } from "./consts";
-import { updateStat } from "./stats";
+import { updateDailyAssetStat, updateStat } from "./stats";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
@@ -33,15 +33,17 @@ export function handleRemoveAsset(event: RemoveAsset): void {
 export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHexString() != VAULT_ADDRESS) return;
 
-  let asset = Asset.load(event.address.toHexString());
+  const asset = Asset.load(event.address.toHexString());
   asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
 
   asset.save();
 
-  let stat = updateStat(event);
+  const stat = updateStat(event);
   stat.totalValueLocked = stat.totalValueLocked.plus(
     convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
   );
   stat.save();
+
+  updateDailyAssetStat(event, asset);
 }

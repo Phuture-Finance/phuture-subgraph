@@ -141,6 +141,18 @@ type DailyIndexStat @entity {
     baseVolume: BigDecimal!
 }
 
+type DailyAssetStat @entity {
+    id: ID!
+    date: Int!
+    asset: Asset!
+
+    vaultReserve: BigDecimal!
+    vaultBaseReserve: BigDecimal!
+    basePrice: BigDecimal!
+    indexesCount: Int!
+    dayId: Int!
+}
+
 #type WeeklyIndexStat @entity {
 #    id: ID!
 #    date: Int!
