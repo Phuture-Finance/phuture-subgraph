@@ -34,13 +34,6 @@ export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: Big
   return tokenAmount.toBigDecimal().div(exponentToBigDecimal(exchangeDecimals));
 }
 
-export function equalToZero(value: BigDecimal): boolean {
-  const formattedVal = parseFloat(value.toString());
-  const zero = parseFloat(ZERO_BD.toString());
-
-  return zero == formattedVal;
-}
-
 export function isNullEthValue(value: string): boolean {
   return value == "0x0000000000000000000000000000000000000000000000000000000000000001";
 }

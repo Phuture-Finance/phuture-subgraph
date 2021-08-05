@@ -37,7 +37,6 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
     dailyIndexStat.index = index.id;
   }
 
-  dailyIndexStat.marketCap = index.marketCap;
   dailyIndexStat.uniqueHolders = BigInt.fromI32(index.users.length);
   dailyIndexStat.basePrice = ZERO_BD; // index.basePrice;
   dailyIndexStat.baseVolume = ZERO_BD; // index.baseVolume;

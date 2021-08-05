@@ -10,4 +10,4 @@ RUN npm install
 RUN npm run codegen
 RUN npm run build
 
-CMD [ "npm", "run", "deploy:local"]
+CMD [ "npm", "run", "start"]
