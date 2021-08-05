@@ -49,8 +49,8 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
 
 export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): void {
   let timestamp = event.block.timestamp.toI32();
-  let dayID = (timestamp / 86400).toFixed();
-  let id = asset.name.toString().concat("-").concat(dayID);
+  let dayID = timestamp / 86400;
+  let id = asset.name.toString().concat("-").concat(BigInt.fromI32(dayID).toString());
 
   let stat = DailyAssetStat.load(id);
   if (stat !== null) return;
@@ -61,6 +61,5 @@ export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): void 
   stat.vaultBaseReserve = asset.vaultBaseReserve;
   stat.vaultReserve = asset.vaultReserve;
   stat.indexesCount = asset.indexes.length;
-  stat.dayId = dayID;
   stat.save();
 }

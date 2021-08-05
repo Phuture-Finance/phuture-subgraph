@@ -150,7 +150,6 @@ type DailyAssetStat @entity {
     vaultBaseReserve: BigDecimal!
     basePrice: BigDecimal!
     indexesCount: Int!
-    dayId: Int!
 }
 
 #type WeeklyIndexStat @entity {
