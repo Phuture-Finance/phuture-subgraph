@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { DailyIndexStat, Index, Stat } from "../types/schema";
+import { Asset, DailyAssetStat, DailyIndexStat, Index, Stat } from '../types/schema'
 import { ZERO_BD } from "./helpers";
 
 export function updateStat(event: ethereum.Event): Stat {
@@ -45,4 +45,21 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
   dailyIndexStat.save();
 
   return dailyIndexStat as DailyIndexStat;
+}
+
+export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): void {
+  let timestamp = event.block.timestamp.toI32();
+  let dayID = timestamp / 86400;
+  let id = asset.name.toString().concat("-").concat(BigInt.fromI32(dayID).toString());
+
+  let stat = DailyAssetStat.load(id);
+  if (stat !== null) return;
+  stat = new DailyAssetStat(id);
+  stat.date = timestamp;
+  stat.asset = asset.id;
+  stat.basePrice = asset.basePrice;
+  stat.vaultBaseReserve = asset.vaultBaseReserve;
+  stat.vaultReserve = asset.vaultReserve;
+  stat.indexesCount = asset.indexes.length;
+  stat.save();
 }

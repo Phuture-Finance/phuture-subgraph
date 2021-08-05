@@ -4,7 +4,7 @@ import { Transfer } from "../types/templates/Asset/Asset";
 import { Asset } from "../types/schema";
 import { Asset as AssetTemplate } from "../types/templates";
 import { VAULT_ADDRESS } from "./consts";
-import { updateStat } from "./stats";
+import { updateDailyAssetStat, updateStat } from "./stats";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
@@ -44,4 +44,6 @@ export function handleTransfer(event: Transfer): void {
     convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
   );
   stat.save();
+
+  updateDailyAssetStat(event, asset);
 }
