@@ -33,13 +33,13 @@ export function handleRemoveAsset(event: RemoveAsset): void {
 export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHexString() != VAULT_ADDRESS) return;
 
-  const asset = Asset.load(event.address.toHexString());
+  let asset = Asset.load(event.address.toHexString());
   asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
 
   asset.save();
 
-  const stat = updateStat(event);
+  let stat = updateStat(event);
   stat.totalValueLocked = stat.totalValueLocked.plus(
     convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
   );
