@@ -131,6 +131,28 @@ dataSources:
         - event: UnstakeRange(indexed address,uint256,indexed uint8,indexed uint8)
           handler: handleUnstake
       file: ./src/mappings/liquidityMining.ts
+  - kind: ethereum/contract
+    name: ChainLink
+    network: rinkeby
+    source:
+      abi: ChainLink
+      address: '{{chainLinkAddress}}'
+      startBlock: 9004812
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/chainlink.ts
+      entities:
+        - Asset
+        - DailyAssetStat
+      abis:
+        - name: ChainLink
+          file: ./abis/ChainLink.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+
 templates:
   - kind: ethereum/contract
     name: Asset
