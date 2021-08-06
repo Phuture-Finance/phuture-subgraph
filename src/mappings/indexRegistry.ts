@@ -10,7 +10,6 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
 
   asset.prev = event.params.prev.toHexString();
-  // asset.marketCap = event.params.marketCap;
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
 

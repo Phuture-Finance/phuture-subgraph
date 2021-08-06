@@ -1,6 +1,6 @@
 specVersion: 0.0.3
 description: Phuture
-repository: https://github.com/Phuturedao/phuture-subgraph
+repository: https://github.com/Phuturedao/subgraph
 schema:
   file: ./schema.graphql
 dataSources:
@@ -105,6 +105,8 @@ dataSources:
           file: ./abis/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
+        - name: ChainLink
+          file: ./abis/ChainLink.json
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
@@ -131,6 +133,26 @@ dataSources:
 #        - event: UnstakeRange(indexed address,uint256,indexed uint8,indexed uint8)
 #          handler: handleUnstake
 #      file: ./src/mappings/liquidityMining.ts
+  - kind: ethereum/contract
+    name: ChainLink
+    network: rinkeby
+    source:
+      abi: ChainLink
+      address: '{{chainLinkAddress}}'
+      startBlock: {{chainLinkRegistryStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/chainlink.ts
+      entities:
+        - Asset
+      abis:
+        - name: ChainLink
+          file: ./abis/ChainLink.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
 templates:
   - kind: ethereum/contract
     name: Asset
@@ -200,6 +222,8 @@ templates:
           file: ./abis/UniswapPair.json
         - name: UniswapFactory
           file: ./abis/UniswapFactory.json
+        - name: ChainLink
+          file: ./abis/ChainLink.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync
