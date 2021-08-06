@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY . /app
 
+RUN npm i -g mustache
 RUN npm run prepare:subgraph
 RUN npm install
 RUN npm run codegen
