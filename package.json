@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "graph build",
+    "config": "node config",
+    "precodegen": "rimraf src/types src/mappings/chainlink/feeds/*.ts && npm run config graphgen",
     "codegen": "graph codegen --output-dir src/types/",
-    "env:dev": "npm i && tail -f /dev/null",
+    "postcodegen": "npm run config flatten",
     "start": "npm run create:local && npm run deploy:local",
-    "prepare:subgraph": "mustache ./config/${NETWORK:-rinkeby}.json subgraph.template.yaml > subgraph.yaml && mustache ./config/${NETWORK:-rinkeby}.json ./src/mappings/consts.template.ts > ./src/mappings/consts.ts",
     "create:local": "graph create phuture/ia --node http://graph-node:8020",
     "deploy:local": "graph deploy phuture/ia --ipfs http://ipfs:5001 --node http://graph-node:8020",
     "deploy:hosted": "graph deploy $SLUG --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token $ACCESS_TOKEN",
@@ -20,14 +20,23 @@
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",
+    "@types/yargs": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "env-cmd": "^10.1.0",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "lint-staged": "^9.2.5",
+    "@types/node": "^14.14.3",
+    "@types/prettier": "^2.1.5",
+    "@types/rimraf": "^3.0.0",
+    "assemblyscript": "^0.17.0",
+    "glob": "^7.1.6",
     "mustache": "^3.1.0",
     "prettier": "^1.18.2",
-    "typescript": "^3.5.2"
+    "rimraf": "^2.6.3",
+    "ts-node": "^10.2.0",
+    "typescript": "^3.5.2",
+    "yargs": "^17.1.0"
   }
 }
