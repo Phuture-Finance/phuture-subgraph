@@ -10,7 +10,6 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
 
   asset.prev = event.params.prev.toHexString();
-  asset.marketCap = event.params.marketCap;
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
 
@@ -33,7 +32,7 @@ export function handleRemoveAsset(event: RemoveAsset): void {
 export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHexString() != VAULT_ADDRESS) return;
 
-  let asset = Asset.load(event.address.toHexString());
+  let asset = Asset.load(event.address.toHexString()) as Asset;
   asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
 

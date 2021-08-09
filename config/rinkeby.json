@@ -10,5 +10,7 @@
   "uniswapFactoryStartBlock": 9004812,
   "liquidityMiningContractAddress": "0x8fb6CE744673D2D6e07ec38B9Fa66a66874C45a8",
   "liquidityMiningStartBlock": 9004812,
-  "baseAssetAddress": "0x45befd5876b27255679cf3445d10b91d7cc8982a"
+  "baseAssetAddress": "0x45befd5876b27255679cf3445d10b91d7cc8982a",
+  "chainLinkAddress": "0x8fb6CE744673D2D6e07ec38B9Fa66a66874C45a8",
+  "chainLinkRegistryStartBlock": 9004812
 }

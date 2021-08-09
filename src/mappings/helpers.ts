@@ -1,9 +1,10 @@
 import { Address, BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Asset, Pair, Transaction, User } from "../types/schema";
+import { Asset, DailyAssetStat, Pair, Transaction, User } from '../types/schema'
 import { TokenDefinition } from "./tokenDefinition";
 import { ERC20 } from "../types/UniswapFactory/ERC20";
 import { ERC20SymbolBytes } from "../types/Index/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../types/Index/ERC20NameBytes";
+import { ChainLink } from '../types/ChainLink/ChainLink'
 import { UniswapFactory as FactoryContract } from "../types/templates/UniswapPair/UniswapFactory";
 import { ADDRESS_ZERO, FACTORY_ADDRESS } from "./consts";
 
@@ -31,13 +32,6 @@ export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: Big
   }
 
   return tokenAmount.toBigDecimal().div(exponentToBigDecimal(exchangeDecimals));
-}
-
-export function equalToZero(value: BigDecimal): boolean {
-  const formattedVal = parseFloat(value.toString());
-  const zero = parseFloat(ZERO_BD.toString());
-
-  return zero == formattedVal;
 }
 
 export function isNullEthValue(value: string): boolean {

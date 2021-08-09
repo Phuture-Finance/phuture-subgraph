@@ -1,27 +1,28 @@
 /* eslint-disable prefer-const */
-import { Asset, Pair } from "../types/schema";
-import { Address, BigDecimal } from "@graphprotocol/graph-ts/index";
-import { factoryContract, ONE_BD, ZERO_BD } from "./helpers";
-import { ADDRESS_ZERO, BASE_ADDRESS } from "./consts";
+import { Asset } from "../types/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts/index";
+import { BASE_ADDRESS, CHAINLINK_ADDRESS } from "./consts";
+import { ChainLink } from "../types/ChainLink/ChainLink"
+import { BigDecimal } from '@graphprotocol/graph-ts'
+
 
 export function findBASEPerAsset(asset: Asset): BigDecimal {
-  if (asset.id == BASE_ADDRESS) {
-    return ONE_BD;
-  }
+  let chainLinkAddress = Address.fromString(CHAINLINK_ADDRESS);
+  let baseAddress = Address.fromString(BASE_ADDRESS);
+  let assetAddress = Address.fromString(asset.id);
 
-  let pairAddress = factoryContract.getPair(Address.fromString(BASE_ADDRESS), Address.fromString(asset.id));
-
-  if (pairAddress.toHexString() != ADDRESS_ZERO) {
-    let pair = Pair.load(pairAddress.toHexString());
-
-    if (pair.asset0 == asset.id) {
-      return pair.asset1Price;
-    }
-
-    if (pair.asset1 == asset.id) {
-      return pair.asset0Price;
+  let contract = ChainLink.bind(chainLinkAddress);
+  let result = contract.try_latestRoundData(baseAddress, assetAddress);
+  let answer: BigInt = null;
+  if (result.reverted) {
+    result = contract.try_latestRoundData(baseAddress, assetAddress);
+    // Double time broken block, stop execution
+    if (result.reverted) {
+      return asset.basePrice;
     }
   }
-
-  return ZERO_BD;
+  // value1 - answer (pair price)
+  answer = result.value.value1;
+  // Return price for asset
+  return answer.toBigDecimal();
 }
