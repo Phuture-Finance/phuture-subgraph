@@ -3,7 +3,6 @@ import { UniswapPair } from "../types/templates";
 import { Sync } from "../types/templates/UniswapPair/UniswapPair";
 import { convertTokenToDecimal, createAsset, createPair, ZERO_BD } from "./helpers";
 import { Asset, Pair } from "../types/schema";
-import { findBASEPerAsset } from "./pricing";
 
 export function handleNewPair(event: PairCreated): void {
   let asset0 = createAsset(event.params.token0);
@@ -31,9 +30,6 @@ export function handleSync(event: Sync): void {
   else pair.asset1Price = ZERO_BD;
 
   pair.save();
-
-  asset0.basePrice = findBASEPerAsset(asset0 as Asset);
-  asset1.basePrice = findBASEPerAsset(asset1 as Asset);
 
   pair.save();
   asset0.save();
