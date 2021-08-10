@@ -80,6 +80,12 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Phuture/Vault.json
+        - name: ERC20
+          file: ./abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -114,29 +120,6 @@ dataSources:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
       file: ./src/mappings/uniswap.ts
-
-  - kind: ethereum/contract
-    name: ChainLink
-    network: rinkeby
-    source:
-      abi: ChainLink
-      address: '{{chainLinkAddress}}'
-      startBlock: {{chainLinkRegistryStartBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/chainlink/chainlink.ts
-      entities:
-        - Asset
-      abis:
-        - name: ChainLink
-          file: ./abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ./abis/Chainlink/AccessControlledOffchainAggregator.json
-      eventHandlers:
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
 
   {{#pairs}}
   - kind: ethereum/contract

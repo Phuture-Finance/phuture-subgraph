@@ -33,9 +33,6 @@ type Pair @entity {
 
     asset0Reserve: BigDecimal!
     asset1Reserve: BigDecimal!
-
-    asset0Price: BigDecimal!
-    asset1Price: BigDecimal!
 }
 
 # TODO: ChainLink Price Oracle

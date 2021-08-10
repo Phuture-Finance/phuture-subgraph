@@ -169,8 +169,6 @@ export function createPair(pairAddr: Address, address0: string, address1: string
     pair.asset1 = address1;
     pair.asset0Reserve = ZERO_BD;
     pair.asset1Reserve = ZERO_BD;
-    pair.asset0Price = ZERO_BD;
-    pair.asset1Price = ZERO_BD;
 
     pair.save();
   }
