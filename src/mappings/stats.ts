@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Asset, DailyAssetStat, DailyIndexStat, Index, Stat } from '../types/schema'
+import { Asset, DailyAssetStat, DailyIndexStat, Index, Stat } from "../types/schema";
 import { ZERO_BD } from "./helpers";
 
 export function updateStat(event: ethereum.Event): Stat {
@@ -46,19 +46,32 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
   return dailyIndexStat as DailyIndexStat;
 }
 
-export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): void {
+export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | null {
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
-  let id = asset.name.toString().concat("-").concat(BigInt.fromI32(dayID).toString());
+  let dayStartTimestamp = dayID * 86400;
+  let dayAssetID = event.address
+    .toHexString()
+    .concat("-")
+    .concat(BigInt.fromI32(dayID).toString());
 
-  let stat = DailyAssetStat.load(id);
-  if (stat !== null) return;
-  stat = new DailyAssetStat(id);
-  stat.date = timestamp;
-  stat.asset = asset.id;
-  stat.basePrice = asset.basePrice;
-  stat.vaultBaseReserve = asset.vaultBaseReserve;
-  stat.vaultReserve = asset.vaultReserve;
-  stat.indexesCount = asset.indexes.length;
-  stat.save();
+  let asset = Asset.load(event.address.toHexString());
+  if (asset == null) {
+    return null;
+  }
+
+  let dailyAssetStat = DailyAssetStat.load(dayAssetID);
+  if (dailyAssetStat === null) {
+    dailyAssetStat = new DailyAssetStat(dayAssetID);
+    dailyAssetStat.date = dayStartTimestamp;
+    dailyAssetStat.asset = asset.id;
+  }
+
+  dailyAssetStat.vaultReserve = asset.vaultReserve;
+  dailyAssetStat.vaultBaseReserve = asset.vaultBaseReserve;
+  dailyAssetStat.basePrice = asset.basePrice;
+
+  dailyAssetStat.save();
+
+  return dailyAssetStat as DailyAssetStat;
 }

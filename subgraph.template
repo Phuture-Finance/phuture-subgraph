@@ -80,6 +80,12 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Phuture/Vault.json
+        - name: ERC20
+          file: ./abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -113,30 +119,34 @@ dataSources:
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
-      file: ./src/mappings/uniswap.ts
+      file: ./src/mappings/uniswap/uniswap.ts
 
   - kind: ethereum/contract
-    name: ChainLink
-    network: rinkeby
+    name: LiquidityMining
+    network: {{network}}
     source:
-      abi: ChainLink
-      address: '{{chainLinkAddress}}'
-      startBlock: {{chainLinkRegistryStartBlock}}
+      abi: LiquidityMining
+      address: '{{liquidityMiningContractAddress}}'
+      startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/chainlink/chainlink.ts
       entities:
-        - Asset
+        - VestingRange
+        - Reward
+        - LM
       abis:
-        - name: ChainLink
-          file: ./abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ./abis/Chainlink/AccessControlledOffchainAggregator.json
+        - name: LiquidityMining
+          file: ./abis/Phuture/LiquidityMining.json
       eventHandlers:
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
+        - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleStake
+        - event: UnstakeRange(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleUnstakeRange
+        - event: Unstake(indexed address,uint256,uint256,uint256)
+          handler: handleUnstake
+      file: ./src/mappings/liquidityMining.ts
 
   {{#pairs}}
   - kind: ethereum/contract
@@ -227,7 +237,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/uniswap.ts
+      file: ./src/mappings/uniswap/uniswapPair.ts
       entities:
         - Asset
         - Pair
@@ -241,3 +251,5 @@ templates:
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer

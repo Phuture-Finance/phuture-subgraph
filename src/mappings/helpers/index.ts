@@ -5,9 +5,9 @@ import { ERC20 } from "../../types/UniswapFactory/ERC20";
 import { ERC20SymbolBytes } from "../../types/Index/ERC20SymbolBytes";
 import { ERC20NameBytes } from "../../types/Index/ERC20NameBytes";
 import { UniswapFactory as FactoryContract } from "../../types/templates/UniswapPair/UniswapFactory";
-import { ADDRESS_ZERO, FACTORY_ADDRESS } from "../consts";
+import { ADDRESS_ZERO, FACTORY_ADDRESS } from "../../consts";
 
-export let Q112 = BigInt.fromI32(2).pow(112);
+export let Q112 = BigInt.fromI32(2).pow(112).toBigDecimal();
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);
 export let ZERO_BD = BigDecimal.fromString("0");
@@ -167,10 +167,9 @@ export function createPair(pairAddr: Address, address0: string, address1: string
     pair = new Pair(id);
     pair.asset0 = address0;
     pair.asset1 = address1;
+    pair.totalSupply = ZERO_BI;
     pair.asset0Reserve = ZERO_BD;
     pair.asset1Reserve = ZERO_BD;
-    pair.asset0Price = ZERO_BD;
-    pair.asset1Price = ZERO_BD;
 
     pair.save();
   }

@@ -23,6 +23,8 @@ type Asset @entity {
 
     pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
     pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
+
+    dailyStats: [DailyAssetStat]! @derivedFrom(field: "asset")
 }
 
 type Pair @entity {
@@ -31,11 +33,10 @@ type Pair @entity {
     asset0: Asset!
     asset1: Asset!
 
+    totalSupply: BigInt!
+
     asset0Reserve: BigDecimal!
     asset1Reserve: BigDecimal!
-
-    asset0Price: BigDecimal!
-    asset1Price: BigDecimal!
 }
 
 # TODO: ChainLink Price Oracle
@@ -149,7 +150,6 @@ type DailyAssetStat @entity {
     vaultReserve: BigDecimal!
     vaultBaseReserve: BigDecimal!
     basePrice: BigDecimal!
-    indexesCount: Int!
 }
 
 #type WeeklyIndexStat @entity {
@@ -206,4 +206,17 @@ type VestingRange @entity {
     rangeStartIndex: BigInt!
     rangeEndIndex: BigInt!
     unstaked: Boolean!
+}
+
+type LM @entity {
+    id: ID!
+
+    totalReward: BigInt!
+
+    APR: BigDecimal!
+}
+
+type Reward @entity {
+    id: ID!
+    amount: BigInt!
 }
