@@ -25,7 +25,6 @@ yargs
 
       fs.writeFileSync(constsPath, consts, "utf8");
 
-
       config.pairs.forEach((item) => {
         const chainLinkPath = path.join(__dirname, "../src/mappings/chainlink/aggregators/");
         const templatePath = path.join(chainLinkPath, "aggregator.template.tsx");

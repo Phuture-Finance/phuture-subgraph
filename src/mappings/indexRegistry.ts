@@ -4,7 +4,7 @@ import { Transfer } from "../types/templates/Asset/Asset";
 import { Asset, LM, Reward } from "../types/schema";
 import { Asset as AssetTemplate } from "../types/templates";
 import { EMISSION_ADDRESS, FACTORY_ADDRESS, LM_ADDRESS, VAULT_ADDRESS } from "../consts";
-import { updateStat } from "./stats";
+import { updateDailyAssetStat, updateStat } from "./stats";
 import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
@@ -67,5 +67,5 @@ export function handleTransfer(event: Transfer): void {
   );
   stat.save();
 
-  // updateDailyAssetStat(event, asset);
+  updateDailyAssetStat(event);
 }

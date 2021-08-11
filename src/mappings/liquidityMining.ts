@@ -1,28 +1,51 @@
 import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
 import { Asset, LM, Pair, Reward, VestingRange } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { FACTORY_ADDRESS, LP_ADDRESS, PHTR_ADDRESS } from "../consts";
-import { ONE_BD, Q112, ZERO_BD, ZERO_BI } from "./helpers";
+import { BASE_ADDRESS, FACTORY_ADDRESS, LP_ADDRESS, PHTR_ADDRESS } from "../consts";
+import { Q112, ZERO_BD, ZERO_BI } from "./helpers";
+
+function getUValue(balance: BigDecimal, pair: Pair, token: string): BigDecimal {
+  let isPHTR = token === PHTR_ADDRESS;
+
+  let phtr = Asset.load(isPHTR ? pair.asset1 : pair.asset0);
+  if (phtr == null) {
+    return ZERO_BD;
+  }
+
+  return balance
+    .times(isPHTR ? pair.asset1Reserve : pair.asset0Reserve)
+    .div(BigInt.fromI32(10).pow(phtr.decimals as u8).toBigDecimal())
+    .div(pair.totalSupply.toBigDecimal());
+}
 
 function updateAPR(amount: BigInt, block: BigInt): void {
   let lm = LM.load(FACTORY_ADDRESS);
   if (lm == null) {
     lm = new LM(FACTORY_ADDRESS);
-    lm.Wn = ZERO_BD;
-    lm.n = ONE_BD;
+
     lm.APR = ZERO_BD;
     lm.totalReward = ZERO_BI;
   }
+
+  let pair = Pair.load(LP_ADDRESS);
+  if (pair === null) return;
 
   let reward = Reward.load(block.toString());
   let stakedInPHTR = toPHTR(amount.toBigDecimal());
 
   if (reward != null && stakedInPHTR.gt(ZERO_BD) && reward.amount.gt(ZERO_BI)) {
-    let an = reward.amount.toBigDecimal().div(stakedInPHTR);
-    let newW = lm.Wn.plus(an);
-    lm.APR = newW.div(lm.n).times(BigInt.fromI32(100).toBigDecimal());
-    lm.Wn = newW;
-    lm.n = lm.n.plus(ONE_BD);
+    let price = pair.asset1Reserve
+      .div(BigInt.fromI32(10).pow(Asset.load(pair.asset1).decimals as u8).toBigDecimal())
+      .times(Q112)
+      .div(pair.asset0Reserve.div(BigInt.fromI32(10).pow(Asset.load(pair.asset1).decimals as u8).toBigDecimal()));
+
+    let uPHTR = getUValue(pair.totalSupply.toBigDecimal(), pair as Pair, PHTR_ADDRESS);
+    let uOther = getUValue(pair.totalSupply.toBigDecimal(), pair as Pair, BASE_ADDRESS);
+
+    let stakedInPhtr = uOther && uPHTR && price && uPHTR.plus(uOther.times(price).div(Q112));
+
+    lm.APR = BigInt.fromI32(2000000).toBigDecimal().div(stakedInPhtr).times(BigInt.fromI32(100).toBigDecimal()
+    );
   }
 
   lm.save();

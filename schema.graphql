@@ -23,6 +23,8 @@ type Asset @entity {
 
     pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
     pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
+
+    dailyStats: [DailyAssetStat]! @derivedFrom(field: "asset")
 }
 
 type Pair @entity {
@@ -148,7 +150,6 @@ type DailyAssetStat @entity {
     vaultReserve: BigDecimal!
     vaultBaseReserve: BigDecimal!
     basePrice: BigDecimal!
-    indexesCount: Int!
 }
 
 #type WeeklyIndexStat @entity {
@@ -213,9 +214,6 @@ type LM @entity {
     totalReward: BigInt!
 
     APR: BigDecimal!
-
-    n: BigDecimal!
-    Wn: BigDecimal!
 }
 
 type Reward @entity {
