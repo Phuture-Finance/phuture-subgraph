@@ -119,7 +119,34 @@ dataSources:
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
-      file: ./src/mappings/uniswap.ts
+      file: ./src/mappings/uniswap/uniswap.ts
+
+  - kind: ethereum/contract
+    name: LiquidityMining
+    network: {{network}}
+    source:
+      abi: LiquidityMining
+      address: '{{liquidityMiningContractAddress}}'
+      startBlock: {{liquidityMiningStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - VestingRange
+        - Reward
+        - LM
+      abis:
+        - name: LiquidityMining
+          file: ./abis/Phuture/LiquidityMining.json
+      eventHandlers:
+        - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleStake
+        - event: UnstakeRange(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleUnstakeRange
+        - event: Unstake(indexed address,uint256,uint256,uint256)
+          handler: handleUnstake
+      file: ./src/mappings/liquidityMining.ts
 
   {{#pairs}}
   - kind: ethereum/contract
@@ -210,7 +237,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/uniswap.ts
+      file: ./src/mappings/uniswap/uniswapPair.ts
       entities:
         - Asset
         - Pair
@@ -224,3 +251,5 @@ templates:
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer

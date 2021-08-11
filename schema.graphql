@@ -31,6 +31,8 @@ type Pair @entity {
     asset0: Asset!
     asset1: Asset!
 
+    totalSupply: BigInt!
+
     asset0Reserve: BigDecimal!
     asset1Reserve: BigDecimal!
 }
@@ -203,4 +205,20 @@ type VestingRange @entity {
     rangeStartIndex: BigInt!
     rangeEndIndex: BigInt!
     unstaked: Boolean!
+}
+
+type LM @entity {
+    id: ID!
+
+    totalReward: BigInt!
+
+    APR: BigDecimal!
+
+    n: BigDecimal!
+    Wn: BigDecimal!
+}
+
+type Reward @entity {
+    id: ID!
+    amount: BigInt!
 }
