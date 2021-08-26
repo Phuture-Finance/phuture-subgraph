@@ -220,7 +220,7 @@ templates:
           file: ./abis/Phuture/StaticIndex.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+          handler: handleIndexTransfer
         - event: SetImageURL(indexed address,string)
           handler: handleSetImageURL
         - event: SetName(indexed address,string)
