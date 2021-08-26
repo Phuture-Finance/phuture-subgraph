@@ -1,8 +1,9 @@
 import { IndexCreated } from "../types/Index/StaticIndexFactory";
-import { Asset, Index, IndexAsset, UserIndex } from "../types/schema";
+import { Index, IndexAsset, UserIndex } from "../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../types/templates";
-import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ZERO_BD, ZERO_BI } from "./helpers";
+import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ONE_BI, ZERO_BD, ZERO_BI } from "./helpers";
+import { updateStat } from "./stats";
 
 export function handleIndexCreated(event: IndexCreated): void {
   let tx = createTransaction(event);
@@ -49,4 +50,9 @@ export function handleIndexCreated(event: IndexCreated): void {
   StaticIndex.create(event.params.index);
 
   index.save();
+
+  let stat = updateStat(event);
+  stat.indexCount = stat.indexCount.plus(ONE_BI);
+
+  stat.save();
 }

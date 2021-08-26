@@ -4,7 +4,7 @@ import { createTransaction, createUser, ZERO_BD } from "./helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO } from "../consts";
 
-export function handleTransfer(event: TransferEvent): void {
+export function handleIndexTransfer(event: TransferEvent): void {
   let tx = createTransaction(event);
 
   let index = Index.load(event.address.toHexString());
@@ -16,51 +16,54 @@ export function handleTransfer(event: TransferEvent): void {
 
   let transfers = tx.transfers;
 
-  let fromUserIndexId = from.toHexString()
-    .concat("-")
-    .concat(event.address.toHexString());
-  let fromUserIndex = UserIndex.load(fromUserIndexId);
-  if (fromUserIndex === null) {
-    fromUserIndex = new UserIndex(fromUserIndexId);
-    fromUserIndex.index = event.address.toHexString();
-    fromUserIndex.user = from.toHexString();
-    fromUserIndex.balance = ZERO_BD;
+  if (from.toHexString() != ADDRESS_ZERO) {
+    let fromUserIndexId = from.toHexString()
+      .concat("-")
+      .concat(event.address.toHexString());
+    let fromUserIndex = UserIndex.load(fromUserIndexId);
+    if (fromUserIndex === null) {
+      fromUserIndex = new UserIndex(fromUserIndexId);
+      fromUserIndex.index = event.address.toHexString();
+      fromUserIndex.user = from.toHexString();
+      fromUserIndex.balance = ZERO_BD;
+    }
+
+    fromUserIndex.balance = fromUserIndex.balance.minus(event.params.value.toBigDecimal());
+
+    fromUserIndex.save();
   }
 
-  let toUserIndexId = to.toHexString()
-    .concat("-")
-    .concat(event.address.toHexString());
-  let toUserIndex = UserIndex.load(toUserIndexId);
-  if (toUserIndex === null) {
-    toUserIndex = new UserIndex(toUserIndexId);
-    toUserIndex.index = event.address.toHexString();
-    toUserIndex.user = to.toHexString();
-    toUserIndex.balance = ZERO_BD;
+  if (to.toHexString() != ADDRESS_ZERO) {
+    let toUserIndexId = to.toHexString()
+      .concat("-")
+      .concat(event.address.toHexString());
+    let toUserIndex = UserIndex.load(toUserIndexId);
+    if (toUserIndex === null) {
+      toUserIndex = new UserIndex(toUserIndexId);
+      toUserIndex.index = event.address.toHexString();
+      toUserIndex.user = to.toHexString();
+      toUserIndex.balance = ZERO_BD;
+    }
+
+    toUserIndex.balance = toUserIndex.balance.plus(event.params.value.toBigDecimal());
+
+    toUserIndex.save();
   }
 
   let transferType: string;
   if (from.toHexString() == ADDRESS_ZERO) {
-    toUserIndex.balance = toUserIndex.balance.plus(event.params.value.toBigDecimal());
-
     index.totalSupply = index.totalSupply.plus(event.params.value);
 
     transferType = "Mint";
   } else if (to.toHexString() == ADDRESS_ZERO) {
-    fromUserIndex.balance = fromUserIndex.balance.minus(event.params.value.toBigDecimal());
-
     index.totalSupply = index.totalSupply.minus(event.params.value);
 
     transferType = "Burn";
   } else {
-    fromUserIndex.balance = fromUserIndex.balance.minus(event.params.value.toBigDecimal());
-    toUserIndex.balance = toUserIndex.balance.plus(event.params.value.toBigDecimal());
-
     transferType = "Send";
   }
 
   index.save();
-  fromUserIndex.save();
-  toUserIndex.save();
 
   let transfer = new Transfer(
     event.transaction.hash

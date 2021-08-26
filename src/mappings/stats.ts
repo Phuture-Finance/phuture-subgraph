@@ -1,21 +1,43 @@
 /* eslint-disable prefer-const */
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Asset, DailyAssetStat, DailyIndexStat, Index, Stat } from "../types/schema";
-import { ZERO_BD } from "./helpers";
+import { Asset, DailyAssetStat, DailyIndexStat, DailyStat, Index, Stat } from "../types/schema";
+import { ZERO_BD, ZERO_BI } from "./helpers";
+import { FACTORY_ADDRESS } from "../consts";
 
-export function updateStat(event: ethereum.Event): Stat {
+export function updateDailyStat(event: ethereum.Event): DailyStat {
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
 
-  let stat = Stat.load(dayID.toString());
+  let stat = DailyStat.load(dayID.toString());
   if (stat === null) {
-    stat = new Stat(dayID.toString());
+    stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
     stat.totalValueLocked = ZERO_BD;
+    stat.indexCount = ZERO_BI;
+  }
+
+  let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
+  if (allTimeStat !== null) {
+    stat.indexCount = allTimeStat.indexCount;
+  }
+
+  stat.save();
+
+  return stat as DailyStat;
+}
+
+export function updateStat(event: ethereum.Event): Stat {
+  let stat = Stat.load(FACTORY_ADDRESS.toString());
+  if (stat === null) {
+    stat = new Stat(FACTORY_ADDRESS.toString());
+    stat.totalValueLocked = ZERO_BD;
+    stat.indexCount = ZERO_BI;
 
     stat.save();
   }
+
+  updateDailyStat(event);
 
   return stat as Stat;
 }

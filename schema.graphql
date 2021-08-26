@@ -91,14 +91,6 @@ type UserIndex @entity {
     balance: BigDecimal!
 }
 
-type Stat @entity {
-    # timestamp
-    id: ID!
-    date: Int!
-
-    totalValueLocked: BigDecimal!
-}
-
 type Transaction @entity {
     id: ID! # txn hash
 
@@ -129,6 +121,22 @@ type Transfer @entity {
     value: BigInt!
 
     type: TransferType!
+}
+
+type Stat @entity {
+    # index factory address
+    id: ID!
+
+    indexCount: BigInt!
+    totalValueLocked: BigDecimal!
+}
+
+type DailyStat @entity {
+    id: ID!
+    date: Int!
+
+    indexCount: BigInt!
+    totalValueLocked: BigDecimal!
 }
 
 type DailyIndexStat @entity {
