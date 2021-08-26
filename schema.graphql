@@ -14,6 +14,7 @@ type Asset @entity {
     name: String!
 
     indexCount: BigInt!
+    _indexes: [ID]!
     indexes: [IndexAsset]! @derivedFrom(field: "asset")
 
     basePrice: BigDecimal!
