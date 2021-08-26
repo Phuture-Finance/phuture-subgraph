@@ -3,6 +3,7 @@ import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../t
 import { createTransaction, createUser, ZERO_BD } from "./helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO } from "../consts";
+import { updateDailyIndexStat } from './stats'
 
 export function handleIndexTransfer(event: TransferEvent): void {
   let tx = createTransaction(event);
@@ -83,7 +84,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
   tx.transfers = transfers.concat([transfer.id]);
   tx.save();
 
-  // TODO: updateDailyIndexStat(event);
+  // updateDailyIndexStat(event);
 }
 
 export function handleSetImageURL(event: SetImageURL): void {

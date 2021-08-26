@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Asset, DailyAssetStat, DailyIndexStat, DailyStat, Index, Stat } from "../types/schema";
-import { ZERO_BD, ZERO_BI } from "./helpers";
+import { BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { Asset, DailyAssetStat, DailyIndexStat, DailyStat, Index, IndexStat, Stat } from '../types/schema'
+import { ONE_BI, ZERO_BD, ZERO_BI } from './helpers'
 import { FACTORY_ADDRESS } from "../consts";
 
 export function updateDailyStat(event: ethereum.Event): DailyStat {
@@ -59,9 +59,19 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
     dailyIndexStat.index = index.id;
   }
 
-  dailyIndexStat.uniqueHolders = BigInt.fromI32(index.users.length);
-  dailyIndexStat.basePrice = ZERO_BD; // index.basePrice;
-  dailyIndexStat.baseVolume = ZERO_BD; // index.baseVolume;
+  let allTimeIndexStat = IndexStat.load(event.address.toHexString());
+
+  let basePrice = BigDecimal.fromString('0');
+  let assets = index.assets;
+  for (let i = 0; i < assets.length; i++) {
+    let asset = Asset.load(assets[i].toString())
+    basePrice = basePrice.plus(asset.basePrice);
+  }
+
+  dailyIndexStat.uniqueHolders = allTimeIndexStat.uniqueHolders;
+  dailyIndexStat.basePrice = allTimeIndexStat.basePrice;
+  dailyIndexStat.baseVolume = allTimeIndexStat.baseVolume;
+  dailyIndexStat.marketCap = allTimeIndexStat.marketCap;
 
   dailyIndexStat.save();
 

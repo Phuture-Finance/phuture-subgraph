@@ -59,11 +59,22 @@ type Index @entity {
 
     indexCount: BigInt!
 
+    stat: IndexStat!
+
     dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
     #    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
     #    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
     #    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
     #    allTimeStats: [AllTimeIndexStat]! @derivedFrom(field: "index")
+}
+
+type IndexStat @entity {
+  id: ID!
+
+  marketCap: BigDecimal!
+  uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  baseVolume: BigDecimal!
 }
 
 type IndexAsset @entity {

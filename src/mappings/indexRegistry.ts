@@ -1,11 +1,11 @@
 import { RemoveAsset, UpdateAsset } from "../types/IndexRegistry/IndexRegistry";
 import { convertTokenToDecimal, createAsset, ZERO_BI } from "./helpers";
 import { Transfer } from "../types/templates/Asset/Asset";
-import { Asset, LM, Reward } from "../types/schema";
+import { Asset, Index, IndexStat, LM, Reward } from '../types/schema'
 import { Asset as AssetTemplate } from "../types/templates";
 import { EMISSION_ADDRESS, FACTORY_ADDRESS, LM_ADDRESS, VAULT_ADDRESS } from "../consts";
 import { updateDailyAssetStat, updateStat } from "./stats";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
@@ -66,6 +66,13 @@ export function handleTransfer(event: Transfer): void {
     convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
   );
   stat.save();
+
+  // let indexes = asset.indexes;
+  // for (let i = 0; i < indexes.length; i++) {
+  //   let allTimeIndexStat = IndexStat.load(indexes[i].toString());
+  //   allTimeIndexStat.basePrice = asset.basePrice;
+  //   allTimeIndexStat.baseVolume = new BigDecimal(asset.marketCap);
+  // }
 
   updateDailyAssetStat(event);
 }
