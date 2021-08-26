@@ -24,6 +24,7 @@ export function handleIndexCreated(event: IndexCreated): void {
   index.baseVolume = ZERO_BD;
   index.uniqueHolders = ZERO_BI;
   index.basePrice = ZERO_BD;
+  index._assets = [];
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;
@@ -46,6 +47,8 @@ export function handleIndexCreated(event: IndexCreated): void {
     asset.save();
 
     indexAsset.save();
+
+    index._assets = index._assets.concat([indexAssetId]);
   }
 
   index.totalSupply = ZERO_BI;
