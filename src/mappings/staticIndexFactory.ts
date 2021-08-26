@@ -30,17 +30,20 @@ export function handleIndexCreated(event: IndexCreated): void {
   for (let i = 0; i < paramAssets.length; i++) {
     let assetId = paramAssets[i].toHexString();
 
-    let asset = createAsset(paramAssets[i]);
+    let indexAssetId = indexId.concat("-").concat(assetId);
 
-    asset.indexCount = asset.indexCount.plus(ONE_BI);
-    asset.save();
-
-    let indexAsset = new IndexAsset(indexId.concat("-").concat(assetId));
+    let indexAsset = new IndexAsset(indexAssetId);
     indexAsset.index = indexId;
     indexAsset.asset = assetId;
     indexAsset.weight = BigInt.fromI32(paramWeights[i]);
 
     indexAsset.vaultTotalSupply = ZERO_BD;
+
+    let asset = createAsset(paramAssets[i]);
+
+    asset.indexCount = asset.indexCount.plus(ONE_BI);
+    asset._indexes = asset._indexes.concat([indexAssetId]);
+    asset.save();
 
     indexAsset.save();
   }

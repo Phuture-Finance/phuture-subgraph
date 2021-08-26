@@ -7,14 +7,19 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     return;
   }
 
-  let indexes = asset.indexes;
+  let newPrice = event.params.current.toBigDecimal();
+
+  let indexes = asset._indexes;
+
   for (let i = 0; i < asset.indexCount.toI32(); i++) {
-    let indexAsset = IndexAsset.load(indexes[i].toString());
+    let indexAsset = IndexAsset.load(indexes[i]);
     let index = Index.load(indexAsset.index);
+
     index.basePrice = index.basePrice
       .minus(indexAsset.weight.toBigDecimal().times(asset.basePrice))
-      .plus(indexAsset.weight.times(event.params.current).toBigDecimal());
+      .plus(indexAsset.weight.toBigDecimal()).times(newPrice);
     index.baseVolume = index.basePrice.times(index.indexCount.toBigDecimal());
+
     index.save();
   }
 
