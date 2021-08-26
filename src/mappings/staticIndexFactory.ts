@@ -1,9 +1,16 @@
 import { IndexCreated } from "../types/Index/StaticIndexFactory";
-import { Index, IndexAsset, IndexStat, UserIndex } from '../types/schema'
+import { Index, IndexAsset, UserIndex } from "../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../types/templates";
 import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ONE_BI, ZERO_BD, ZERO_BI } from "./helpers";
-import { updateStat } from "./stats";
+import {
+  updateDailyIndexStat,
+  updateHourlyIndexStat,
+  updateMonthlyIndexStat,
+  updateStat,
+  updateWeeklyIndexStat,
+  updateYearlyIndexStat
+} from "./stats";
 
 export function handleIndexCreated(event: IndexCreated): void {
   let tx = createTransaction(event);
@@ -11,12 +18,10 @@ export function handleIndexCreated(event: IndexCreated): void {
   let indexId = event.params.index.toHexString();
   let index = new Index(indexId);
 
-  let allTimeIndex = new IndexStat(event.params.index.toHexString());
-  allTimeIndex.marketCap = ZERO_BD;
-  allTimeIndex.baseVolume = ZERO_BD;
-  allTimeIndex.uniqueHolders = ZERO_BI;
-  allTimeIndex.basePrice = ZERO_BD;
-  allTimeIndex.save();
+  index.marketCap = ZERO_BD;
+  index.baseVolume = ZERO_BD;
+  index.uniqueHolders = ZERO_BI;
+  index.basePrice = ZERO_BD;
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;

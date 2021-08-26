@@ -57,24 +57,17 @@ type Index @entity {
 
     transaction: Transaction!
 
+    marketCap: BigDecimal!
+    uniqueHolders: BigInt!
+    basePrice: BigDecimal!
+    baseVolume: BigDecimal!
     indexCount: BigInt!
 
-    stat: IndexStat!
-
+    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
     dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
-    #    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
-    #    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
-    #    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
-    #    allTimeStats: [AllTimeIndexStat]! @derivedFrom(field: "index")
-}
-
-type IndexStat @entity {
-  id: ID!
-
-  marketCap: BigDecimal!
-  uniqueHolders: BigInt!
-  basePrice: BigDecimal!
-  baseVolume: BigDecimal!
+    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
 }
 
 type IndexAsset @entity {
@@ -150,6 +143,27 @@ type DailyStat @entity {
     totalValueLocked: BigDecimal!
 }
 
+type DailyAssetStat @entity {
+    id: ID!
+    date: Int!
+    asset: Asset!
+
+    vaultReserve: BigDecimal!
+    vaultBaseReserve: BigDecimal!
+    basePrice: BigDecimal!
+}
+
+type HourlyIndexStat @entity {
+    id: ID!
+    date: Int!
+    index: Index!
+
+    basePrice: BigDecimal!
+    marketCap: BigDecimal!
+    baseVolume: BigDecimal!
+    uniqueHolders: BigInt!
+}
+
 type DailyIndexStat @entity {
     id: ID!
     date: Int!
@@ -161,59 +175,38 @@ type DailyIndexStat @entity {
     baseVolume: BigDecimal!
 }
 
-type DailyAssetStat @entity {
+type WeeklyIndexStat @entity {
     id: ID!
     date: Int!
-    asset: Asset!
+    index: Index!
 
-    vaultReserve: BigDecimal!
-    vaultBaseReserve: BigDecimal!
     basePrice: BigDecimal!
+    marketCap: BigDecimal!
+    baseVolume: BigDecimal!
+    uniqueHolders: BigInt!
 }
 
-#type WeeklyIndexStat @entity {
-#    id: ID!
-#    date: Int!
-#    index: Index!
-#
-#    basePrice: BigDecimal!
-#    marketCap: BigDecimal!
-#    baseVolume: BigDecimal!
-#    uniqueHolders: BigInt!
-#}
+type MonthlyIndexStat @entity {
+    id: ID!
+    date: Int!
+    index: Index!
 
-#type MonthlyIndexStat @entity {
-#    id: ID!
-#    date: Int!
-#    index: Index!
-#
-#    basePrice: BigDecimal!
-#    marketCap: BigDecimal!
-#    baseVolume: BigDecimal!
-#    uniqueHolders: BigInt!
-#}
+    basePrice: BigDecimal!
+    marketCap: BigDecimal!
+    baseVolume: BigDecimal!
+    uniqueHolders: BigInt!
+}
 
-#type YearlyIndexStat @entity {
-#    id: ID!
-#    date: Int!
-#    index: Index!
-#
-#    basePrice: BigDecimal!
-#    marketCap: BigDecimal!
-#    baseVolume: BigDecimal!
-#    uniqueHolders: BigInt!
-#}
+type YearlyIndexStat @entity {
+    id: ID!
+    date: Int!
+    index: Index!
 
-#type AllTimeIndexStat @entity {
-#    id: ID!
-#    date: Int!
-#    index: Index!
-#
-#    basePrice: BigDecimal!
-#    marketCap: BigDecimal!
-#    baseVolume: BigDecimal!
-#    uniqueHolders: BigInt!
-#}
+    basePrice: BigDecimal!
+    marketCap: BigDecimal!
+    baseVolume: BigDecimal!
+    uniqueHolders: BigInt!
+}
 
 # LM
 
