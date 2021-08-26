@@ -2,7 +2,16 @@ import { IndexCreated } from "../types/Index/StaticIndexFactory";
 import { Index, IndexAsset, UserIndex } from "../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../types/templates";
-import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ONE_BI, ZERO_BD, ZERO_BI } from "./helpers";
+import {
+  createAsset,
+  createTransaction,
+  createUser,
+  fetchTokenName,
+  fetchTokenSymbol,
+  ONE_BI,
+  ZERO_BD,
+  ZERO_BI
+} from "./helpers";
 import { updateStat } from "./stats";
 
 export function handleIndexCreated(event: IndexCreated): void {
@@ -20,6 +29,11 @@ export function handleIndexCreated(event: IndexCreated): void {
   let paramWeights = event.params.weights;
   for (let i = 0; i < paramAssets.length; i++) {
     let assetId = paramAssets[i].toHexString();
+
+    let asset = createAsset(paramAssets[i]);
+
+    asset.indexCount = asset.indexCount.plus(ONE_BI);
+    asset.save();
 
     let indexAsset = new IndexAsset(indexId.concat("-").concat(assetId));
     indexAsset.index = indexId;

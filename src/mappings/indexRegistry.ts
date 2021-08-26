@@ -67,12 +67,5 @@ export function handleTransfer(event: Transfer): void {
   );
   stat.save();
 
-  // let indexes = asset.indexes;
-  // for (let i = 0; i < indexes.length; i++) {
-  //   let allTimeIndexStat = IndexStat.load(indexes[i].toString());
-  //   allTimeIndexStat.basePrice = asset.basePrice;
-  //   allTimeIndexStat.baseVolume = new BigDecimal(asset.marketCap);
-  // }
-
   updateDailyAssetStat(event);
 }
