@@ -3,14 +3,7 @@ import { Index, IndexAsset, UserIndex } from "../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../types/templates";
 import { createTransaction, createUser, fetchTokenName, fetchTokenSymbol, ONE_BI, ZERO_BD, ZERO_BI } from "./helpers";
-import {
-  updateDailyIndexStat,
-  updateHourlyIndexStat,
-  updateMonthlyIndexStat,
-  updateStat,
-  updateWeeklyIndexStat,
-  updateYearlyIndexStat
-} from "./stats";
+import { updateStat } from "./stats";
 
 export function handleIndexCreated(event: IndexCreated): void {
   let tx = createTransaction(event);

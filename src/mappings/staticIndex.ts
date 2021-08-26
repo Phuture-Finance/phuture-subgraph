@@ -1,6 +1,6 @@
 import { Index, Transfer, UserIndex } from "../types/schema";
 import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../types/templates/StaticIndex/StaticIndex";
-import { createTransaction, createUser, ZERO_BD } from "./helpers";
+import { createTransaction, createUser, ONE_BI, ZERO_BD } from "./helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO } from "../consts";
 import {
@@ -37,6 +37,10 @@ export function handleIndexTransfer(event: TransferEvent): void {
 
     fromUserIndex.balance = fromUserIndex.balance.minus(event.params.value.toBigDecimal());
 
+    if (fromUserIndex.balance == ZERO_BD) {
+      index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
+    }
+
     fromUserIndex.save();
   }
 
@@ -50,6 +54,10 @@ export function handleIndexTransfer(event: TransferEvent): void {
       toUserIndex.index = event.address.toHexString();
       toUserIndex.user = to.toHexString();
       toUserIndex.balance = ZERO_BD;
+    }
+
+    if (toUserIndex.balance == ZERO_BD) {
+      index.uniqueHolders = index.uniqueHolders.plus(ONE_BI);
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(event.params.value.toBigDecimal());
