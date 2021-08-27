@@ -34,10 +34,10 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
         );
     }
     index.marketCap = index.marketCap.plus(asset.vaultReserve
-      .times(asset.indexCount.toBigDecimal())
+      .times(asset.indexCount.toBigDecimal()))
       .div(asset.totalSupply.toBigDecimal())
-      .times(event.params.current.toBigDecimal())
-    );
+      .times(event.params.current.toBigDecimal()
+      );
 
     index.save();
   }
