@@ -22,67 +22,78 @@
       "name": "USDC",
       "address": "0x062b11b77bd1f38f2d5d0688476cd8e261412b2b",
       "aggregatorAddress": "0x4E94A9d221CE5CFE90B976600DaAAc639f936b66",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "WETH",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
       "aggregatorAddress": "0x8FAcAE210C796Bcac7afE147b622FFc1064629f6",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "LINK",
       "address": "0xdaf4553c854ab336cfdc5ef31b02bf3d67f74a47",
       "aggregatorAddress": "0x63Da64115bb2dF82dDC9Bb4F98F0Cce652c1581a",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "DAI",
       "address": "0xa2a4c9b45fa76d2ebaae19845989464f359e82dd",
       "aggregatorAddress": "0x0720C40EDf5e88dFA8e8cd015296e4F3eDE5679A",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "WBTC",
       "address": "0xea0f2d8378b6524546b8611621480b8a65ddfb34",
       "aggregatorAddress": "0xf03511fa3A4B816a400aE2a7D14b1892E14d18d4",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "USDT",
       "address": "0x726484d709d5237dffe6bf453decddd3ff736a99",
       "aggregatorAddress": "0x4E94A9d221CE5CFE90B976600DaAAc639f936b66",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "UNI",
       "address": "0x13ebc815d4dcc4d235d998087f803de1d5303c50",
       "aggregatorAddress": "0xECf6936AD6030A1Aa4f2055Df44149B7846628F7",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "COMP",
       "address": "0x298531bd8bfd9a24ae6849143e1fd52d66ef64c7",
       "aggregatorAddress": "0x2217fE4CE584800131cEFC440B9f2937E50ebf1a",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "SUSHI",
       "address": "0x2e743f76bbbb4ea5abe06d79e7d20291cf213237",
       "aggregatorAddress": "0xC4b4fAD3DC8C08DBa5d639A6e435f116b9282DB0",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "KP3R",
       "address": "0x5e6c3f8ea6a74fd81d11b429959297b2b65f6abd",
       "aggregatorAddress": "0xad26BAb8AAB6514AC56f66ae0c1bb9afACCC1d0A",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     },
     {
       "name": "MIR",
       "address": "0xeebb270e94538daa5076f8f08a110918e80b4d24",
       "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
-      "block": 9009503
+      "block": 9009503,
+      "decimals": 8
     }
   ]
 }

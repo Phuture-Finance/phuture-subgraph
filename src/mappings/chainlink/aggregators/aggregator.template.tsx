@@ -1,6 +1,8 @@
+// @ts-ignore
+
 import { AnswerUpdated } from "../../../types/{{{name}}}/AggregatorInterface";
 import { Asset, Index, IndexAsset } from "../../../types/schema";
-import { BigDecimal } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { ZERO_BD } from "../../helpers";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
@@ -8,6 +10,10 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
   if (asset === null) {
     return;
   }
+
+  let newPrice = event.params.current
+    .div(BigInt.fromI32(10).pow({{{decimals}}}))
+    .toBigDecimal();
 
   let indexes = asset._indexes;
   for (let i = 0; i < indexes.length; i++) {
@@ -22,7 +28,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     }
 
     index.basePrice = index.basePrice
-      .plus(weight.times(event.params.current.toBigDecimal()));
+      .plus(weight.times(newPrice));
     index.baseVolume = index.basePrice.times(index.indexCount.toBigDecimal());
 
     if (index.marketCap.gt(ZERO_BD)) {
@@ -36,13 +42,12 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     index.marketCap = index.marketCap.plus(asset.vaultReserve
       .times(asset.indexCount.toBigDecimal()))
       .div(asset.totalSupply.toBigDecimal())
-      .times(event.params.current.toBigDecimal()
-      );
+      .times(newPrice);
 
     index.save();
   }
 
-  asset.basePrice = event.params.current.toBigDecimal();
+  asset.basePrice = newPrice;
 
   asset.save();
 }
