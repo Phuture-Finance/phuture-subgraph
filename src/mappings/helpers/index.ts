@@ -151,6 +151,8 @@ export function createAsset(address: Address): Asset {
     asset.decimals = fetchTokenDecimals(address);
     asset.vaultReserve = ZERO_BD;
     asset.vaultBaseReserve = ZERO_BD;
+    asset.indexCount = ZERO_BI;
+    asset._indexes = [];
 
     asset.save();
   }

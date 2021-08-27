@@ -1,6 +1,17 @@
 /* eslint-disable prefer-const */
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Asset, DailyAssetStat, DailyIndexStat, DailyStat, Index, Stat } from "../types/schema";
+import {
+  Asset,
+  DailyAssetStat,
+  DailyIndexStat,
+  DailyStat,
+  HourlyIndexStat,
+  Index,
+  MonthlyIndexStat,
+  Stat,
+  WeeklyIndexStat,
+  YearlyIndexStat
+} from "../types/schema";
 import { ZERO_BD, ZERO_BI } from "./helpers";
 import { FACTORY_ADDRESS } from "../consts";
 
@@ -42,30 +53,139 @@ export function updateStat(event: ethereum.Event): Stat {
   return stat as Stat;
 }
 
-export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
+export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
   let timestamp = event.block.timestamp.toI32();
-  let dayID = timestamp / 86400;
-  let dayStartTimestamp = dayID * 86400;
-  let dayIndexID = event.address
+  let ID = timestamp / 3600;
+  let startTimestamp = ID * 3600;
+  let indexID = event.address
     .toHexString()
     .concat("-")
-    .concat(BigInt.fromI32(dayID).toString());
+    .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
-  let dailyIndexStat = DailyIndexStat.load(dayIndexID);
-  if (dailyIndexStat === null) {
-    dailyIndexStat = new DailyIndexStat(dayIndexID);
-    dailyIndexStat.date = dayStartTimestamp;
-    dailyIndexStat.index = index.id;
+  let indexStat = HourlyIndexStat.load(indexID);
+  if (indexStat === null) {
+    indexStat = new HourlyIndexStat(indexID);
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
   }
 
-  dailyIndexStat.uniqueHolders = BigInt.fromI32(index.users.length);
-  dailyIndexStat.basePrice = ZERO_BD; // index.basePrice;
-  dailyIndexStat.baseVolume = ZERO_BD; // index.baseVolume;
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
 
-  dailyIndexStat.save();
+  indexStat.save();
 
-  return dailyIndexStat as DailyIndexStat;
+  return indexStat as HourlyIndexStat;
+}
+
+export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
+  let timestamp = event.block.timestamp.toI32();
+  let ID = timestamp / 86400;
+  let startTimestamp = ID * 86400;
+  let indexID = event.address
+    .toHexString()
+    .concat("-")
+    .concat(BigInt.fromI32(ID).toString());
+
+  let index = Index.load(event.address.toHexString());
+  let indexStat = DailyIndexStat.load(indexID);
+  if (indexStat === null) {
+    indexStat = new DailyIndexStat(indexID);
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as DailyIndexStat;
+}
+
+export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
+  let timestamp = event.block.timestamp.toI32();
+  let ID = timestamp / (86400 * 7);
+  let startTimestamp = ID * (86400 * 7);
+  let indexID = event.address
+    .toHexString()
+    .concat("-")
+    .concat(BigInt.fromI32(ID).toString());
+
+  let index = Index.load(event.address.toHexString());
+  let indexStat = WeeklyIndexStat.load(indexID);
+  if (indexStat === null) {
+    indexStat = new WeeklyIndexStat(indexID);
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as WeeklyIndexStat;
+}
+
+export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat {
+  let timestamp = event.block.timestamp.toI32();
+  let ID = timestamp / (86400 * 30);
+  let startTimestamp = ID * 86400 * 30;
+  let indexID = event.address
+    .toHexString()
+    .concat("-")
+    .concat(BigInt.fromI32(ID).toString());
+
+  let index = Index.load(event.address.toHexString());
+  let indexStat = MonthlyIndexStat.load(indexID);
+  if (indexStat === null) {
+    indexStat = new MonthlyIndexStat(indexID);
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as MonthlyIndexStat;
+}
+
+export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
+  let timestamp = event.block.timestamp.toI32();
+  let ID = timestamp / (86400 * 365);
+  let startTimestamp = ID * (86400 * 365);
+  let indexID = event.address
+    .toHexString()
+    .concat("-")
+    .concat(BigInt.fromI32(ID).toString());
+
+  let index = Index.load(event.address.toHexString());
+  let indexStat = YearlyIndexStat.load(indexID);
+  if (indexStat === null) {
+    indexStat = new YearlyIndexStat(indexID);
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as YearlyIndexStat;
 }
 
 export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | null {
