@@ -2,7 +2,7 @@ import { Index, Transfer, UserIndex } from "../types/schema";
 import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../types/templates/StaticIndex/StaticIndex";
 import { createTransaction, createUser, ONE_BI, ZERO_BD } from "./helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
-import { ADDRESS_ZERO } from "../consts";
+import { ADDRESS_ZERO, EMISSION_CONTROLLER_ADDRESS } from "../consts";
 import {
   updateDailyIndexStat,
   updateHourlyIndexStat,
@@ -23,7 +23,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
 
   let transfers = tx.transfers;
 
-  if (from.toHexString() != ADDRESS_ZERO) {
+  if (from.toHexString() != ADDRESS_ZERO && from.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
     let fromUserIndexId = from.toHexString()
       .concat("-")
       .concat(event.address.toHexString());
@@ -44,7 +44,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
     fromUserIndex.save();
   }
 
-  if (to.toHexString() != ADDRESS_ZERO) {
+  if (to.toHexString() != ADDRESS_ZERO && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
     let toUserIndexId = to.toHexString()
       .concat("-")
       .concat(event.address.toHexString());

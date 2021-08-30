@@ -81,6 +81,9 @@ type IndexAsset @entity {
     weight: BigInt!
 
     vaultTotalSupply: BigDecimal!
+
+    basePrice: BigDecimal!
+    marketCap: BigDecimal!
 }
 
 type User @entity {

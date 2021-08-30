@@ -37,6 +37,8 @@ export function handleIndexCreated(event: IndexCreated): void {
     indexAsset.index = indexId;
     indexAsset.asset = assetId;
     indexAsset.weight = BigInt.fromI32(paramWeights[i]);
+    indexAsset.basePrice = ZERO_BD;
+    indexAsset.marketCap = ZERO_BD;
 
     indexAsset.vaultTotalSupply = ZERO_BD;
 

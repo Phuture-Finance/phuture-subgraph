@@ -6,6 +6,7 @@ export const FACTORY_ADDRESS = "0x1c53f9e06d931af1252257a8e1cdbfcd14bce1a6";
 export const VAULT_ADDRESS = "0x7ebcd533739039d69848657186bf2d9915b47a7c";
 
 export const EMISSION_ADDRESS = "0x0431f2c19ae1c8dbcfbe1f9b1fc4f820b71530d1";
+export const EMISSION_CONTROLLER_ADDRESS = "0x2f5674c5b3bb7df71dc0bbf70ff6cc64834eb9a0";
 export const BASE_ADDRESS = "0x062b11b77bd1f38f2d5d0688476cd8e261412b2b";
 export const PHTR_ADDRESS = "0xa6b276609c20b8008b5df78d15f3e3416a33ff1a";
 export const LP_ADDRESS = "0x9A9cDF10Ab5114506e02b03d5CC58E773eEC8925"; // move to template
