@@ -11,9 +11,8 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     return;
   }
 
-  let newPrice = event.params.current
-    .div(BigInt.fromI32(10).pow({{{decimals}}}))
-    .toBigDecimal();
+  let newPrice = event.params.current.toBigDecimal()
+    .div(BigInt.fromI32(10).pow({{{decimals}}}).toBigDecimal())
 
   let indexes = asset._indexes;
   for (let i = 0; i < indexes.length; i++) {
@@ -22,28 +21,27 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
     let weight = indexAsset.weight.toBigDecimal().div(BigDecimal.fromString("255"));
 
-    if (index.basePrice.gt(ZERO_BD)) {
-      index.basePrice = index.basePrice
-        .minus(weight.times(asset.basePrice));
+    if (indexAsset.basePrice.gt(ZERO_BD)) {
+      index.basePrice = index.basePrice.minus(indexAsset.basePrice);
     }
 
-    index.basePrice = index.basePrice
-      .plus(weight.times(newPrice));
+    indexAsset.basePrice = weight.times(newPrice)
+
+    index.basePrice = index.basePrice.plus(indexAsset.basePrice);
     index.baseVolume = index.basePrice.times(index.indexCount.toBigDecimal());
 
-    if (index.marketCap.gt(ZERO_BD)) {
-      index.marketCap = index.marketCap
-        .minus(asset.vaultReserve
-          .times(asset.indexCount.toBigDecimal())
-          .div(asset.totalSupply.toBigDecimal())
-          .times(asset.basePrice)
-        );
+    if (indexAsset.marketCap.gt(ZERO_BD)) {
+      index.marketCap = index.marketCap.minus(indexAsset.marketCap);
     }
-    index.marketCap = index.marketCap.plus(asset.vaultReserve
-      .times(asset.indexCount.toBigDecimal()))
+
+    indexAsset.marketCap = asset.vaultReserve
+      .times(asset.indexCount.toBigDecimal())
       .div(asset.totalSupply.toBigDecimal())
       .times(newPrice);
 
+    index.marketCap = index.marketCap.plus(indexAsset.marketCap);
+
+    indexAsset.save();
     index.save();
   }
 
