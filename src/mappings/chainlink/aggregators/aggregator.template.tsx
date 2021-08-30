@@ -11,9 +11,8 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     return;
   }
 
-  let newPrice = event.params.current
-    .div(BigInt.fromI32(10).pow({{{decimals}}}))
-    .toBigDecimal();
+  let newPrice = event.params.current.toBigDecimal()
+    .div(BigInt.fromI32(10).pow({{{decimals}}}).toBigDecimal())
 
   let indexes = asset._indexes;
   for (let i = 0; i < indexes.length; i++) {
@@ -39,10 +38,13 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
           .times(asset.basePrice)
         );
     }
-    index.marketCap = index.marketCap.plus(asset.vaultReserve
-      .times(asset.indexCount.toBigDecimal()))
-      .div(asset.totalSupply.toBigDecimal())
-      .times(newPrice);
+
+    index.marketCap = index.marketCap
+      .plus(asset.vaultReserve
+        .times(asset.indexCount.toBigDecimal())
+        .div(asset.totalSupply.toBigDecimal())
+        .times(newPrice)
+      );
 
     index.save();
   }
