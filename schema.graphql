@@ -48,8 +48,9 @@ type Index @entity {
     id: ID!
 
     # used for other stats like marketcap
-    totalSupply: BigInt!
+    totalSupply: BigDecimal!
     # metadata
+    decimals: BigInt!
     imageUrl: String
     symbol: String!
     name: String!
