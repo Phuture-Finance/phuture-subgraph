@@ -65,13 +65,15 @@ export function handleIndexTransfer(event: TransferEvent): void {
     toUserIndex.save();
   }
 
+  let value = event.params.value.toBigDecimal().div(BigInt.fromI32(10).pow(index.decimals.toI32() as u8).toBigDecimal());
+
   let transferType: string;
   if (from.toHexString() == ADDRESS_ZERO) {
-    index.totalSupply = index.totalSupply.plus(event.params.value);
+    index.totalSupply = index.totalSupply.plus(value);
 
     transferType = "Mint";
   } else if (to.toHexString() == ADDRESS_ZERO) {
-    index.totalSupply = index.totalSupply.minus(event.params.value);
+    index.totalSupply = index.totalSupply.minus(value);
 
     transferType = "Burn";
   } else {
