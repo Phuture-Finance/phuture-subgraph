@@ -253,3 +253,30 @@ templates:
           handler: handleSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+
+  - kind: ethereum/contract
+      name: DynamicEngine
+      network: {{network}}
+      source:
+        abi: DynamicEngine
+      mapping:
+        kind: ethereum/events
+        apiVersion: 0.0.4
+        language: wasm/assemblyscript
+        file: ./src/mappings/dynamicEngine.ts
+        entities:
+          TODO:
+          - <Entity>
+          - <Entity>
+        abis:
+          TODO:
+          - name: UniswapPair
+            file: ./abis/Uniswap/UniswapPair.json
+          - name: UniswapFactory
+            file: ./abis/Uniswap/UniswapFactory.json
+          - name: ChainLink
+            file: ./abis/Chainlink/ChainLink.json
+        eventHandlers:
+          - event: UpdateOrder(address index, uint id, address asset, uint share, bool isSellSide)
+            handler: handleUpdateOrder
+

@@ -239,3 +239,5 @@ type Reward @entity {
     id: ID!
     amount: BigInt!
 }
+
+# TODO: add entities
