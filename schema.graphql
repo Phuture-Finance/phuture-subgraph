@@ -1,241 +1,239 @@
 type Asset @entity {
-    "Address (hash)"
-    id: ID!
-    "Address (hash) of contract's internal linked list prev asset"
-    prev: String
+  "Address (hash)"
+  id: ID!
+  "Address (hash) of contract's internal linked list prev asset"
+  prev: String
 
-    isWhitelisted: Boolean!
+  isWhitelisted: Boolean!
 
-    # used for other stats like marketcap
-    totalSupply: BigInt!
-    # mirrored from the smart contract
-    decimals: BigInt!
-    symbol: String!
-    name: String!
+  # used for other stats like marketcap
+  totalSupply: BigInt!
+  # mirrored from the smart contract
+  decimals: BigInt!
+  symbol: String!
+  name: String!
 
-    indexCount: BigInt!
-    _indexes: [ID]!
-    indexes: [IndexAsset]! @derivedFrom(field: "asset")
+  indexCount: BigInt!
+  _indexes: [ID]!
+  indexes: [IndexAsset]! @derivedFrom(field: "asset")
 
-    basePrice: BigDecimal!
-    marketCap: BigInt!
+  basePrice: BigDecimal!
+  marketCap: BigInt!
 
-    vaultReserve: BigDecimal!
-    vaultBaseReserve: BigDecimal!
+  vaultReserve: BigDecimal!
+  vaultBaseReserve: BigDecimal!
 
-    pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
-    pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
+  pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
+  pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
 
-    dailyStats: [DailyAssetStat]! @derivedFrom(field: "asset")
+  dailyStats: [DailyAssetStat]! @derivedFrom(field: "asset")
 }
 
 type Pair @entity {
-    id: ID!
+  id: ID!
 
-    asset0: Asset!
-    asset1: Asset!
+  asset0: Asset!
+  asset1: Asset!
 
-    totalSupply: BigInt!
+  totalSupply: BigInt!
 
-    asset0Reserve: BigDecimal!
-    asset1Reserve: BigDecimal!
+  asset0Reserve: BigDecimal!
+  asset1Reserve: BigDecimal!
 }
 
 # TODO: ChainLink Price Oracle
 
 type Index @entity {
-    "Address (hash)"
-    id: ID!
+  "Address (hash)"
+  id: ID!
 
-    # used for other stats like marketcap
-    totalSupply: BigDecimal!
-    # metadata
-    decimals: BigInt!
-    imageUrl: String
-    symbol: String!
-    name: String!
+  # used for other stats like marketcap
+  totalSupply: BigInt!
+  # metadata
+  decimals: BigInt!
+  imageUrl: String
+  symbol: String!
+  name: String!
 
-    users: [UserIndex!]! @derivedFrom(field: "index")
-    assets: [IndexAsset!]! @derivedFrom(field: "index")
-    _assets: [ID]!
+  users: [UserIndex!]! @derivedFrom(field: "index")
+  assets: [IndexAsset!]! @derivedFrom(field: "index")
+  _assets: [ID]!
 
-    transaction: Transaction!
+  transaction: Transaction!
 
-    marketCap: BigDecimal!
-    uniqueHolders: BigInt!
-    basePrice: BigDecimal!
-    baseVolume: BigDecimal!
-    indexCount: BigInt!
+  marketCap: BigDecimal!
+  uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  baseVolume: BigDecimal!
+  indexCount: BigInt!
 
-    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
-    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
-    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
-    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
-    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+  hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
+  dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
+  weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+  monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+  yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
 }
 
 type IndexAsset @entity {
-    id: ID! # Set to `${index.id}-${asset.id}`
+  id: ID! # Set to `${index.id}-${asset.id}`
+  index: Index!
+  asset: Asset!
+  weight: BigInt!
 
-    index: Index!
-    asset: Asset!
-    weight: BigInt!
+  vaultTotalSupply: BigDecimal!
 
-    vaultTotalSupply: BigDecimal!
-
-    basePrice: BigDecimal!
-    marketCap: BigDecimal!
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
 }
 
 type User @entity {
-    id: ID!
+  id: ID!
 
-    indexes: [UserIndex!]! @derivedFrom(field: "user")
+  indexes: [UserIndex!]! @derivedFrom(field: "user")
 }
 
 type UserIndex @entity {
-    id: ID!
+  id: ID!
 
-    user: User!
-    index: Index!
+  user: User!
+  index: Index!
 
-    balance: BigDecimal!
+  balance: BigDecimal!
 }
 
 type Transaction @entity {
-    id: ID! # txn hash
+  id: ID! # txn hash
+  blockNumber: BigInt!
+  timestamp: BigInt!
 
-    blockNumber: BigInt!
-    timestamp: BigInt!
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
 
-    value: BigInt!
-    gasUsed: BigInt!
-    gasPrice: BigInt!
-
-    transfers: [Transfer]!
+  transfers: [Transfer]!
 }
 
 enum TransferType {
-    Send
-    Mint
-    Burn
+  Send
+  Mint
+  Burn
 }
 
 type Transfer @entity {
-    id: ID! # Set to `${tx.id}-${transfer.id}`
-    index: Index!
+  id: ID! # Set to `${tx.id}-${transfer.id}`
+  index: Index!
 
-    transaction: Transaction!
+  transaction: Transaction!
 
-    from: Bytes
-    to: Bytes
-    value: BigInt!
+  from: Bytes
+  to: Bytes
+  value: BigInt!
 
-    type: TransferType!
+  type: TransferType!
 }
 
 type Stat @entity {
-    # index factory address
-    id: ID!
+  # index factory address
+  id: ID!
 
-    indexCount: BigInt!
-    totalValueLocked: BigDecimal!
+  indexCount: BigInt!
+  totalValueLocked: BigDecimal!
 }
 
 type DailyStat @entity {
-    id: ID!
-    date: Int!
+  id: ID!
+  date: Int!
 
-    indexCount: BigInt!
-    totalValueLocked: BigDecimal!
+  indexCount: BigInt!
+  totalValueLocked: BigDecimal!
 }
 
 type DailyAssetStat @entity {
-    id: ID!
-    date: Int!
-    asset: Asset!
+  id: ID!
+  date: Int!
+  asset: Asset!
 
-    vaultReserve: BigDecimal!
-    vaultBaseReserve: BigDecimal!
-    basePrice: BigDecimal!
+  vaultReserve: BigDecimal!
+  vaultBaseReserve: BigDecimal!
+  basePrice: BigDecimal!
 }
 
 type HourlyIndexStat @entity {
-    id: ID!
-    date: Int!
-    index: Index!
+  id: ID!
+  date: Int!
+  index: Index!
 
-    basePrice: BigDecimal!
-    marketCap: BigDecimal!
-    baseVolume: BigDecimal!
-    uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
 }
 
 type DailyIndexStat @entity {
-    id: ID!
-    date: Int!
-    index: Index!
+  id: ID!
+  date: Int!
+  index: Index!
 
-    marketCap: BigDecimal!
-    uniqueHolders: BigInt!
-    basePrice: BigDecimal!
-    baseVolume: BigDecimal!
+  marketCap: BigDecimal!
+  uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  baseVolume: BigDecimal!
 }
 
 type WeeklyIndexStat @entity {
-    id: ID!
-    date: Int!
-    index: Index!
+  id: ID!
+  date: Int!
+  index: Index!
 
-    basePrice: BigDecimal!
-    marketCap: BigDecimal!
-    baseVolume: BigDecimal!
-    uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
 }
 
 type MonthlyIndexStat @entity {
-    id: ID!
-    date: Int!
-    index: Index!
+  id: ID!
+  date: Int!
+  index: Index!
 
-    basePrice: BigDecimal!
-    marketCap: BigDecimal!
-    baseVolume: BigDecimal!
-    uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
 }
 
 type YearlyIndexStat @entity {
-    id: ID!
-    date: Int!
-    index: Index!
+  id: ID!
+  date: Int!
+  index: Index!
 
-    basePrice: BigDecimal!
-    marketCap: BigDecimal!
-    baseVolume: BigDecimal!
-    uniqueHolders: BigInt!
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
 }
 
 # LM
 
 type VestingRange @entity {
-    id: ID!
-    account: String!
-    amount: BigInt!
+  id: ID!
+  account: String!
+  amount: BigInt!
 
-    rangeStartIndex: BigInt!
-    rangeEndIndex: BigInt!
-    unstaked: Boolean!
+  rangeStartIndex: BigInt!
+  rangeEndIndex: BigInt!
+  unstaked: Boolean!
 }
 
 type LM @entity {
-    id: ID!
+  id: ID!
 
-    totalReward: BigInt!
+  totalReward: BigInt!
 
-    APR: BigDecimal!
+  APR: BigDecimal!
 }
 
 type Reward @entity {
-    id: ID!
-    amount: BigInt!
+  id: ID!
+  amount: BigInt!
 }

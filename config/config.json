@@ -91,7 +91,70 @@
     },
     {
       "name": "MIR",
-      "address": "0xeebb270e94538daa5076f8f08a110918e80b4d24",
+      "address": "0xc8a170bdfa682379860626db4f22b9a775a06abe",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "SNX",
+      "address": "0xcd6c23637b0d1de0cacd7ad81ae6701a14814721",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "PHTR",
+      "address": "0xa6b276609c20b8008b5df78d15f3e3416a33ff1a",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mTSLA",
+      "address": "0x9a084bb1ebb236ed7a6c2cff02cd2875dd39f3f6",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mAMZN",
+      "address": "0x923ea963109380b2c07f8e105159d28052eb3db1",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "ZRX",
+      "address": "0x6ff6819db950ef9626205baddfcfbacf61a1e385",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "AAVE",
+      "address": "0x1f72a445ca1f570ab85d1831d2c71ae047750530",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mMSFT",
+      "address": "0x1f1835d18328bda7189e4341d10023c1b6e11273",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mAAPL",
+      "address": "0x1efa13464135e736dd31de376b3f069d6c2f2ff7",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "YFI",
+      "address": "0x1a13a61703288602fd0eedb7e9ef70cf9b0e3378",
       "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
       "block": 9009503,
       "decimals": 8

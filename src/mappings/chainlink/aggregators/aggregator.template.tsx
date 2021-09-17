@@ -28,7 +28,12 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     indexAsset.basePrice = weight.times(newPrice);
 
     index.basePrice = index.basePrice.plus(indexAsset.basePrice);
-    index.baseVolume = index.basePrice.times(index.totalSupply);
+
+    index.baseVolume = index.basePrice.times(index.totalSupply.toBigDecimal()
+      .div(BigInt.fromI32(10)
+        .pow(index.decimals.toI32() as u8)
+        .toBigDecimal()
+    ));
 
     if (indexAsset.marketCap.gt(ZERO_BD)) {
       index.marketCap = index.marketCap.minus(indexAsset.marketCap);
