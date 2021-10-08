@@ -1,8 +1,8 @@
-import { Index, Transfer, UserIndex } from "../types/schema";
-import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../types/templates/StaticIndex/StaticIndex";
-import { createTransaction, createUser, ONE_BI, ZERO_BD } from "./helpers";
+import { Index, Transfer, UserIndex } from "../../types/schema";
+import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../../types/templates/StaticIndex/StaticIndex";
+import { createTransaction, createUser, ONE_BI, ZERO_BD } from "../helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
-import { ADDRESS_ZERO, EMISSION_CONTROLLER_ADDRESS } from "../consts";
+import { ADDRESS_ZERO, EMISSION_CONTROLLER_ADDRESS } from "../../consts";
 import {
   updateDailyIndexStat,
   updateHourlyIndexStat,

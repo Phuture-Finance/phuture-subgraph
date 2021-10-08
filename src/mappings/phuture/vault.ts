@@ -1,7 +1,7 @@
-import { Transfer } from "../types/Vault/Vault";
-import { convertTokenToDecimal, createAsset } from "./helpers";
-import { IndexAsset } from "../types/schema";
-import { ADDRESS_ZERO } from "../consts";
+import { Transfer } from "../../types/Vault/Vault";
+import { convertTokenToDecimal, createAsset } from "../helpers";
+import { IndexAsset } from "../../types/schema";
+import { ADDRESS_ZERO } from "../../consts";
 
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHexString() === ADDRESS_ZERO) return;

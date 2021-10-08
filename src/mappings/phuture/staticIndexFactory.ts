@@ -1,7 +1,7 @@
-import { IndexCreated } from "../types/Index/StaticIndexFactory";
-import { Index, IndexAsset, UserIndex } from "../types/schema";
+import { IndexCreated } from "../../types/Index/StaticIndexFactory";
+import { Index, IndexAsset, UserIndex } from "../../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
-import { StaticIndex } from "../types/templates";
+import { StaticIndex } from "../../types/templates";
 import {
   createAsset,
   createTransaction,
@@ -12,7 +12,7 @@ import {
   ONE_BI,
   ZERO_BD,
   ZERO_BI
-} from "./helpers";
+} from "../helpers";
 import { updateStat } from "./stats";
 
 export function handleIndexCreated(event: IndexCreated): void {

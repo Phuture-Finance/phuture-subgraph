@@ -11,9 +11,9 @@ import {
   Stat,
   WeeklyIndexStat,
   YearlyIndexStat
-} from "../types/schema";
-import { ZERO_BD, ZERO_BI } from "./helpers";
-import { FACTORY_ADDRESS } from "../consts";
+} from "../../types/schema";
+import { ZERO_BD, ZERO_BI } from "../helpers";
+import { FACTORY_ADDRESS } from "../../consts";
 
 export function updateDailyStat(event: ethereum.Event): DailyStat {
   let timestamp = event.block.timestamp.toI32();

@@ -240,4 +240,72 @@ type Reward @entity {
     amount: BigInt!
 }
 
-# TODO: add entities
+type TopNIndex @entity {
+    "Address (hash)"
+    id: ID!
+
+    # used for other stats like marketcap
+    totalSupply: BigDecimal!
+    # metadata
+    decimals: BigInt!
+    imageUrl: String
+    # TODO: do we need symbol and name.
+    symbol: String!
+    name: String!
+
+    # TODO: <>UserIndex -> UserTrackedIndex
+    users: [UserIndex!]! @derivedFrom(field: "index")
+    # TODO: <>IndexAsset -> TrackedIndexAsset
+    assets: [IndexAsset!]! @derivedFrom(field: "index")
+    _assets: [ID]!
+
+    transaction: Transaction!
+
+    marketCap: BigDecimal!
+    uniqueHolders: BigInt!
+    basePrice: BigDecimal!
+    baseVolume: BigDecimal!
+    indexCount: BigInt!
+
+    # TODO: <>IndexStat -> TrackedIndexStat
+    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
+    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
+    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+}
+
+type TrackedIndex @entity {
+    "Address (hash)"
+    id: ID!
+
+    # used for other stats like marketcap
+    totalSupply: BigDecimal!
+    # metadata
+    decimals: BigInt!
+    imageUrl: String
+    # TODO: do we need symbol and name.
+    symbol: String!
+    name: String!
+
+    # TODO: <>UserIndex -> TrackedIndexIndex
+    users: [UserIndex!]! @derivedFrom(field: "index")
+    # TODO: <>IndexAsset -> TrackedIndexAsset
+    assets: [IndexAsset!]! @derivedFrom(field: "index")
+    _assets: [ID]!
+
+    transaction: Transaction!
+
+    marketCap: BigDecimal!
+    uniqueHolders: BigInt!
+    basePrice: BigDecimal!
+    baseVolume: BigDecimal!
+    indexCount: BigInt!
+
+    # TODO: <>IndexStat -> TrackedIndexStat
+    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
+    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
+    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
+    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
+    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+}

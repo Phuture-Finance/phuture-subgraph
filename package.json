@@ -4,7 +4,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "config": "node config",
-    "precodegen": "rimraf src/types src/mappings/chainlink/feeds/*.ts && npm run config graphgen",
+    "precodegen": "rimraf src/types src/mappings/chainlink/aggregators/*.ts && npm run config graphgen",
     "codegen": "graph codegen --output-dir src/types/",
     "postcodegen": "npm run config flatten",
     "start": "npm run create:local && npm run deploy:local",
