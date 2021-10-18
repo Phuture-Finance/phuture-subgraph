@@ -95,12 +95,12 @@ export function fetchTokenName(tokenAddress: Address): string {
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress);
-  let totalSupplyValue = null;
+  let totalSupplyValue = 0;
   let totalSupplyResult = contract.try_totalSupply();
   if (!totalSupplyResult.reverted) {
-    totalSupplyValue = totalSupplyResult as i32;
+    totalSupplyValue = totalSupplyResult.value.toI32();
   }
-  return BigInt.fromI32(totalSupplyValue as i32);
+  return BigInt.fromI32(totalSupplyValue);
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
@@ -112,12 +112,12 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
 
   let contract = ERC20.bind(tokenAddress);
   // try types uint8 for decimals
-  let decimalValue = null;
+  let decimalValue = 0;
   let decimalResult = contract.try_decimals();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value;
   }
-  return BigInt.fromI32(decimalValue as i32);
+  return BigInt.fromI32(decimalValue);
 }
 
 export function createUser(address: Address): void {
@@ -191,10 +191,19 @@ export function createTransaction(event: ethereum.Event): Transaction {
     tx.transfers = [];
     tx.value = event.transaction.value;
     tx.gasPrice = event.transaction.gasPrice;
-    tx.gasUsed = event.transaction.gasUsed;
+    tx.gasUsed = event.block.gasUsed;
 
     tx.save();
   }
 
   return tx as Transaction;
+}
+
+export function getAssetDecimals(id: string): BigInt {
+  let asset1Load = Asset.load(id);
+  if (asset1Load) {
+    return asset1Load.decimals;
+  }
+
+  return ZERO_BI;
 }

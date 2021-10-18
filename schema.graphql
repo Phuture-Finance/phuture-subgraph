@@ -14,8 +14,8 @@ type Asset @entity {
     name: String!
 
     indexCount: BigInt!
-    _indexes: [ID]!
-    indexes: [IndexAsset]! @derivedFrom(field: "asset")
+    _indexes: [ID!]!
+    indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
     basePrice: BigDecimal!
     marketCap: BigInt!
@@ -23,10 +23,10 @@ type Asset @entity {
     vaultReserve: BigDecimal!
     vaultBaseReserve: BigDecimal!
 
-    pairsAsAsset0: [Pair]! @derivedFrom(field: "asset0")
-    pairsAsAsset1: [Pair]! @derivedFrom(field: "asset1")
+    pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
+    pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
 
-    dailyStats: [DailyAssetStat]! @derivedFrom(field: "asset")
+    dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 }
 
 type Pair @entity {
@@ -57,7 +57,7 @@ type Index @entity {
 
     users: [UserIndex!]! @derivedFrom(field: "index")
     assets: [IndexAsset!]! @derivedFrom(field: "index")
-    _assets: [ID]!
+    _assets: [ID!]!
 
     transaction: Transaction!
 
@@ -67,11 +67,11 @@ type Index @entity {
     baseVolume: BigDecimal!
     indexCount: BigInt!
 
-    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
-    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
-    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
-    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
-    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
+    hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
+    dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
+    weeklyStats: [WeeklyIndexStat!]! @derivedFrom(field: "index")
+    monthlyStats: [MonthlyIndexStat!]! @derivedFrom(field: "index")
+    yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
 }
 
 type IndexAsset @entity {
@@ -112,7 +112,7 @@ type Transaction @entity {
     gasUsed: BigInt!
     gasPrice: BigInt!
 
-    transfers: [Transfer]!
+    transfers: [Transfer!]!
 }
 
 enum TransferType {
@@ -240,72 +240,3 @@ type Reward @entity {
     amount: BigInt!
 }
 
-type TopNIndex @entity {
-    "Address (hash)"
-    id: ID!
-
-    # used for other stats like marketcap
-    totalSupply: BigDecimal!
-    # metadata
-    decimals: BigInt!
-    imageUrl: String
-    # TODO: do we need symbol and name.
-    symbol: String!
-    name: String!
-
-    # TODO: <>UserIndex -> UserTrackedIndex
-    users: [UserIndex!]! @derivedFrom(field: "index")
-    # TODO: <>IndexAsset -> TrackedIndexAsset
-    assets: [IndexAsset!]! @derivedFrom(field: "index")
-    _assets: [ID]!
-
-    transaction: Transaction!
-
-    marketCap: BigDecimal!
-    uniqueHolders: BigInt!
-    basePrice: BigDecimal!
-    baseVolume: BigDecimal!
-    indexCount: BigInt!
-
-    # TODO: <>IndexStat -> TrackedIndexStat
-    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
-    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
-    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
-    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
-    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
-}
-
-type TrackedIndex @entity {
-    "Address (hash)"
-    id: ID!
-
-    # used for other stats like marketcap
-    totalSupply: BigDecimal!
-    # metadata
-    decimals: BigInt!
-    imageUrl: String
-    # TODO: do we need symbol and name.
-    symbol: String!
-    name: String!
-
-    # TODO: <>UserIndex -> TrackedIndexIndex
-    users: [UserIndex!]! @derivedFrom(field: "index")
-    # TODO: <>IndexAsset -> TrackedIndexAsset
-    assets: [IndexAsset!]! @derivedFrom(field: "index")
-    _assets: [ID]!
-
-    transaction: Transaction!
-
-    marketCap: BigDecimal!
-    uniqueHolders: BigInt!
-    basePrice: BigDecimal!
-    baseVolume: BigDecimal!
-    indexCount: BigInt!
-
-    # TODO: <>IndexStat -> TrackedIndexStat
-    hourlyStats: [HourlyIndexStat]! @derivedFrom(field: "index")
-    dailyStats: [DailyIndexStat]! @derivedFrom(field: "index")
-    weeklyStats: [WeeklyIndexStat]! @derivedFrom(field: "index")
-    monthlyStats: [MonthlyIndexStat]! @derivedFrom(field: "index")
-    yearlyStats: [YearlyIndexStat]! @derivedFrom(field: "index")
-}

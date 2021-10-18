@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{indexRegistryStartBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Asset
@@ -43,7 +43,7 @@ dataSources:
       startBlock: {{indexFactoryStartBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Index
@@ -71,7 +71,7 @@ dataSources:
       startBlock: {{vaultStartBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Asset
@@ -100,7 +100,7 @@ dataSources:
       startBlock: {{uniswapFactoryStartBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Pair
@@ -130,7 +130,7 @@ dataSources:
       startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - VestingRange
@@ -158,7 +158,7 @@ dataSources:
       startBlock: {{{block}}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Asset
@@ -185,7 +185,7 @@ templates:
       abi: Asset
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/phuture/indexRegistry.ts
       entities:
@@ -204,7 +204,7 @@ templates:
       abi: StaticIndex
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/phuture/staticIndex.ts
       entities:
@@ -235,7 +235,7 @@ templates:
       abi: UniswapPair
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/uniswap/uniswapPair.ts
       entities:
@@ -253,88 +253,3 @@ templates:
           handler: handleSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-
-  - kind: ethereum/contract
-    name: Orderer
-    network: {{network}}
-    source:
-      abi: Orderer
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/orderer.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: UniswapPair
-          file: ./abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ./abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ./abis/Chainlink/ChainLink.json
-        - name: Orderer
-          file: ./abis/Phuture/Orderer.json
-      eventHandlers:
-        - event: PlaceOrder(address,uint256)
-          handler: handlePlaceOrder
-        - event: UpdateOrder(uint256,address,uint256,bool)
-          handler: handleUpdateOrder
-
-  - kind: ethereum/contract
-    name: TopNMarketCapIndexFactory
-    network: {{network}}
-    source:
-      abi: TopNMarketCapIndexFactory
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TopNMarketCapIndexFactory.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: TopNMarketCapIndexFactory
-          file: ./abis/Phuture/TopNMarketCapIndexFactory.json
-        - name: UniswapPair
-          file: ./abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ./abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ./abis/Chainlink/ChainLink.json
-        - name: Orderer
-          file: ./abis/Phuture/Orderer.json
-      eventHandlers:
-        - event: TopNMarketCapIndexCreated(address,uint256,uint256)
-          handler: handleTopNMarketCapIndexCreated
-
-  - kind: ethereum/contract
-    name: TrackedIndexFactory
-    network: {{network}}
-    source:
-      abi: TrackedIndexFactory
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TrackedIndexFactory.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: TrackedIndexFactory
-          file: ./abis/Phuture/TrackedIndexFactory.json
-        - name: UniswapPair
-          file: ./abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ./abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ./abis/Chainlink/ChainLink.json
-        - name: Orderer
-          file: ./abis/Phuture/Orderer.json
-      eventHandlers:
-        - event: TrackedIndexCreated(address,address[])
-          handler: handleTrackedIndexCreated
-

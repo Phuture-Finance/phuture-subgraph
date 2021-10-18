@@ -1,6 +1,7 @@
-import { TrackedIndexCreated } from '../../types/templates/TrackedIndexFactory/TrackedIndexFactory'
+// import { TrackedIndexCreated } from '../../types/templates/TrackedIndexFactory/TrackedIndexFactory'
+// import { log } from '@graphprotocol/graph-ts/index'
 
-export function handleTrackedIndexFactory(event: TrackedIndexCreated): void {
-  event.address
+export function handleTrackedIndexFactory(event: void): void {
+  // log.info("message: {}", [event.address.toString()])
   return;
 }

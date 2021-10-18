@@ -7,7 +7,7 @@ import { ZERO_BD } from "../../helpers";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let asset = Asset.load("{{{address}}}");
-  if (asset === null) {
+  if (!asset) {
     return;
   }
 
@@ -17,7 +17,13 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
   let indexes = asset._indexes;
   for (let i = 0; i < indexes.length; i++) {
     let indexAsset = IndexAsset.load(indexes[i]);
+    if (!indexAsset) {
+      return;
+    }
     let index = Index.load(indexAsset.index);
+    if (!index) {
+      return;
+    }
 
     let weight = indexAsset.weight.toBigDecimal().div(BigDecimal.fromString("255"));
 

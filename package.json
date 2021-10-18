@@ -16,22 +16,22 @@
     "deploy:hosted:rinkeby": "NETWORK=rinkeby env-cmd npm run prepare:subgraph && SLUG=hvrlk/Phtr env-cmd npm run deploy:hosted"
   },
   "dependencies": {
-    "@graphprotocol/graph-ts": "^0.20.0"
+    "@graphprotocol/graph-ts": "^0.22.1"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.20.1",
-    "@types/yargs": "^17.0.2",
-    "@typescript-eslint/eslint-plugin": "^2.0.0",
-    "@typescript-eslint/parser": "^2.0.0",
-    "env-cmd": "^10.1.0",
-    "eslint": "^6.2.2",
-    "eslint-config-prettier": "^6.1.0",
-    "lint-staged": "^9.2.5",
+    "@graphprotocol/graph-cli": "^0.22.2",
     "@types/node": "^14.14.3",
     "@types/prettier": "^2.1.5",
     "@types/rimraf": "^3.0.0",
+    "@types/yargs": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
     "assemblyscript": "^0.17.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^6.1.0",
     "glob": "^7.1.6",
+    "lint-staged": "^11.2.0",
     "mustache": "^3.1.0",
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",

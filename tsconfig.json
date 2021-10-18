@@ -1,8 +1,12 @@
 {
-  "extends": "./node_modules/@graphprotocol/graph-ts/tsconfig.json",
+  "extends": "assemblyscript/std/assembly.json",
+  "include": [
+    "./**/*.ts"
+  ],
   "compilerOptions": {
     "types": [
-      "@graphprotocol/graph-ts"
+      "@graphprotocol/graph-ts",
+      "assembly"
     ]
   }
 }

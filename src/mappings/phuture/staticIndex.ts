@@ -15,6 +15,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
   let tx = createTransaction(event);
 
   let index = Index.load(event.address.toHexString());
+  if (!index) return;
 
   let from = event.params.from;
   createUser(from);
@@ -109,6 +110,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
 
 export function handleSetImageURL(event: SetImageURL): void {
   let index = Index.load(event.address.toHexString());
+  if (!index) return;
   index.imageUrl = event.params.name;
 
   index.save();
@@ -116,6 +118,8 @@ export function handleSetImageURL(event: SetImageURL): void {
 
 export function handleSetName(event: SetName): void {
   let index = Index.load(event.address.toHexString());
+  if (!index) return;
+
   index.name = event.params.name;
 
   index.save();
@@ -123,6 +127,7 @@ export function handleSetName(event: SetName): void {
 
 export function handleSetSymbol(event: SetSymbol): void {
   let index = Index.load(event.address.toHexString());
+  if (!index) return;
   index.symbol = event.params.name;
 
   index.save();

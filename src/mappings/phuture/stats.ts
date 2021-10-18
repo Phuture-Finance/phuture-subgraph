@@ -63,6 +63,10 @@ export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
     .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
+  if (!index) {
+    throw new Error("TODO");
+  }
+
   let indexStat = HourlyIndexStat.load(indexID);
   if (indexStat === null) {
     indexStat = new HourlyIndexStat(indexID);
@@ -90,6 +94,9 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
     .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
+  if (!index) {
+    throw new Error("TODO");
+  }
   let indexStat = DailyIndexStat.load(indexID);
   if (indexStat === null) {
     indexStat = new DailyIndexStat(indexID);
@@ -117,6 +124,9 @@ export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
     .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
+  if (!index) {
+    throw new Error("TODO");
+  }
   let indexStat = WeeklyIndexStat.load(indexID);
   if (indexStat === null) {
     indexStat = new WeeklyIndexStat(indexID);
@@ -144,6 +154,9 @@ export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat 
     .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
+  if (!index) {
+    throw new Error("TODO");
+  }
   let indexStat = MonthlyIndexStat.load(indexID);
   if (indexStat === null) {
     indexStat = new MonthlyIndexStat(indexID);
@@ -171,6 +184,9 @@ export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
     .concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
+  if (!index) {
+    throw new Error("TODO");
+  }
   let indexStat = YearlyIndexStat.load(indexID);
   if (indexStat === null) {
     indexStat = new YearlyIndexStat(indexID);
