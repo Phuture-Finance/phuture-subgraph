@@ -1,0 +1,20 @@
+{
+  "name": "liquidity-mining-subgraph",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "prepare:subgraph:rinkeby": "mustache config/config.rinkeby.json subgraph.template.yaml > subgraph.yaml && mustache config/config.rinkeby.json ./const.template.ts > ./const.ts",
+    "prepare:subgraph:mainnet": "mustache config/config.mainnet.json subgraph.template.yaml > subgraph.yaml && mustache config/config.mainnet.json ./const.template.ts > ./const.ts",
+    "codegen": "graph codegen --output-dir src/types/",
+    "start": "npm run create:local && npm run deploy:local",
+    "build": "graph build",
+    "env:dev": "npm i && tail -f /dev/null",
+    "create:local": "graph create hvrlk/LM --node http://localhost:8020",
+    "deploy:local": "graph deploy hvrlk/LM --ipfs http://localhost:5001 --node http://localhost:8020",
+    "deploy:hosted": "graph deploy khyehor/lm --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token a3e85a7a8537b74c114f59f9e79fcfdd",
+    "deploy:local:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph && SLUG=hvrlk/LM env-cmd npm run deploy:local",
+    "deploy:hosted:dev": "NETWORK=mainnet env-cmd npm run prepare:subgraph:mainnet && SLUG=hvrlk/Lmmaindev env-cmd npm run deploy:hosted",
+    "deploy:hosted:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph:mainnet && SLUG=KHYehor/LM env-cmd npm run deploy:hosted",
+    "deploy:hosted:rinkeby": "NETWORK=rinkeby env-cmd npm run prepare:subgraph:rinkeby && SLUG=hvrlk/Lmrinkeby env-cmd npm run deploy:hosted"
+  }
+}
