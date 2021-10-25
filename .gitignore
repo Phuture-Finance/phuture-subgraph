@@ -1,4 +1,4 @@
-mvp/src/mappings/chainlink/aggregators/*.ts
+subgraphs/mvp/src/mappings/chainlink/aggregators/*.ts
 yarn-error.log
 subgraph.yaml
 node_modules/
@@ -10,3 +10,4 @@ types/
 .idea
 dist/
 .env
+subgraphs/**/packages
