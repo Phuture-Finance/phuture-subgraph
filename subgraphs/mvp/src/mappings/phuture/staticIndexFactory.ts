@@ -54,7 +54,7 @@ export function handleIndexCreated(event: IndexCreated): void {
     index._assets = index._assets.concat([indexAssetId]);
   }
 
-  index.totalSupply = ZERO_BD;
+  index.totalSupply = ZERO_BI;
   index.decimals = fetchTokenDecimals(event.params.index);
   index.symbol = fetchTokenSymbol(event.params.index);
   index.name = fetchTokenName(event.params.index);

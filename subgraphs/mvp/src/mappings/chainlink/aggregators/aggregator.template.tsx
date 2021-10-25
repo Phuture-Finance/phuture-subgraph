@@ -35,11 +35,15 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
     index.basePrice = index.basePrice.plus(indexAsset.basePrice);
 
-    index.baseVolume = index.basePrice.times(index.totalSupply
-      .div(BigInt.fromI32(10)
-        .pow(index.decimals.toI32() as u8)
-        .toBigDecimal()
-      ));
+    index.baseVolume = index.basePrice
+      .times(
+        BigDecimal.fromString(index.totalSupply.toString())
+          .div(
+            BigInt.fromI32(10)
+              .pow(index.decimals.toI32() as u8)
+              .toBigDecimal()
+          )
+      );
 
     if (indexAsset.marketCap.gt(ZERO_BD)) {
       index.marketCap = index.marketCap.minus(indexAsset.marketCap);

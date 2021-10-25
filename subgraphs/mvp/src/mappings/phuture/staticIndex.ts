@@ -70,11 +70,11 @@ export function handleIndexTransfer(event: TransferEvent): void {
 
   let transferType: string;
   if (from.toHexString() == ADDRESS_ZERO) {
-    index.totalSupply = index.totalSupply.plus(value);
+    index.totalSupply = index.totalSupply.plus(BigInt.fromString(value.toString()));
 
     transferType = "Mint";
   } else if (to.toHexString() == ADDRESS_ZERO) {
-    index.totalSupply = index.totalSupply.minus(value);
+    index.totalSupply = index.totalSupply.minus(BigInt.fromString(value.toString()));
 
     transferType = "Burn";
   } else {
