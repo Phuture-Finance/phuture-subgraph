@@ -1,4 +1,4 @@
-src/mappings/chainlink/aggregators/*.ts
+mvp/src/mappings/chainlink/aggregators/*.ts
 yarn-error.log
 subgraph.yaml
 node_modules/
