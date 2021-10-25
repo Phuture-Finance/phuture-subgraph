@@ -6,6 +6,8 @@ src/types/
 .DS_STORE
 .vscode
 build/
+types/
 .idea
 dist/
 .env
+
