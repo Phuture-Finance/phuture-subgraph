@@ -13,7 +13,7 @@ yargs.command('graphgen', 'Generate the subgraph based for the configured feeds.
 
   fs.writeFileSync(subgraphPath, subgraph, 'utf8')
 
-  const constsTemplatePath = path.join(__dirname, '../consts.template')
+  const constsTemplatePath = path.join(__dirname, '../consts.template.tsx')
   const constsTemplate = fs.readFileSync(constsTemplatePath, 'utf8')
 
   const constsPath = path.join(__dirname, '../consts.ts')

@@ -11,7 +11,7 @@
     "env:dev": "npm i && tail -f /dev/null",
     "create:local": "graph create hvrlk/LM --node http://localhost:8020",
     "deploy:local": "graph deploy hvrlk/LM --ipfs http://localhost:5001 --node http://localhost:8020",
-    "deploy:hosted": "graph deploy khyehor/lm --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token a3e85a7a8537b74c114f59f9e79fcfdd",
+    "deploy:hosted": "graph deploy $SLUG --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token $ACCESS_TOKEN",
     "deploy:local:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph && SLUG=hvrlk/LM env-cmd npm run deploy:local",
     "deploy:hosted:dev": "NETWORK=mainnet env-cmd npm run prepare:subgraph:mainnet && SLUG=hvrlk/Lmmaindev env-cmd npm run deploy:hosted",
     "deploy:hosted:mainnet": "NETWORK=mainnet env-cmd npm run prepare:subgraph:mainnet && SLUG=KHYehor/LM env-cmd npm run deploy:hosted",
