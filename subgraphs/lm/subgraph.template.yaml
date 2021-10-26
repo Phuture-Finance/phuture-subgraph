@@ -1,0 +1,72 @@
+specVersion: 0.0.3
+description: Phuture Liquidity Mining
+repository: https://github.com/Phuturedao/liquidity-mining-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: LiquidityMining
+    network: {{network}}
+    source:
+      abi: LiquidityMining
+      address: '{{liquidityMiningContractAddress}}'
+      startBlock: {{liquidityMiningStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - VestingRange
+      abis:
+        - name: LiquidityMining
+          file: ../../packages/abis/Phuture/LiquidityMining.json
+      eventHandlers:
+        - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleStake
+        - event: UnstakeRange(indexed address,uint256,indexed uint8,indexed uint8)
+          handler: handleUnstakeRange
+        - event: Unstake(indexed address,uint256,uint256,uint256)
+          handler: handleUnstake
+      file: ./src/mappings/liquidityMining.ts
+  - kind: ethereum/contract
+    name: ERC20
+    network: {{network}}
+    source:
+      abi: ERC20
+      address: '{{phtrContractAddress}}'
+      startBlock: {{liquidityMiningStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Reward
+      abis:
+        - name: ERC20
+          file: ../../packages/abis/ERC20/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/erc20.ts
+  - kind: ethereum/contract
+    name: UniswapPair
+    network: {{network}}
+    source:
+      abi: UniswapPair
+      address: '{{liquidityPairAddress}}'
+      startBlock: {{liquidityPairStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Reserve
+      abis:
+        - name: UniswapPair
+          file: ../../packages/abis/Uniswap/UniswapPair.json
+      eventHandlers:
+        - event: Sync(uint112,uint112)
+          handler: handleSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/uniswapPair.ts

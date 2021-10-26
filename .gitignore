@@ -1,4 +1,4 @@
-src/mappings/chainlink/aggregators/*.ts
+subgraphs/mvp/src/mappings/chainlink/aggregators/*.ts
 yarn-error.log
 subgraph.yaml
 node_modules/
@@ -6,6 +6,8 @@ src/types/
 .DS_STORE
 .vscode
 build/
+types/
 .idea
 dist/
 .env
+subgraphs/**/packages
