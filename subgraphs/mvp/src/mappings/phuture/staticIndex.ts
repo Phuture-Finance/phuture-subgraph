@@ -1,5 +1,5 @@
 import { Index, Transfer, UserIndex } from "../../types/schema";
-import { SetImageURL, SetName, SetSymbol, Transfer as TransferEvent } from "../../types/templates/StaticIndex/StaticIndex";
+import { Transfer as TransferEvent } from "../../types/templates/StaticIndex/StaticIndex";
 import { createTransaction, createUser, ONE_BI, ZERO_BD } from "../helpers";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO, EMISSION_CONTROLLER_ADDRESS } from "../../../consts";
@@ -106,29 +106,4 @@ export function handleIndexTransfer(event: TransferEvent): void {
   updateWeeklyIndexStat(event);
   updateMonthlyIndexStat(event);
   updateYearlyIndexStat(event);
-}
-
-export function handleSetImageURL(event: SetImageURL): void {
-  let index = Index.load(event.address.toHexString());
-  if (!index) return;
-  index.imageUrl = event.params.name;
-
-  index.save();
-}
-
-export function handleSetName(event: SetName): void {
-  let index = Index.load(event.address.toHexString());
-  if (!index) return;
-
-  index.name = event.params.name;
-
-  index.save();
-}
-
-export function handleSetSymbol(event: SetSymbol): void {
-  let index = Index.load(event.address.toHexString());
-  if (!index) return;
-  index.symbol = event.params.name;
-
-  index.save();
 }

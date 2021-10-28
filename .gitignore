@@ -11,3 +11,4 @@ types/
 dist/
 .env
 subgraphs/**/packages
+data/

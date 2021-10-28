@@ -20,6 +20,21 @@
         "internalType": "uint16",
         "name": "_defaultFeeInBP",
         "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_defaultGovernorFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "address",
+        "name": "_rebalancingCredit",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_sharedOwnershipCreatorImplementation",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -39,15 +54,9 @@
         "internalType": "address[]",
         "name": "assets",
         "type": "address[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8[]",
-        "name": "weights",
-        "type": "uint8[]"
       }
     ],
-    "name": "StaticIndexCreated",
+    "name": "TrackedIndexCreated",
     "type": "event"
   },
   {
@@ -56,11 +65,6 @@
         "internalType": "address[]",
         "name": "_assets",
         "type": "address[]"
-      },
-      {
-        "internalType": "uint8[]",
-        "name": "_weights",
-        "type": "uint8[]"
       },
       {
         "components": [
@@ -122,6 +126,25 @@
         "type": "address"
       }
     ],
+    "name": "governorFeeInBP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      }
+    ],
     "name": "indexTransferFee",
     "outputs": [
       {
@@ -133,6 +156,19 @@
         "internalType": "uint256",
         "name": "_feeInBP",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rebalancingCredit",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -177,6 +213,24 @@
         "type": "address"
       },
       {
+        "internalType": "uint16",
+        "name": "_feeInBP",
+        "type": "uint16"
+      }
+    ],
+    "name": "setGovernorFeeInBP",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
         "internalType": "address",
         "name": "_feeRecipient",
         "type": "address"
@@ -190,6 +244,32 @@
     "name": "setIndexTransferFee",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_sharedOwnershipCreatorImplementation",
+        "type": "address"
+      }
+    ],
+    "name": "setSharedOwnershipCreatorImplementation",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "sharedOwnershipCreatorImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -1,4 +1,4 @@
-import { IndexCreated } from "../../types/Index/StaticIndexFactory";
+import { StaticIndexCreated } from "../../types/Index/StaticIndexFactory";
 import { Index, IndexAsset, UserIndex } from "../../types/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../../types/templates";
@@ -15,7 +15,7 @@ import {
 } from "../helpers";
 import { updateStat } from "./stats";
 
-export function handleIndexCreated(event: IndexCreated): void {
+export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   let tx = createTransaction(event);
 
   let indexId = event.params.index.toHexString();
@@ -58,7 +58,9 @@ export function handleIndexCreated(event: IndexCreated): void {
   index.decimals = fetchTokenDecimals(event.params.index);
   index.symbol = fetchTokenSymbol(event.params.index);
   index.name = fetchTokenName(event.params.index);
-  index.indexCount = event.params.indexCount;
+  // TODO: ask about accuracy
+  // index.indexCount = event.params.indexCount;
+  index.indexCount = event.params._event.block.number;
   index.transaction = tx.id;
 
   createUser(event.transaction.from);

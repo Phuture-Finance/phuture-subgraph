@@ -28,10 +28,14 @@ dataSources:
         - name: ERC20NameBytes
           file:  ../../packages/abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: RemoveAsset(address,indexed address)
-          handler: handleRemoveAsset
-        - event: UpdateAsset(address,indexed address,uint256)
+        - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
+        - event: SetImageURL(address,string)
+          handler: handleSetImageURL
+        - event: SetName(address,string)
+          handler: handleSetName
+        - event: SetSymbol(address,string)
+          handler: handleSetSymbol
       file: ./src/mappings/phuture/indexRegistry.ts
 
   - kind: ethereum/contract
@@ -58,8 +62,8 @@ dataSources:
         - name: ERC20NameBytes
           file:  ../../packages/abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: IndexCreated(address,address[],uint8[],uint256)
-          handler: handleIndexCreated
+        - event: StaticIndexCreated(address,address[],uint8[])
+          handler: handleStaticIndexCreated
       file: ./src/mappings/phuture/staticIndexFactory.ts
 
   - kind: ethereum/contract
@@ -148,6 +152,48 @@ dataSources:
           handler: handleUnstake
       file: ./src/mappings/phuture/liquidityMining.ts
 
+  - kind: ethereum/contract
+    name: TrackedIndexFactory
+    network: {{network}}
+    source:
+      abi: TrackedIndexFactory
+      address: '{{TrackedIndexFactoryAddress}}'
+      startBlock: {{TrackedIndexFactoryStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Debug
+      abis:
+        - name: TrackedIndexFactory
+          file:  ../../packages/abis/Phuture/TrackedIndexFactory.json
+      eventHandlers:
+        - event: TrackedIndexCreated(address,address[])
+          handler: handleTrackedIndexCreated
+      file: ./src/mappings/phuture/TrackedIndexFactory.ts
+
+  - kind: ethereum/contract
+    name: TopNMarketCapIndexFactory
+    network: {{network}}
+    source:
+      abi: TopNMarketCapIndexFactory
+      address: '{{TopNMarketCapIndexFactoryAddress}}'
+      startBlock: {{TopNMarketCapIndexFactoryStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Debug
+      abis:
+        - name: TopNMarketCapIndexFactory
+          file:  ../../packages/abis/Phuture/TopNMarketCapIndexFactory.json
+      eventHandlers:
+        - event: TopNMarketCapIndexCreated(address,uint256,uint256)
+          handler: handleTopNMarketCapIndexCreated
+      file: ./src/mappings/phuture/TopNMarketCapIndexCreated.ts
+
   {{#pairs}}
   - kind: ethereum/contract
     name: {{{name}}}
@@ -221,12 +267,6 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleIndexTransfer
-        - event: SetImageURL(indexed address,string)
-          handler: handleSetImageURL
-        - event: SetName(indexed address,string)
-          handler: handleSetName
-        - event: SetSymbol(indexed address,string)
-          handler: handleSetSymbol
 
   - kind: ethereum/contract
     name: UniswapPair

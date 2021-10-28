@@ -3,7 +3,17 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_vault",
+        "name": "_priceOracle",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_orderer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vTokenFactory",
         "type": "address"
       }
     ],
@@ -14,82 +24,150 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "factory",
-        "type": "address"
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
       }
     ],
-    "name": "AddFactory",
+    "name": "RoleAdminChanged",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oracle",
-        "type": "address"
-      }
-    ],
-    "name": "AddOracle",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "prev",
+        "name": "account",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "asset",
+        "name": "sender",
         "type": "address"
       }
     ],
-    "name": "RemoveAsset",
+    "name": "RoleGranted",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "factory",
-        "type": "address"
-      }
-    ],
-    "name": "RemoveFactory",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "oracle",
-        "type": "address"
-      }
-    ],
-    "name": "RemoveOracle",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "prev",
+        "name": "account",
         "type": "address"
       },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "SetImageURL",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "SetName",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "orderer",
+        "type": "address"
+      }
+    ],
+    "name": "SetOrderer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "SetSymbol",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
         "indexed": true,
         "internalType": "address",
@@ -107,12 +185,45 @@
     "type": "event"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
         "internalType": "address",
-        "name": "_prev",
+        "name": "asset",
         "type": "address"
       },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "blacklisted",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "skipped",
+        "type": "bool"
+      }
+    ],
+    "name": "UpdateBlacklistedAsset",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "_asset",
@@ -132,12 +243,36 @@
   {
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
         "internalType": "address",
-        "name": "_factory",
+        "name": "account",
         "type": "address"
       }
     ],
-    "name": "addFactory",
+    "name": "grantRole",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -145,44 +280,17 @@
   {
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
         "internalType": "address",
-        "name": "_oracle",
+        "name": "account",
         "type": "address"
       }
     ],
-    "name": "addOracle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_position",
-        "type": "uint256"
-      }
-    ],
-    "name": "factoryAt",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_assets",
-        "type": "address[]"
-      }
-    ],
-    "name": "hasAllAssets",
+    "name": "hasRole",
     "outputs": [
       {
         "internalType": "bool",
@@ -197,105 +305,16 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_asset",
-        "type": "address"
-      }
-    ],
-    "name": "hasAsset",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_factory",
-        "type": "address"
-      }
-    ],
-    "name": "hasFactory",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_index",
-        "type": "address"
-      }
-    ],
-    "name": "hasIndex",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_oracle",
-        "type": "address"
-      }
-    ],
-    "name": "hasOracle",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_position",
-        "type": "uint256"
-      }
-    ],
-    "name": "indexAt",
-    "outputs": [
-      {
-        "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "indexCount",
+    "name": "imageURLOfIndex",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "",
-        "type": "uint256"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -375,7 +394,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_marketCap",
+        "name": "_totalMarketCap",
         "type": "uint256"
       }
     ],
@@ -386,21 +405,42 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_node",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "nextNodeOf",
+    "name": "nameOfIndex",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "orderer",
     "outputs": [
       {
         "internalType": "address",
-        "name": "_next",
+        "name": "",
         "type": "address"
-      },
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "priceOracle",
+    "outputs": [
       {
-        "internalType": "uint256",
-        "name": "_marketCap",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -414,19 +454,26 @@
         "type": "address"
       },
       {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "address[]",
-        "name": "_assets",
-        "type": "address[]"
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "imageURI",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IIndexFactory.NameDetails",
+        "name": "_nameDetails",
+        "type": "tuple"
       }
     ],
     "name": "registerIndex",
@@ -436,11 +483,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_prev",
-        "type": "address"
-      },
       {
         "internalType": "address",
         "name": "_asset",
@@ -455,12 +497,35 @@
   {
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
         "internalType": "address",
-        "name": "_factory",
+        "name": "account",
         "type": "address"
       }
     ],
-    "name": "removeFactory",
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "revokeRole",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -469,17 +534,27 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_oracle",
+        "name": "_index",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_imageURL",
+        "type": "string"
       }
     ],
-    "name": "removeOracle",
+    "name": "setIndexImageURL",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
       {
         "internalType": "string",
         "name": "_name",
@@ -494,6 +569,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "_symbol",
         "type": "string"
@@ -507,58 +587,62 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_count",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_orderer",
+        "type": "address"
       }
     ],
-    "name": "top",
+    "name": "setOrderer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_priceOracle",
+        "type": "address"
+      }
+    ],
+    "name": "setPriceOracle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
     "outputs": [
       {
-        "internalType": "address[]",
-        "name": "_assets",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_marketCaps",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_marketCap",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_recordCount",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "totalAssets",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalFactories",
+    "name": "symbolOfIndex",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "",
-        "type": "uint256"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -581,17 +665,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_srcPrev",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_asset",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_dstPrev",
         "type": "address"
       },
       {
@@ -607,7 +681,7 @@
   },
   {
     "inputs": [],
-    "name": "vault",
+    "name": "vTokenFactory",
     "outputs": [
       {
         "internalType": "address",

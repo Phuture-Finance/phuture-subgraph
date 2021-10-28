@@ -1,7 +1,8 @@
-import { RemoveAsset, UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
-import { convertTokenToDecimal, createAsset, ZERO_BI } from "../helpers";
+import { UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
+import { convertTokenToDecimal, createAsset } from "../helpers";
 import { Transfer } from "../../types/templates/Asset/Asset";
-import { Asset, LM, Reward } from "../../types/schema";
+import { SetImageURL, SetName, SetSymbol } from "../../types/templates/StaticIndex/IndexRegistry";
+import { Asset, LM, Reward, Index } from "../../types/schema";
 import { Asset as AssetTemplate } from "../../types/templates";
 import { EMISSION_ADDRESS, FACTORY_ADDRESS, LM_ADDRESS, VAULT_ADDRESS } from "../../../consts";
 import { updateDailyAssetStat, updateStat } from "./stats";
@@ -10,22 +11,14 @@ import { BigInt } from "@graphprotocol/graph-ts";
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
 
-  asset.prev = event.params.prev.toHexString();
+  // TODO: ask about accuracy
+  // asset.prev = event.params.prev.toHexString();
+  asset.prev = event.params._event.block.parentHash.toHexString();
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
 
     asset.isWhitelisted = true;
   }
-
-  asset.save();
-}
-
-export function handleRemoveAsset(event: RemoveAsset): void {
-  let asset = createAsset(event.params.asset);
-
-  asset.prev = event.params.prev.toHexString();
-  asset.marketCap = ZERO_BI;
-  asset.isWhitelisted = false;
 
   asset.save();
 }
@@ -69,3 +62,29 @@ export function handleTransfer(event: Transfer): void {
 
   updateDailyAssetStat(event);
 }
+
+export function handleSetImageURL(event: SetImageURL): void {
+  let index = Index.load(event.address.toHexString());
+  if (!index) return;
+  index.imageUrl = event.params.name;
+
+  index.save();
+}
+
+export function handleSetName(event: SetName): void {
+  let index = Index.load(event.address.toHexString());
+  if (!index) return;
+
+  index.name = event.params.name;
+
+  index.save();
+}
+
+export function handleSetSymbol(event: SetSymbol): void {
+  let index = Index.load(event.address.toHexString());
+  if (!index) return;
+  index.symbol = event.params.name;
+
+  index.save();
+}
+

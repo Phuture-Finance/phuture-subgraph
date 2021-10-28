@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -22,63 +27,6 @@
       }
     ],
     "name": "Approval",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "SetImageURL",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "SetName",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "SetSymbol",
     "type": "event"
   },
   {
@@ -157,8 +105,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "anatomy",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_count",
+        "type": "uint256"
+      }
+    ],
+    "name": "anatomyForRange",
     "outputs": [
       {
         "internalType": "address[]",
@@ -199,19 +158,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "assets",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "_assets",
-        "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -236,21 +182,11 @@
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_swapper",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_swapCalldata",
-        "type": "bytes"
       }
     ],
     "name": "burn",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -264,21 +200,11 @@
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_swapper",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_swapCalldata",
-        "type": "bytes"
       }
     ],
     "name": "burnFee",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -328,12 +254,12 @@
   },
   {
     "inputs": [],
-    "name": "imageURI",
+    "name": "getAssetCount",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "uint256",
         "name": "",
-        "type": "string"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -350,21 +276,6 @@
         "internalType": "uint8[]",
         "name": "_weights",
         "type": "uint8[]"
-      },
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_imageURI",
-        "type": "string"
       }
     ],
     "name": "initialize",
@@ -456,45 +367,6 @@
       }
     ],
     "name": "permit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_imageURI",
-        "type": "string"
-      }
-    ],
-    "name": "setImageURI",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      }
-    ],
-    "name": "setName",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      }
-    ],
-    "name": "setSymbol",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
