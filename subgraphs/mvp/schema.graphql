@@ -39,11 +39,17 @@ type Pair @entity {
   asset1Reserve: BigDecimal!
 }
 
-# TODO: ChainLink Price Oracle
+enum IndexType {
+  Static
+  TopN
+  Tracked
+}
 
 type Index @entity {
   "Address (hash)"
   id: ID!
+
+  type: IndexType!
 
   # used for other stats like marketcap
   totalSupply: BigInt!

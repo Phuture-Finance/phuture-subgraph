@@ -11,4 +11,4 @@ types/
 dist/
 .env
 subgraphs/**/abis
-data/
+dev/data/
