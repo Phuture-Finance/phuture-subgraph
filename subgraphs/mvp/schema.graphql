@@ -15,7 +15,7 @@ type Asset @entity {
   _indexes: [ID!]!
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
-  basePrice: BigDecimal!
+  prices: [AssetPrice]! @derivedFrom(field: "asset")
   marketCap: BigInt!
 
   vaultReserve: BigDecimal!
@@ -27,8 +27,24 @@ type Asset @entity {
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 }
 
+type AssetPrice @entity {
+  id: ID!
+
+  asset: Asset!
+
+  pair: Pair!
+}
+
+type Swap @entity {
+  id: ID!
+
+  pairs: [Pair]! @derivedFrom(field: "swap")
+}
+
 type Pair @entity {
   id: ID!
+
+  swap: Swap!
 
   asset0: Asset!
   asset1: Asset!
@@ -38,8 +54,6 @@ type Pair @entity {
   asset0Reserve: BigDecimal!
   asset1Reserve: BigDecimal!
 }
-
-# TODO: ChainLink Price Oracle
 
 type Index @entity {
   "Address (hash)"
@@ -73,7 +87,6 @@ type Index @entity {
 
 type IndexAsset @entity {
   id: ID! # Set to `${index.id}-${asset.id}`
-
   index: Index!
   asset: Asset!
   weight: BigInt!
@@ -101,7 +114,6 @@ type UserIndex @entity {
 
 type Transaction @entity {
   id: ID! # txn hash
-
   blockNumber: BigInt!
   timestamp: BigInt!
 
@@ -210,29 +222,4 @@ type YearlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
-}
-
-# LM
-
-type VestingRange @entity {
-  id: ID!
-  account: String!
-  amount: BigInt!
-
-  rangeStartIndex: BigInt!
-  rangeEndIndex: BigInt!
-  unstaked: Boolean!
-}
-
-type LM @entity {
-  id: ID!
-
-  totalReward: BigInt!
-
-  APR: BigDecimal!
-}
-
-type Reward @entity {
-  id: ID!
-  amount: BigInt!
 }

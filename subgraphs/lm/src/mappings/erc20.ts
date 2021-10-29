@@ -6,17 +6,17 @@ import { BigInt } from "@graphprotocol/graph-ts";
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHexString() == EMISSION && event.params.to.toHexString() == LM) {
     const id = event.block.number.toString();
-    let reward = Reward.load(id)
+    let reward = Reward.load(id);
     if (reward == null) {
       reward = new Reward(id);
       reward.amount = event.params.value;
 
-      reward.save()
+      reward.save();
     }
 
-    let total = Total.load('0');
+    let total = Total.load("0");
     if (total == null) {
-      total = new Total('0');
+      total = new Total("0");
       total.APR = BigInt.fromI32(0).toBigDecimal();
       total.reward = event.params.value;
     } else {

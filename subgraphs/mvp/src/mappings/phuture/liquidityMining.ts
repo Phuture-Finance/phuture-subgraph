@@ -2,7 +2,7 @@ import { Stake, Unstake, UnstakeRange } from "../../types/LiquidityMining/Liquid
 import { Asset, LM, Pair, Reward, VestingRange } from "../../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { BASE_ADDRESS, FACTORY_ADDRESS, LP_ADDRESS, PHTR_ADDRESS } from "../../../consts";
-import { getAssetDecimals, Q112, ZERO_BD, ZERO_BI } from '../helpers'
+import { getAssetDecimals, Q112, ZERO_BD, ZERO_BI } from "../helpers";
 
 function getUValue(balance: BigDecimal, pair: Pair, token: string): BigDecimal {
   let isPHTR = token === PHTR_ADDRESS;
@@ -14,7 +14,11 @@ function getUValue(balance: BigDecimal, pair: Pair, token: string): BigDecimal {
 
   return balance
     .times(isPHTR ? pair.asset1Reserve : pair.asset0Reserve)
-    .div(BigInt.fromI32(10).pow(phtr.decimals.toI32() as u8).toBigDecimal())
+    .div(
+      BigInt.fromI32(10)
+        .pow(phtr.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
     .div(pair.totalSupply.toBigDecimal());
 }
 
@@ -36,9 +40,19 @@ function updateAPR(amount: BigInt, block: BigInt): void {
 
   if (reward != null && stakedInPHTR.gt(ZERO_BD) && reward.amount.gt(ZERO_BI)) {
     let price = pair.asset1Reserve
-      .div(BigInt.fromI32(10).pow(asset1Decimals.toI32() as u8).toBigDecimal())
+      .div(
+        BigInt.fromI32(10)
+          .pow(asset1Decimals.toI32() as u8)
+          .toBigDecimal()
+      )
       .times(Q112)
-      .div(pair.asset0Reserve.div(BigInt.fromI32(10).pow(asset1Decimals.toI32() as u8).toBigDecimal()));
+      .div(
+        pair.asset0Reserve.div(
+          BigInt.fromI32(10)
+            .pow(asset1Decimals.toI32() as u8)
+            .toBigDecimal()
+        )
+      );
 
     let uPHTR = getUValue(pair.totalSupply.toBigDecimal(), pair as Pair, PHTR_ADDRESS);
     let uOther = getUValue(pair.totalSupply.toBigDecimal(), pair as Pair, BASE_ADDRESS);
@@ -109,7 +123,7 @@ function toPHTR(amount: BigDecimal): BigDecimal {
     let phtrDecimals: BigInt;
     let otherDecimals: BigInt;
 
-    let asset1Decimals: BigInt = getAssetDecimals(reserve.asset0);;
+    let asset1Decimals: BigInt = getAssetDecimals(reserve.asset0);
     let asset2Decimals: BigInt = getAssetDecimals(reserve.asset1);
 
     if (reserve.asset0 == PHTR_ADDRESS) {
@@ -120,12 +134,14 @@ function toPHTR(amount: BigDecimal): BigDecimal {
     } else {
       phtrReserve = reserve.asset1Reserve;
       otherReserve = reserve.asset0Reserve;
-      phtrDecimals = asset2Decimals
-      otherDecimals = asset1Decimals
+      phtrDecimals = asset2Decimals;
+      otherDecimals = asset1Decimals;
     }
 
-    let price = phtrReserve.div(BigInt.fromI32(phtrDecimals.toI32()).toBigDecimal())
-      .times(Q112).div(otherReserve.div(BigInt.fromI32(otherDecimals.toI32()).toBigDecimal()));
+    let price = phtrReserve
+      .div(BigInt.fromI32(phtrDecimals.toI32()).toBigDecimal())
+      .times(Q112)
+      .div(otherReserve.div(BigInt.fromI32(otherDecimals.toI32()).toBigDecimal()));
     let uPHTR = amount.times(phtrReserve).div(reserve.totalSupply.toBigDecimal());
     let uOther = amount.times(otherReserve).div(reserve.totalSupply.toBigDecimal());
 

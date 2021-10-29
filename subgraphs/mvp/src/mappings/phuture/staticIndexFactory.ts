@@ -11,7 +11,7 @@ import {
   fetchTokenSymbol,
   ONE_BI,
   ZERO_BD,
-  ZERO_BI
+  ZERO_BI,
 } from "../helpers";
 import { updateStat } from "./stats";
 
@@ -25,7 +25,7 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   index.baseVolume = ZERO_BD;
   index.uniqueHolders = ZERO_BI;
   index.basePrice = ZERO_BD;
-  index._assets = []
+  index._assets = [];
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;
@@ -62,9 +62,7 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
 
   createUser(event.transaction.from);
 
-  let userIndexId = event.transaction.from.toHexString()
-    .concat("-")
-    .concat(event.params.index.toHexString());
+  let userIndexId = event.transaction.from.toHexString().concat("-").concat(event.params.index.toHexString());
   let userIndex = UserIndex.load(userIndexId);
   if (userIndex === null) {
     userIndex = new UserIndex(userIndexId);

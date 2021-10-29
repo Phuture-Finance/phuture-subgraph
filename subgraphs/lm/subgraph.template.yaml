@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: LiquidityMining
-    network: {{network}}
+    network: { { network } }
     source:
       abi: LiquidityMining
-      address: '{{liquidityMiningContractAddress}}'
-      startBlock: {{liquidityMiningStartBlock}}
+      address: "{{liquidityMiningContractAddress}}"
+      startBlock: { { liquidityMiningStartBlock } }
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,11 +30,11 @@ dataSources:
       file: ./src/mappings/liquidityMining.ts
   - kind: ethereum/contract
     name: ERC20
-    network: {{network}}
+    network: { { network } }
     source:
       abi: ERC20
-      address: '{{phtrContractAddress}}'
-      startBlock: {{liquidityMiningStartBlock}}
+      address: "{{phtrContractAddress}}"
+      startBlock: { { liquidityMiningStartBlock } }
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -50,11 +50,11 @@ dataSources:
       file: ./src/mappings/erc20.ts
   - kind: ethereum/contract
     name: UniswapPair
-    network: {{network}}
+    network: { { network } }
     source:
       abi: UniswapPair
-      address: '{{liquidityPairAddress}}'
-      startBlock: {{liquidityPairStartBlock}}
+      address: "{{liquidityPairAddress}}"
+      startBlock: { { liquidityPairStartBlock } }
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

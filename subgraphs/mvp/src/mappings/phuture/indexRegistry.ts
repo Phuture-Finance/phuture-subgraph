@@ -84,4 +84,3 @@ export function handleSetSymbol(event: SetSymbol): void {
 
   index.save();
 }
-

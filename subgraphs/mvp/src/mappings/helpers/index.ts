@@ -37,7 +37,6 @@ export function isNullEthValue(value: string): boolean {
   return value == "0x0000000000000000000000000000000000000000000000000000000000000001";
 }
 
-
 export function fetchTokenSymbol(tokenAddress: Address): string {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress);
@@ -96,12 +95,12 @@ export function fetchTokenName(tokenAddress: Address): string {
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress);
-  let totalSupplyValue = BigInt.fromString('0');
+  let totalSupplyValue = BigInt.fromString("0");
   let totalSupplyResult = contract.try_totalSupply();
   if (!totalSupplyResult.reverted) {
     totalSupplyValue = totalSupplyResult.value;
   }
-  return totalSupplyValue
+  return totalSupplyValue;
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
@@ -188,7 +187,7 @@ export function createTransaction(event: ethereum.Event): Transaction {
     tx = new Transaction(txHash);
     tx.blockNumber = event.block.number;
     tx.timestamp = event.block.timestamp;
-    tx.transfers = []
+    tx.transfers = [];
     tx.value = event.transaction.value;
     tx.gasPrice = event.transaction.gasPrice;
     tx.gasUsed = event.block.gasUsed;
