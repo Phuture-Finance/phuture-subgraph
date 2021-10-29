@@ -1,54 +1,49 @@
 [
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
         "internalType": "address",
-        "name": "previousAdmin",
+        "name": "_registry",
         "type": "address"
       },
       {
-        "indexed": false,
         "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
-      }
-    ],
-    "name": "AdminChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "beacon",
-        "type": "address"
-      }
-    ],
-    "name": "BeaconUpgraded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
+        "name": "_base",
         "type": "address"
       },
       {
-        "indexed": true,
         "internalType": "address",
-        "name": "newOwner",
+        "name": "_emissionController",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vTokenFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vTokenProxyImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_mintingFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_platformMintingFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_burningFeeInBP",
+        "type": "uint16"
       }
     ],
-    "name": "OwnershipTransferred",
-    "type": "event"
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
     "anonymous": false,
@@ -80,32 +75,6 @@
     ],
     "name": "Transfer",
     "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
-    "name": "Upgraded",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "PHTR",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [
@@ -156,6 +125,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "base",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -193,55 +175,16 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_index",
-        "type": "address"
-      }
-    ],
-    "name": "indexTransferFee",
+    "inputs": [],
+    "name": "emissionController",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "_feeInBP",
-        "type": "uint256"
-      },
-      {
         "internalType": "address",
-        "name": "_feeRecipient",
+        "name": "",
         "type": "address"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_PHTR",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_priceOracle",
-        "type": "address"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_mintingFeeInBP",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_burningFeeInBP",
-        "type": "uint16"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -253,7 +196,45 @@
       },
       {
         "internalType": "address",
-        "name": "_recipient",
+        "name": "_account",
+        "type": "address"
+      }
+    ],
+    "name": "lastAssetBalanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_asset",
+        "type": "address"
+      }
+    ],
+    "name": "lastBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_asset",
         "type": "address"
       }
     ],
@@ -262,11 +243,6 @@
       {
         "internalType": "uint256",
         "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "lastReserveInAsset",
         "type": "uint256"
       }
     ],
@@ -288,25 +264,12 @@
   },
   {
     "inputs": [],
-    "name": "owner",
+    "name": "platformMintingFeeInBP",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint16",
         "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "priceOracle",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        "type": "uint16"
       }
     ],
     "stateMutability": "view",
@@ -323,13 +286,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -361,12 +317,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_PHTR",
-        "type": "address"
+        "internalType": "uint16",
+        "name": "_platformMintingFeeInBP",
+        "type": "uint16"
       }
     ],
-    "name": "setPHTR",
+    "name": "setPlatformMintingFeeInBP",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -375,26 +331,34 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_priceOracle",
+        "name": "_asset",
         "type": "address"
-      }
-    ],
-    "name": "setPriceOracle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
         "internalType": "address",
-        "name": "_registry",
+        "name": "_account",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountInAsset",
+        "type": "uint256"
       }
     ],
-    "name": "setRegistry",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "shareChange",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "newShares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "oldShares",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -453,47 +417,16 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "vTokenFactory",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newImplementation",
-        "type": "address"
-      }
-    ],
-    "name": "upgradeTo",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newImplementation",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "upgradeToAndCall",
-    "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -18,6 +18,10 @@
   "liquidityPairStartBlock": 9009503,
   "chainLinkAddress": "0x8fb6CE744673D2D6e07ec38B9Fa66a66874C45a8",
   "chainLinkRegistryStartBlock": 9009503,
+  "TopNMarketCapIndexFactoryStartBlock": 9009503,
+  "TopNMarketCapIndexFactoryAddress": "0x994189e3bd4ae195b34fc7f155b62e11dc5ace16",
+  "TrackedIndexFactoryStartBlock": 9009503,
+  "TrackedIndexFactoryAddress": "0x1214dddddf405c48e2ea2bffc1ab8df29feb92c6",
   "pairs": [
     {
       "name": "USDC",
