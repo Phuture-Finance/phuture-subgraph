@@ -142,7 +142,6 @@ export function createAsset(address: Address): Asset {
 
   if (!asset) {
     asset = new Asset(addr);
-    asset.prev = ADDRESS_ZERO;
     asset.marketCap = ZERO_BI;
     asset.basePrice = ZERO_BD;
     asset.isWhitelisted = false;

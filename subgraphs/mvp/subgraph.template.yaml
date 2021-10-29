@@ -20,13 +20,13 @@ dataSources:
         - Stat
       abis:
         - name: IndexRegistry
-          file:  ../../packages/abis/Phuture/IndexRegistry.json
+          file:  ../../abis/Phuture/IndexRegistry.json
         - name: ERC20
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
-          file:  ../../packages/abis/ERC20/ERC20SymbolBytes.json
+          file:  ../../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file:  ../../packages/abis/ERC20/ERC20NameBytes.json
+          file:  ../../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
@@ -54,13 +54,13 @@ dataSources:
         - IndexAsset
       abis:
         - name: StaticIndexFactory
-          file:  ../../packages/abis/Phuture/StaticIndexFactory.json
+          file:  ../../abis/Phuture/StaticIndexFactory.json
         - name: ERC20
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
-          file:  ../../packages/abis/ERC20/ERC20SymbolBytes.json
+          file:  ../../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file:  ../../packages/abis/ERC20/ERC20NameBytes.json
+          file:  ../../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: StaticIndexCreated(address,address[],uint8[])
           handler: handleStaticIndexCreated
@@ -83,13 +83,13 @@ dataSources:
         - IndexAsset
       abis:
         - name: Vault
-          file:  ../../packages/abis/Phuture/Vault.json
+          file:  ../../abis/Phuture/Vault.json
         - name: ERC20
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
-          file:  ../../packages/abis/ERC20/ERC20SymbolBytes.json
+          file:  ../../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file:  ../../packages/abis/ERC20/ERC20NameBytes.json
+          file:  ../../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -111,15 +111,15 @@ dataSources:
         - Asset
       abis:
         - name: UniswapFactory
-          file:  ../../packages/abis/Uniswap/UniswapFactory.json
+          file:  ../../abis/Uniswap/UniswapFactory.json
         - name: ERC20
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
-          file:  ../../packages/abis/ERC20/ERC20SymbolBytes.json
+          file:  ../../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file:  ../../packages/abis/ERC20/ERC20NameBytes.json
+          file:  ../../abis/ERC20/ERC20NameBytes.json
         - name: ChainLink
-          file:  ../../packages/abis/Chainlink/ChainLink.json
+          file:  ../../abis/Chainlink/ChainLink.json
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: handleNewPair
@@ -142,7 +142,7 @@ dataSources:
         - LM
       abis:
         - name: LiquidityMining
-          file:  ../../packages/abis/Phuture/LiquidityMining.json
+          file:  ../../abis/Phuture/LiquidityMining.json
       eventHandlers:
         - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
           handler: handleStake
@@ -167,7 +167,7 @@ dataSources:
         - Debug
       abis:
         - name: TrackedIndexFactory
-          file:  ../../packages/abis/Phuture/TrackedIndexFactory.json
+          file:  ../../abis/Phuture/TrackedIndexFactory.json
       eventHandlers:
         - event: TrackedIndexCreated(address,address[])
           handler: handleTrackedIndexCreated
@@ -188,7 +188,7 @@ dataSources:
         - Debug
       abis:
         - name: TopNMarketCapIndexFactory
-          file:  ../../packages/abis/Phuture/TopNMarketCapIndexFactory.json
+          file:  ../../abis/Phuture/TopNMarketCapIndexFactory.json
       eventHandlers:
         - event: TopNMarketCapIndexCreated(address,uint256,uint256)
           handler: handleTopNMarketCapIndexCreated
@@ -211,13 +211,13 @@ dataSources:
       file: ./src/mappings/chainlink/aggregators/{{{name}}}.ts
       abis:
         - name: ERC20
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
-          file:  ../../packages/abis/ERC20/ERC20SymbolBytes.json
+          file:  ../../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file:  ../../packages/abis/ERC20/ERC20NameBytes.json
+          file:  ../../abis/ERC20/ERC20NameBytes.json
         - name: AggregatorInterface
-          file:  ../../packages/abis/Chainlink/AccessControlledOffchainAggregator.json
+          file:  ../../abis/Chainlink/AccessControlledOffchainAggregator.json
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           handler: handleAnswerUpdated
@@ -238,7 +238,7 @@ templates:
         - Asset
       abis:
         - name: Asset
-          file:  ../../packages/abis/ERC20/ERC20.json
+          file:  ../../abis/ERC20/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -259,11 +259,11 @@ templates:
         - DailyIndexStat
       abis:
         - name: IndexRegistry
-          file:  ../../packages/abis/Phuture/IndexRegistry.json
+          file:  ../../abis/Phuture/IndexRegistry.json
         - name: StaticIndexFactory
-          file:  ../../packages/abis/Phuture/StaticIndexFactory.json
+          file:  ../../abis/Phuture/StaticIndexFactory.json
         - name: StaticIndex
-          file:  ../../packages/abis/Phuture/StaticIndex.json
+          file:  ../../abis/Phuture/StaticIndex.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleIndexTransfer
@@ -283,11 +283,11 @@ templates:
         - Pair
       abis:
         - name: UniswapPair
-          file:  ../../packages/abis/Uniswap/UniswapPair.json
+          file:  ../../abis/Uniswap/UniswapPair.json
         - name: UniswapFactory
-          file:  ../../packages/abis/Uniswap/UniswapFactory.json
+          file:  ../../abis/Uniswap/UniswapFactory.json
         - name: ChainLink
-          file:  ../../packages/abis/Chainlink/ChainLink.json
+          file:  ../../abis/Chainlink/ChainLink.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync

@@ -58,9 +58,6 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   index.decimals = fetchTokenDecimals(event.params.index);
   index.symbol = fetchTokenSymbol(event.params.index);
   index.name = fetchTokenName(event.params.index);
-  // TODO: ask about accuracy
-  // index.indexCount = event.params.indexCount;
-  index.indexCount = event.params._event.block.number;
   index.transaction = tx.id;
 
   createUser(event.transaction.from);

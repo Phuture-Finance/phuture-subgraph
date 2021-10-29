@@ -11,9 +11,6 @@ import { BigInt } from "@graphprotocol/graph-ts";
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = createAsset(event.params.asset);
 
-  // TODO: ask about accuracy
-  // asset.prev = event.params.prev.toHexString();
-  asset.prev = event.params._event.block.parentHash.toHexString();
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
 
