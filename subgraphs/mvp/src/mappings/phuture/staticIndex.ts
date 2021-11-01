@@ -8,7 +8,7 @@ import {
   updateHourlyIndexStat,
   updateMonthlyIndexStat,
   updateWeeklyIndexStat,
-  updateYearlyIndexStat
+  updateYearlyIndexStat,
 } from "./stats";
 
 export function handleIndexTransfer(event: TransferEvent): void {
@@ -25,9 +25,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
   let transfers = tx.transfers;
 
   if (from.toHexString() != ADDRESS_ZERO && from.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
-    let fromUserIndexId = from.toHexString()
-      .concat("-")
-      .concat(event.address.toHexString());
+    let fromUserIndexId = from.toHexString().concat("-").concat(event.address.toHexString());
     let fromUserIndex = UserIndex.load(fromUserIndexId);
     if (fromUserIndex === null) {
       fromUserIndex = new UserIndex(fromUserIndexId);
@@ -46,9 +44,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
   }
 
   if (to.toHexString() != ADDRESS_ZERO && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
-    let toUserIndexId = to.toHexString()
-      .concat("-")
-      .concat(event.address.toHexString());
+    let toUserIndexId = to.toHexString().concat("-").concat(event.address.toHexString());
     let toUserIndex = UserIndex.load(toUserIndexId);
     if (toUserIndex === null) {
       toUserIndex = new UserIndex(toUserIndexId);
@@ -66,7 +62,11 @@ export function handleIndexTransfer(event: TransferEvent): void {
     toUserIndex.save();
   }
 
-  let value = event.params.value.toBigDecimal().div(BigInt.fromI32(10).pow(index.decimals.toI32() as u8).toBigDecimal());
+  let value = event.params.value.toBigDecimal().div(
+    BigInt.fromI32(10)
+      .pow(index.decimals.toI32() as u8)
+      .toBigDecimal()
+  );
 
   let transferType: string;
   if (from.toHexString() == ADDRESS_ZERO) {
@@ -84,10 +84,7 @@ export function handleIndexTransfer(event: TransferEvent): void {
   index.save();
 
   let transfer = new Transfer(
-    event.transaction.hash
-      .toHexString()
-      .concat("-")
-      .concat(BigInt.fromI32(transfers.length).toString())
+    event.transaction.hash.toHexString().concat("-").concat(BigInt.fromI32(transfers.length).toString())
   );
 
   transfer.index = event.address.toHexString();

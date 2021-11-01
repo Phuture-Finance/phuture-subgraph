@@ -11,15 +11,12 @@ export function handleTransfer(event: Transfer): void {
 
   let asset = createAsset(event.params.asset);
 
-  let indexAsset = IndexAsset.load(
-    indexId
-      .concat("-")
-      .concat(assetId)
-  );
+  let indexAsset = IndexAsset.load(indexId.concat("-").concat(assetId));
   if (indexAsset == null) return;
 
-  indexAsset.vaultTotalSupply = indexAsset.vaultTotalSupply
-    .plus(convertTokenToDecimal(event.params.amount, asset.decimals));
+  indexAsset.vaultTotalSupply = indexAsset.vaultTotalSupply.plus(
+    convertTokenToDecimal(event.params.amount, asset.decimals)
+  );
 
   indexAsset.save();
 }
