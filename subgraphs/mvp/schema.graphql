@@ -15,7 +15,7 @@ type Asset @entity {
   _indexes: [ID!]!
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
-  prices: [AssetPrice]! @derivedFrom(field: "asset")
+  prices: [AssetPrice!]! @derivedFrom(field: "asset")
   marketCap: BigInt!
 
   vaultReserve: BigDecimal!
@@ -38,7 +38,7 @@ type AssetPrice @entity {
 type Swap @entity {
   id: ID!
 
-  pairs: [Pair]! @derivedFrom(field: "swap")
+  pairs: [Pair!]! @derivedFrom(field: "swap")
 }
 
 type Pair @entity {

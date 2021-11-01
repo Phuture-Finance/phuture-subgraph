@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: LiquidityMining
-    network: { { network } }
+    network: {{network}}
     source:
       abi: LiquidityMining
       address: "{{liquidityMiningContractAddress}}"
-      startBlock: { { liquidityMiningStartBlock } }
+      startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -19,7 +19,7 @@ dataSources:
         - VestingRange
       abis:
         - name: LiquidityMining
-          file: ../../packages/abis/Phuture/LiquidityMining.json
+          file: ../../abis/Phuture/LiquidityMining.json
       eventHandlers:
         - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
           handler: handleStake
@@ -30,11 +30,11 @@ dataSources:
       file: ./src/mappings/liquidityMining.ts
   - kind: ethereum/contract
     name: ERC20
-    network: { { network } }
+    network: {{network}}
     source:
       abi: ERC20
       address: "{{phtrContractAddress}}"
-      startBlock: { { liquidityMiningStartBlock } }
+      startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -43,18 +43,18 @@ dataSources:
         - Reward
       abis:
         - name: ERC20
-          file: ../../packages/abis/ERC20/ERC20.json
+          file: ../../abis/ERC20/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       file: ./src/mappings/erc20.ts
   - kind: ethereum/contract
     name: UniswapPair
-    network: { { network } }
+    network: {{network}}
     source:
       abi: UniswapPair
       address: "{{liquidityPairAddress}}"
-      startBlock: { { liquidityPairStartBlock } }
+      startBlock: {{liquidityPairStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -63,7 +63,7 @@ dataSources:
         - Reserve
       abis:
         - name: UniswapPair
-          file: ../../packages/abis/Uniswap/UniswapPair.json
+          file: ../../abis/Uniswap/UniswapPair.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync

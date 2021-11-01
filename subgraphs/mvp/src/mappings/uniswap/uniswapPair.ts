@@ -26,6 +26,7 @@ export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHexString() == ADDRESS_ZERO) {
     pair.totalSupply = pair.totalSupply.plus(event.params.value);
   }
+
   if (event.params.to.toHexString() == ADDRESS_ZERO) {
     pair.totalSupply = pair.totalSupply.minus(event.params.value);
   }

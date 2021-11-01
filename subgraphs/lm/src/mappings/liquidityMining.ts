@@ -1,15 +1,19 @@
-import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
-import { APR, Reward, Total, VestingRange, Reserve } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { LP, PHTR } from "../../const";
+
+import { LP, PHTR } from "../../consts";
+
+import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
+import { APR, Reserve, Reward, Total, VestingRange } from "../types/schema";
 
 function toPHTR(amount: BigDecimal): BigDecimal {
   const reserve = Reserve.load(LP);
+
   if (reserve != null && reserve.reserve0.gt(BigInt.fromI32(0)) && reserve.reserve1.gt(BigInt.fromI32(0))) {
     let phtrReserve: BigDecimal;
     let otherReserve: BigDecimal;
     let phtrDecimals: BigInt;
     let otherDecimals: BigInt;
+
     if (reserve.token0 == PHTR) {
       phtrReserve = reserve.reserve0.toBigDecimal();
       otherReserve = reserve.reserve1.toBigDecimal();
@@ -21,17 +25,20 @@ function toPHTR(amount: BigDecimal): BigDecimal {
       phtrReserve = reserve.reserve1.toBigDecimal();
       otherReserve = reserve.reserve0.toBigDecimal();
     }
+
     const Q112 = BigInt.fromI32(2).pow(112).toBigDecimal();
     const price = phtrReserve
-      .div(BigInt.fromI32(18).toBigDecimal())
+      .div(phtrDecimals.toBigDecimal())
       .times(Q112)
-      .div(otherReserve.div(BigInt.fromI32(6).toBigDecimal()));
+      .div(otherReserve.div(otherDecimals.toBigDecimal()));
+
     const uPHTR = amount.times(phtrReserve).div(reserve.totalSupply.toBigDecimal());
     const uOther = amount.times(otherReserve).div(reserve.totalSupply.toBigDecimal());
+
     return uPHTR.plus(uOther.times(price).div(Q112));
-  } else {
-    return BigInt.fromI32(0).toBigDecimal();
   }
+
+  return BigInt.fromI32(0).toBigDecimal();
 }
 
 function updateAPR(amount: BigInt, block: BigInt): void {
@@ -47,17 +54,21 @@ function updateAPR(amount: BigInt, block: BigInt): void {
       total.APR = BigInt.fromI32(0).toBigDecimal();
       total.reward = BigInt.fromI32(0);
     }
+
     const reward = Reward.load(block.toString());
     const stakedInPHTR = toPHTR(amount.toBigDecimal());
     if (reward != null && stakedInPHTR.gt(BigInt.fromI32(0).toBigDecimal()) && reward.amount.gt(BigInt.fromI32(0))) {
       const an = reward.amount.toBigDecimal().div(stakedInPHTR);
       const newW = apr.Wn.plus(an);
+
       total.APR = newW.div(apr.n).times(BigInt.fromI32(100).toBigDecimal());
       apr.Wn = newW;
       apr.n = apr.n.plus(BigInt.fromI32(1).toBigDecimal());
     }
+
     total.save();
   }
+
   apr.save();
 }
 
@@ -106,5 +117,6 @@ export function handleUnstakeRange(event: UnstakeRange): void {
   if (vesting.amount.equals(BigInt.fromI32(0))) {
     vesting.unstaked = true;
   }
+
   vesting.save();
 }

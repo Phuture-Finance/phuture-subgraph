@@ -1,7 +1,6 @@
 import { Reserve } from "../types/schema";
-import { LP } from "../../const";
+import { LP, PHTR, USDC } from "../../consts";
 import { Sync, Transfer } from "../types/UniswapPair/UniswapPair";
-import { PHTR, USDC } from "../../const";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO } from "./helpers";
 
@@ -34,9 +33,11 @@ export function handleTransfer(event: Transfer): void {
     reserve.reserve1 = BigInt.fromI32(0);
     reserve.totalSupply = BigInt.fromI32(0);
   }
+
   if (event.params.from.toHexString() == ADDRESS_ZERO) {
     reserve.totalSupply = reserve.totalSupply.plus(event.params.value);
   }
+
   if (event.params.to.toHexString() == ADDRESS_ZERO) {
     reserve.totalSupply = reserve.totalSupply.minus(event.params.value);
   }
