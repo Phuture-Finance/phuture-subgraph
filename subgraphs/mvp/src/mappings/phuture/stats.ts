@@ -209,7 +209,6 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
 
   dailyAssetStat.vaultReserve = asset.vaultReserve;
   dailyAssetStat.vaultBaseReserve = asset.vaultBaseReserve;
-  dailyAssetStat.basePrice = asset.basePrice;
 
   dailyAssetStat.save();
 
