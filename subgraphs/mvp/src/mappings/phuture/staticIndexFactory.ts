@@ -26,6 +26,7 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   index.uniqueHolders = ZERO_BI;
   index.basePrice = ZERO_BD;
   index._assets = []
+  index.type = 'Static';
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;
