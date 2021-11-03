@@ -12,10 +12,10 @@ const subgraph = Mustache.render(subgraphTemplate, config);
 
 fs.writeFileSync(subgraphPath, subgraph, "utf8");
 
-const constsTemplatePath = path.join(__dirname, "../datatypes.template.tsx");
+const constsTemplatePath = path.join(__dirname, "../consts.template.tsx");
 const constsTemplate = fs.readFileSync(constsTemplatePath, "utf8");
 
-const constsPath = path.join(__dirname, "../datatypes.ts");
+const constsPath = path.join(__dirname, "../consts.ts");
 const consts = Mustache.render(constsTemplate, config);
 
 fs.writeFileSync(constsPath, consts, "utf8");
