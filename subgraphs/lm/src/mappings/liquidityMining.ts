@@ -1,14 +1,14 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { bigDecimal, ONE_BD } from "@phuture/subgraph-helpers";
 
 import { LP, PHTR } from "../../consts";
-
 import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
 import { APR, Reserve, Reward, Total, VestingRange } from "../types/schema";
 
 function toPHTR(amount: BigDecimal): BigDecimal {
   const reserve = Reserve.load(LP);
 
-  if (reserve != null && reserve.reserve0.gt(BigInt.fromI32(0)) && reserve.reserve1.gt(BigInt.fromI32(0))) {
+  if (reserve != null && reserve.reserve0.gt(BigInt.zero()) && reserve.reserve1.gt(BigInt.zero())) {
     let phtrReserve: BigDecimal;
     let otherReserve: BigDecimal;
     let phtrDecimals: BigInt;
@@ -45,25 +45,25 @@ function updateAPR(amount: BigInt, block: BigInt): void {
   let apr = APR.load("0");
   if (apr == null) {
     apr = new APR("0");
-    apr.Wn = BigInt.fromI32(0).toBigDecimal();
-    apr.n = BigInt.fromI32(1).toBigDecimal();
+    apr.Wn = BigDecimal.zero();
+    apr.n = ONE_BD;
   } else {
     let total = Total.load("0");
     if (total == null) {
       total = new Total("0");
-      total.APR = BigInt.fromI32(0).toBigDecimal();
-      total.reward = BigInt.fromI32(0);
+      total.APR = BigDecimal.zero();
+      total.reward = BigInt.zero();
     }
 
     const reward = Reward.load(block.toString());
     const stakedInPHTR = toPHTR(amount.toBigDecimal());
-    if (reward != null && stakedInPHTR.gt(BigInt.fromI32(0).toBigDecimal()) && reward.amount.gt(BigInt.fromI32(0))) {
+    if (reward != null && stakedInPHTR.gt(BigDecimal.zero()) && reward.amount.gt(BigInt.zero())) {
       const an = reward.amount.toBigDecimal().div(stakedInPHTR);
       const newW = apr.Wn.plus(an);
 
-      total.APR = newW.div(apr.n).times(BigInt.fromI32(100).toBigDecimal());
+      total.APR = newW.div(apr.n).times(bigDecimal.fromFloat(100));
       apr.Wn = newW;
-      apr.n = apr.n.plus(BigInt.fromI32(1).toBigDecimal());
+      apr.n = apr.n.plus(ONE_BD);
     }
 
     total.save();
@@ -91,6 +91,7 @@ export function handleStake(event: Stake): void {
   } else {
     vesting.amount = vesting.amount.plus(event.params.amount);
   }
+
   vesting.unstaked = false;
 
   vesting.save();
@@ -114,7 +115,7 @@ export function handleUnstakeRange(event: UnstakeRange): void {
   if (!vesting) return;
 
   vesting.amount = vesting.amount.minus(event.params.unstakedAmount);
-  if (vesting.amount.equals(BigInt.fromI32(0))) {
+  if (vesting.amount.equals(BigInt.zero())) {
     vesting.unstaked = true;
   }
 

@@ -1,5 +1,5 @@
 {
-  "name": "mvp",
+  "name": "@phuture/mvp-subgraph",
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
@@ -13,6 +13,7 @@
     "rimraf": "^2.6.3"
   },
   "dependencies": {
-    "@graphprotocol/graph-ts": "^0.22.1"
+    "@graphprotocol/graph-ts": "^0.22.1",
+    "@phuture/subgraph-helpers": "0.1.0"
   }
 }

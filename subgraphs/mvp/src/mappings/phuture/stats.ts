@@ -1,5 +1,5 @@
-/* eslint-disable prefer-const */
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
+
 import {
   Asset,
   DailyAssetStat,
@@ -10,9 +10,8 @@ import {
   MonthlyIndexStat,
   Stat,
   WeeklyIndexStat,
-  YearlyIndexStat,
+  YearlyIndexStat
 } from "../../types/schema";
-import { ZERO_BD, ZERO_BI } from "../helpers";
 import { FACTORY_ADDRESS } from "../../../consts";
 
 export function updateDailyStat(event: ethereum.Event): DailyStat {
@@ -24,8 +23,8 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
   if (stat === null) {
     stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
-    stat.totalValueLocked = ZERO_BD;
-    stat.indexCount = ZERO_BI;
+    stat.totalValueLocked = BigDecimal.zero();
+    stat.indexCount = BigInt.zero();
   }
 
   let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
@@ -42,8 +41,8 @@ export function updateStat(event: ethereum.Event): Stat {
   let stat = Stat.load(FACTORY_ADDRESS.toString());
   if (stat === null) {
     stat = new Stat(FACTORY_ADDRESS.toString());
-    stat.totalValueLocked = ZERO_BD;
-    stat.indexCount = ZERO_BI;
+    stat.totalValueLocked = BigDecimal.zero();
+    stat.indexCount = BigInt.zero();
 
     stat.save();
   }

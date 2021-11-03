@@ -1,14 +1,14 @@
 import { UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
-import { convertTokenToDecimal, createAsset } from "../helpers";
 import { Transfer } from "../../types/templates/Asset/Asset";
 import { SetImageURL, SetName, SetSymbol } from "../../types/templates/StaticIndex/IndexRegistry";
 import { Asset, Index } from "../../types/schema";
 import { Asset as AssetTemplate } from "../../types/templates";
 import { VAULT_ADDRESS } from "../../../consts";
 import { updateDailyAssetStat, updateStat } from "./stats";
+import { convertTokenToDecimal, loadOrCreateAsset } from "../entities";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
-  let asset = createAsset(event.params.asset);
+  let asset = loadOrCreateAsset(event.params.asset);
 
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
@@ -34,6 +34,7 @@ export function handleTransfer(event: Transfer): void {
   stat.totalValueLocked = stat.totalValueLocked.plus(
     convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
   );
+
   stat.save();
 
   updateDailyAssetStat(event);
