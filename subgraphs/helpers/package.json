@@ -1,0 +1,9 @@
+{
+  "name": "@phuture/subgraph-helpers",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "main": "index.ts",
+  "dependencies": {
+    "@graphprotocol/graph-ts": "^0.22.1"
+  }
+}

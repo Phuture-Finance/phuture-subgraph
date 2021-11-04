@@ -10,5 +10,4 @@ types/
 .idea
 dist/
 .env
-subgraphs/**/abis
 data/

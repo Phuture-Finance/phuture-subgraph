@@ -19,7 +19,7 @@ dataSources:
         - VestingRange
       abis:
         - name: LiquidityMining
-          file: ../../abis/Phuture/LiquidityMining.json
+          file: ../abis/Phuture/LiquidityMining.json
       eventHandlers:
         - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
           handler: handleStake
@@ -43,7 +43,7 @@ dataSources:
         - Reward
       abis:
         - name: ERC20
-          file: ../../abis/ERC20/ERC20.json
+          file: ../abis/ERC20/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -63,7 +63,7 @@ dataSources:
         - Reserve
       abis:
         - name: UniswapPair
-          file: ../../abis/Uniswap/UniswapPair.json
+          file: ../abis/Uniswap/UniswapPair.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync

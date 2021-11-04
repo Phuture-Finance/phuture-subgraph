@@ -1,7 +1,7 @@
 import { Transfer } from "../types/ERC20/ERC20";
 import { EMISSION, LM } from "../../consts";
 import { Reward, Total } from "../types/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigDecimal } from "@graphprotocol/graph-ts";
 
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHexString() == EMISSION && event.params.to.toHexString() == LM) {
@@ -18,7 +18,7 @@ export function handleTransfer(event: Transfer): void {
     let total = Total.load("0");
     if (total == null) {
       total = new Total("0");
-      total.APR = BigInt.fromI32(0).toBigDecimal();
+      total.APR = BigDecimal.zero();
       total.reward = event.params.value;
     } else {
       total.reward = total.reward.plus(event.params.value);

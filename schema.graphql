@@ -1,0 +1,9 @@
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+directive @entity on OBJECT
+
+scalar BigDecimal
+scalar Boolean
+scalar BigInt
+scalar String
+scalar Bytes
+scalar ID

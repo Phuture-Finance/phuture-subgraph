@@ -3,7 +3,6 @@
 import { AnswerUpdated } from "../../../types/{{{name}}}/AggregatorInterface";
 import { Asset, Index, IndexAsset } from "../../../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { ZERO_BD } from "../../helpers";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let asset = Asset.load("{{{address}}}");
@@ -27,7 +26,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
     let weight = indexAsset.weight.toBigDecimal().div(BigDecimal.fromString("255"));
 
-    if (indexAsset.basePrice.gt(ZERO_BD)) {
+    if (indexAsset.basePrice.gt(BigDecimal.zero())) {
       index.basePrice = index.basePrice.minus(indexAsset.basePrice);
     }
 
@@ -45,7 +44,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
           )
       );
 
-    if (indexAsset.marketCap.gt(ZERO_BD)) {
+    if (indexAsset.marketCap.gt(BigDecimal.zero())) {
       index.marketCap = index.marketCap.minus(indexAsset.marketCap);
     }
 
