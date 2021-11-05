@@ -1,9 +1,11 @@
 {
-  "name": "phuture-subgraphs",
+  "name": "@phuture/subgraph",
   "version": "0.1.0",
   "private": true,
   "license": "GPL-3.0-or-later",
   "scripts": {
+    "build": "lerna run build --stream",
+    "codegen": "lerna run codegen --stream",
     "lint": "prettier ./**",
     "lint:fix": "prettier ./** --write"
   },

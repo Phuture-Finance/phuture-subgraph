@@ -1,7 +1,7 @@
 import { Asset, Pair } from "../../types/schema";
-import { ADDRESS_ZERO } from "../../../consts";
 import { Sync, Transfer } from "../../types/templates/UniswapPair/UniswapPair";
-import { convertTokenToDecimal } from "../helpers";
+import { convertTokenToDecimal } from "../entities";
+import { Address } from "@graphprotocol/graph-ts";
 
 export function handleSync(event: Sync): void {
   let pair = Pair.load(event.address.toHexString());
@@ -23,10 +23,11 @@ export function handleTransfer(event: Transfer): void {
   let pair = Pair.load(event.address.toHexString());
   if (!pair) return;
 
-  if (event.params.from.toHexString() == ADDRESS_ZERO) {
+  if (event.params.from.equals(Address.zero())) {
     pair.totalSupply = pair.totalSupply.plus(event.params.value);
   }
-  if (event.params.to.toHexString() == ADDRESS_ZERO) {
+
+  if (event.params.to.equals(Address.zero())) {
     pair.totalSupply = pair.totalSupply.minus(event.params.value);
   }
 

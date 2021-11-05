@@ -10,5 +10,9 @@ types/
 .idea
 dist/
 .env
+<<<<<<< HEAD
 subgraphs/**/abis
 dev/data
+=======
+data/
+>>>>>>> develop

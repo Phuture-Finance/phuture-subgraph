@@ -1,5 +1,5 @@
-/* eslint-disable prefer-const */
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
+
 import {
   Asset,
   DailyAssetStat,
@@ -12,7 +12,6 @@ import {
   WeeklyIndexStat,
   YearlyIndexStat
 } from "../../types/schema";
-import { ZERO_BD, ZERO_BI } from "../helpers";
 import { FACTORY_ADDRESS } from "../../../consts";
 
 export function updateDailyStat(event: ethereum.Event): DailyStat {
@@ -24,8 +23,8 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
   if (stat === null) {
     stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
-    stat.totalValueLocked = ZERO_BD;
-    stat.indexCount = ZERO_BI;
+    stat.totalValueLocked = BigDecimal.zero();
+    stat.indexCount = BigInt.zero();
   }
 
   let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
@@ -42,8 +41,8 @@ export function updateStat(event: ethereum.Event): Stat {
   let stat = Stat.load(FACTORY_ADDRESS.toString());
   if (stat === null) {
     stat = new Stat(FACTORY_ADDRESS.toString());
-    stat.totalValueLocked = ZERO_BD;
-    stat.indexCount = ZERO_BI;
+    stat.totalValueLocked = BigDecimal.zero();
+    stat.indexCount = BigInt.zero();
 
     stat.save();
   }
@@ -57,10 +56,7 @@ export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / 3600;
   let startTimestamp = ID * 3600;
-  let indexID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
@@ -88,10 +84,7 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / 86400;
   let startTimestamp = ID * 86400;
-  let indexID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
@@ -118,10 +111,7 @@ export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 7);
   let startTimestamp = ID * (86400 * 7);
-  let indexID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
@@ -148,10 +138,7 @@ export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat 
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 30);
   let startTimestamp = ID * 86400 * 30;
-  let indexID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
@@ -178,10 +165,7 @@ export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 365);
   let startTimestamp = ID * (86400 * 365);
-  let indexID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
@@ -208,10 +192,7 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
-  let dayAssetID = event.address
-    .toHexString()
-    .concat("-")
-    .concat(BigInt.fromI32(dayID).toString());
+  let dayAssetID = event.address.toHexString().concat("-").concat(BigInt.fromI32(dayID).toString());
 
   let asset = Asset.load(event.address.toHexString());
   if (asset == null) {
@@ -227,7 +208,6 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
 
   dailyAssetStat.vaultReserve = asset.vaultReserve;
   dailyAssetStat.vaultBaseReserve = asset.vaultBaseReserve;
-  dailyAssetStat.basePrice = asset.basePrice;
 
   dailyAssetStat.save();
 

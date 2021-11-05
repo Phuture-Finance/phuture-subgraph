@@ -9,7 +9,7 @@ dataSources:
     network: {{network}}
     source:
       abi: LiquidityMining
-      address: '{{liquidityMiningContractAddress}}'
+      address: "{{liquidityMiningContractAddress}}"
       startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
@@ -19,7 +19,7 @@ dataSources:
         - VestingRange
       abis:
         - name: LiquidityMining
-          file: ../../packages/abis/Phuture/LiquidityMining.json
+          file: ../abis/Phuture/LiquidityMining.json
       eventHandlers:
         - event: Stake(indexed address,uint256,indexed uint8,indexed uint8)
           handler: handleStake
@@ -33,7 +33,7 @@ dataSources:
     network: {{network}}
     source:
       abi: ERC20
-      address: '{{phtrContractAddress}}'
+      address: "{{phtrContractAddress}}"
       startBlock: {{liquidityMiningStartBlock}}
     mapping:
       kind: ethereum/events
@@ -43,7 +43,7 @@ dataSources:
         - Reward
       abis:
         - name: ERC20
-          file: ../../packages/abis/ERC20/ERC20.json
+          file: ../abis/ERC20/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -53,7 +53,7 @@ dataSources:
     network: {{network}}
     source:
       abi: UniswapPair
-      address: '{{liquidityPairAddress}}'
+      address: "{{liquidityPairAddress}}"
       startBlock: {{liquidityPairStartBlock}}
     mapping:
       kind: ethereum/events
@@ -63,7 +63,7 @@ dataSources:
         - Reserve
       abis:
         - name: UniswapPair
-          file: ../../packages/abis/Uniswap/UniswapPair.json
+          file: ../abis/Uniswap/UniswapPair.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync

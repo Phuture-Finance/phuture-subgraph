@@ -2,5 +2,5 @@ import { TopNMarketCapIndexFactory } from '../../types/TopNMarketCapIndexFactory
 
 export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexFactory): void {
   // TODO: Implement
-  return
+  return;
 }

@@ -1,32 +1,30 @@
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { ONE_BI } from "@phuture/subgraph-helpers";
+
 import { StaticIndexCreated } from "../../types/Index/StaticIndexFactory";
 import { Index, IndexAsset, UserIndex } from "../../types/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
 import { StaticIndex } from "../../types/templates";
+import { updateStat } from "./stats";
 import {
-  createAsset,
-  createTransaction,
-  createUser,
   fetchTokenDecimals,
   fetchTokenName,
   fetchTokenSymbol,
-  ONE_BI,
-  ZERO_BD,
-  ZERO_BI
-} from "../helpers";
-import { updateStat } from "./stats";
+  loadOrCreateAccount,
+  loadOrCreateAsset,
+  loadOrCreateTransaction
+} from "../entities";
 
 export function handleStaticIndexCreated(event: StaticIndexCreated): void {
-  let tx = createTransaction(event);
+  let tx = loadOrCreateTransaction(event);
 
   let indexId = event.params.index.toHexString();
   let index = new Index(indexId);
 
-  index.marketCap = ZERO_BD;
-  index.baseVolume = ZERO_BD;
-  index.uniqueHolders = ZERO_BI;
-  index.basePrice = ZERO_BD;
-  index._assets = []
-  index.type = 'Static';
+  index.marketCap = BigDecimal.zero();
+  index.baseVolume = BigDecimal.zero();
+  index.uniqueHolders = BigInt.zero();
+  index.basePrice = BigDecimal.zero();
+  index._assets = [];
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;
@@ -39,12 +37,12 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
     indexAsset.index = indexId;
     indexAsset.asset = assetId;
     indexAsset.weight = BigInt.fromI32(paramWeights[i]);
-    indexAsset.basePrice = ZERO_BD;
-    indexAsset.marketCap = ZERO_BD;
+    indexAsset.basePrice = BigDecimal.zero();
+    indexAsset.marketCap = BigDecimal.zero();
 
-    indexAsset.vaultTotalSupply = ZERO_BD;
+    indexAsset.vaultTotalSupply = BigDecimal.zero();
 
-    let asset = createAsset(paramAssets[i]);
+    let asset = loadOrCreateAsset(paramAssets[i]);
 
     asset.indexCount = asset.indexCount.plus(ONE_BI);
     asset._indexes = asset._indexes.concat([indexAssetId]);
@@ -55,23 +53,21 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
     index._assets = index._assets.concat([indexAssetId]);
   }
 
-  index.totalSupply = ZERO_BI;
+  index.totalSupply = BigInt.zero();
   index.decimals = fetchTokenDecimals(event.params.index);
   index.symbol = fetchTokenSymbol(event.params.index);
   index.name = fetchTokenName(event.params.index);
   index.transaction = tx.id;
 
-  createUser(event.transaction.from);
+  loadOrCreateAccount(event.transaction.from);
 
-  let userIndexId = event.transaction.from.toHexString()
-    .concat("-")
-    .concat(event.params.index.toHexString());
+  let userIndexId = event.transaction.from.toHexString().concat("-").concat(event.params.index.toHexString());
   let userIndex = UserIndex.load(userIndexId);
   if (userIndex === null) {
     userIndex = new UserIndex(userIndexId);
     userIndex.index = event.params.index.toHexString();
     userIndex.user = event.transaction.from.toHexString();
-    userIndex.balance = ZERO_BD;
+    userIndex.balance = BigDecimal.zero();
   }
 
   userIndex.save();

@@ -1,37 +1,37 @@
 type VestingRange @entity {
-    id: ID!
-    account: String!
-    amount: BigInt!
+  id: ID!
+  account: String!
+  amount: BigInt!
 
-    rangeStartIndex: BigInt!
-    rangeEndIndex: BigInt!
-    unstaked: Boolean!
+  rangeStartIndex: BigInt!
+  rangeEndIndex: BigInt!
+  unstaked: Boolean!
 }
 
 type APR @entity {
-    id: ID!
-    n: BigDecimal!
-    Wn: BigDecimal!
+  id: ID!
+  n: BigDecimal!
+  Wn: BigDecimal!
 }
 
 type Total @entity {
-    id: ID!
-    APR: BigDecimal!
-    reward: BigInt!
+  id: ID!
+  APR: BigDecimal!
+  reward: BigInt!
 }
 
 type Reward @entity {
-    id: ID!
-    amount: BigInt!
+  id: ID!
+  amount: BigInt!
 }
 
 type Reserve @entity {
-    id: ID!
-    totalSupply: BigInt!
-    token0: String!
-    token1: String!
-    token0Decimals: BigInt!
-    token1Decimals: BigInt!
-    reserve0: BigInt!
-    reserve1: BigInt!
+  id: ID!
+  totalSupply: BigInt!
+  token0: String!
+  token1: String!
+  token0Decimals: BigInt!
+  token1Decimals: BigInt!
+  reserve0: BigInt!
+  reserve1: BigInt!
 }

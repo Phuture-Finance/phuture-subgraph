@@ -1,15 +1,19 @@
-import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
-import { APR, Reward, Total, VestingRange, Reserve } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { LP, PHTR } from "../../const";
+import { bigDecimal, ONE_BD } from "@phuture/subgraph-helpers";
+
+import { LP, PHTR } from "../../consts";
+import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
+import { APR, Reserve, Reward, Total, VestingRange } from "../types/schema";
 
 function toPHTR(amount: BigDecimal): BigDecimal {
   const reserve = Reserve.load(LP);
-  if (reserve != null && reserve.reserve0.gt(BigInt.fromI32(0)) && reserve.reserve1.gt(BigInt.fromI32(0))) {
+
+  if (reserve != null && reserve.reserve0.gt(BigInt.zero()) && reserve.reserve1.gt(BigInt.zero())) {
     let phtrReserve: BigDecimal;
     let otherReserve: BigDecimal;
     let phtrDecimals: BigInt;
     let otherDecimals: BigInt;
+
     if (reserve.token0 == PHTR) {
       phtrReserve = reserve.reserve0.toBigDecimal();
       otherReserve = reserve.reserve1.toBigDecimal();
@@ -21,40 +25,50 @@ function toPHTR(amount: BigDecimal): BigDecimal {
       phtrReserve = reserve.reserve1.toBigDecimal();
       otherReserve = reserve.reserve0.toBigDecimal();
     }
+
     const Q112 = BigInt.fromI32(2).pow(112).toBigDecimal();
-    const price = phtrReserve.div(BigInt.fromI32(18).toBigDecimal()).times(Q112).div(otherReserve.div(BigInt.fromI32(6).toBigDecimal()));
+    const price = phtrReserve
+      .div(phtrDecimals.toBigDecimal())
+      .times(Q112)
+      .div(otherReserve.div(otherDecimals.toBigDecimal()));
+
     const uPHTR = amount.times(phtrReserve).div(reserve.totalSupply.toBigDecimal());
     const uOther = amount.times(otherReserve).div(reserve.totalSupply.toBigDecimal());
+
     return uPHTR.plus(uOther.times(price).div(Q112));
-  } else {
-    return BigInt.fromI32(0).toBigDecimal()
   }
+
+  return BigInt.fromI32(0).toBigDecimal();
 }
 
 function updateAPR(amount: BigInt, block: BigInt): void {
-  let apr = APR.load('0');
+  let apr = APR.load("0");
   if (apr == null) {
-    apr = new APR('0');
-    apr.Wn = BigInt.fromI32(0).toBigDecimal();
-    apr.n = BigInt.fromI32(1).toBigDecimal();
+    apr = new APR("0");
+    apr.Wn = BigDecimal.zero();
+    apr.n = ONE_BD;
   } else {
-    let total = Total.load('0');
+    let total = Total.load("0");
     if (total == null) {
-      total = new Total('0');
-      total.APR = BigInt.fromI32(0).toBigDecimal();
-      total.reward = BigInt.fromI32(0);
+      total = new Total("0");
+      total.APR = BigDecimal.zero();
+      total.reward = BigInt.zero();
     }
+
     const reward = Reward.load(block.toString());
     const stakedInPHTR = toPHTR(amount.toBigDecimal());
-    if (reward != null && stakedInPHTR.gt(BigInt.fromI32(0).toBigDecimal()) && reward.amount.gt(BigInt.fromI32(0))) {
-      const an = reward.amount.toBigDecimal().div(stakedInPHTR)
+    if (reward != null && stakedInPHTR.gt(BigDecimal.zero()) && reward.amount.gt(BigInt.zero())) {
+      const an = reward.amount.toBigDecimal().div(stakedInPHTR);
       const newW = apr.Wn.plus(an);
-      total.APR = newW.div(apr.n).times(BigInt.fromI32(100).toBigDecimal());
+
+      total.APR = newW.div(apr.n).times(bigDecimal.fromFloat(100));
       apr.Wn = newW;
-      apr.n = apr.n.plus(BigInt.fromI32(1).toBigDecimal());
+      apr.n = apr.n.plus(ONE_BD);
     }
+
     total.save();
   }
+
   apr.save();
 }
 
@@ -77,6 +91,7 @@ export function handleStake(event: Stake): void {
   } else {
     vesting.amount = vesting.amount.plus(event.params.amount);
   }
+
   vesting.unstaked = false;
 
   vesting.save();
@@ -85,7 +100,7 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-  updateAPR(event.params.amount, event.block.number)
+  updateAPR(event.params.amount, event.block.number);
 }
 
 export function handleUnstakeRange(event: UnstakeRange): void {
@@ -97,11 +112,12 @@ export function handleUnstakeRange(event: UnstakeRange): void {
     .concat(BigInt.fromI32(event.params.rangeEndIndex).toString());
 
   const vesting = VestingRange.load(id);
-  if (!vesting) return
+  if (!vesting) return;
 
   vesting.amount = vesting.amount.minus(event.params.unstakedAmount);
-  if (vesting.amount.equals(BigInt.fromI32(0))) {
+  if (vesting.amount.equals(BigInt.zero())) {
     vesting.unstaked = true;
   }
+
   vesting.save();
 }

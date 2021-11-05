@@ -2,5 +2,5 @@ import { TrackedIndexFactory } from '../../types/TrackedIndexFactory/TrackedInde
 
 export function handleTrackedIndexCreated(event: TrackedIndexFactory): void {
   // TODO: Implement
-  return
+  return;
 }
