@@ -34,11 +34,11 @@ export function handleTransfer(event: Transfer): void {
     reserve.totalSupply = BigInt.zero();
   }
 
-  if (Address.zero().equals(event.params.from)) {
+  if (event.params.from.equals(Address.zero())) {
     reserve.totalSupply = reserve.totalSupply.plus(event.params.value);
   }
 
-  if (Address.zero().equals(event.params.to)) {
+  if (event.params.to.equals(Address.zero())) {
     reserve.totalSupply = reserve.totalSupply.minus(event.params.value);
   }
 
