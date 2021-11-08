@@ -139,10 +139,17 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Debug
+        - Index
+        - IndexAsset
       abis:
         - name: TrackedIndexFactory
           file: ../abis/Phuture/TrackedIndexFactory.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: TrackedIndexCreated(address,address[])
           handler: handleTrackedIndexCreated
@@ -160,10 +167,17 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Debug
+        - Index
+        - IndexAsset
       abis:
         - name: TopNMarketCapIndexFactory
           file: ../abis/Phuture/TopNMarketCapIndexFactory.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: TopNMarketCapIndexCreated(address,uint256,uint256)
           handler: handleTopNMarketCapIndexCreated

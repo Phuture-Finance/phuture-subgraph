@@ -47,17 +47,11 @@ type Pair @entity {
   asset1Reserve: BigDecimal!
 }
 
-enum IndexType {
-  Static
-  TopN
-  Tracked
-}
-
 type Index @entity {
   "Address (hash)"
   id: ID!
 
-  type: IndexType!
+  type: String!
 
   # used for other stats like marketcap
   totalSupply: BigInt!

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Mustache = require("mustache");
 
-const config = require("./rinkeby.json");
+const config = require("./config.json");
 
 const subgraphTemplatePath = path.join(__dirname, "../subgraph.template.yaml");
 const subgraphTemplate = fs.readFileSync(subgraphTemplatePath, "utf8");
