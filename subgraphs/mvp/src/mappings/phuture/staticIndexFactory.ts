@@ -1,5 +1,5 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { ONE_BI } from "@phuture/subgraph-helpers";
+import { IndexStatic, ONE_BI } from '@phuture/subgraph-helpers'
 
 import { StaticIndexCreated } from "../../types/Index/StaticIndexFactory";
 import { Index, IndexAsset, UserIndex } from "../../types/schema";
@@ -25,6 +25,7 @@ export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
   index._assets = [];
+  index.type = IndexStatic;
 
   let paramAssets = event.params.assets;
   let paramWeights = event.params.weights;
