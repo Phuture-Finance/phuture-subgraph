@@ -2,7 +2,7 @@ import { Address } from "@graphprotocol/graph-ts";
 import { User } from "../../types/schema";
 
 export function loadOrCreateAccount(address: Address): void {
-  if (Address.zero().equals(address)) {
+  if (address.equals(Address.zero())) {
     return;
   }
 

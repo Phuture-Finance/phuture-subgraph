@@ -1,0 +1,167 @@
+{
+  "network": "rinkeby",
+  "indexRegistryContractAddress": "0xde9fa79108d888822182026374a560e11d51dc41",
+  "indexRegistryStartBlock": 9009503,
+  "indexFactoryContractAddress": "0x2789ad8b2d4be49de42533e8d718bfba52cb7bed",
+  "indexFactoryStartBlock": 9009503,
+  "vaultContractAddress": "0x37e2c5457b332220a9411d93bb14ecd59c805c63",
+  "vaultStartBlock": 9062501,
+  "uniswapFactoryContractAddress": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+  "uniswapFactoryStartBlock": 9009503,
+  "liquidityMiningContractAddress": "0xcaa5c0f2dbcb443efb80552b567b5c8de964bd41",
+  "liquidityMiningStartBlock": 9009503,
+  "emissionControllerContractAddress": "0x2f5674c5b3bb7df71dc0bbf70ff6cc64834eb9a0",
+  "baseAssetAddress": "0x7d97b1a961d9bbe9fd28c5e54356603334fcb6d1",
+  "phtrAssetAddress": "0xa6b276609c20b8008b5df78d15f3e3416a33ff1a",
+  "emissionContractAddress": "0x8537cb05f56d17041a54734f94a00017194c85ad",
+  "liquidityPairAddress": "0x9A9cDF10Ab5114506e02b03d5CC58E773eEC8925",
+  "liquidityPairStartBlock": 9009503,
+  "chainLinkAddress": "0x8fb6CE744673D2D6e07ec38B9Fa66a66874C45a8",
+  "chainLinkRegistryStartBlock": 9009503,
+  "TopNMarketCapIndexFactoryStartBlock": 9009503,
+  "TopNMarketCapIndexFactoryAddress": "0x994189e3bd4ae195b34fc7f155b62e11dc5ace16",
+  "TrackedIndexFactoryStartBlock": 9009503,
+  "TrackedIndexFactoryAddress": "0x1214dddddf405c48e2ea2bffc1ab8df29feb92c6",
+  "pairs": [
+    {
+      "name": "USDC",
+      "address": "0x7d97b1a961d9bbe9fd28c5e54356603334fcb6d1",
+      "aggregatorAddress": "0x4E94A9d221CE5CFE90B976600DaAAc639f936b66",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "WETH",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "aggregatorAddress": "0x8FAcAE210C796Bcac7afE147b622FFc1064629f6",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "LINK",
+      "address": "0xff6c569a28c59f84ed3aac7c4bf63850b7a0b8c4",
+      "aggregatorAddress": "0x63Da64115bb2dF82dDC9Bb4F98F0Cce652c1581a",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "DAI",
+      "address": "0x568e9d7fe622ccc9863a044b8ed33b36dd4167f3",
+      "aggregatorAddress": "0x0720C40EDf5e88dFA8e8cd015296e4F3eDE5679A",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "WBTC",
+      "address": "0x555b660f24ae642c45b82f36debd765afb5bddcf",
+      "aggregatorAddress": "0xf03511fa3A4B816a400aE2a7D14b1892E14d18d4",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "USDT",
+      "address": "0x1f0ae06ea12d763f6f0453efca2f30cb3932d9dd",
+      "aggregatorAddress": "0x4E94A9d221CE5CFE90B976600DaAAc639f936b66",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "UNI",
+      "address": "0x7b5d879ef07461ece080c7e8ca0378cc96201423",
+      "aggregatorAddress": "0xECf6936AD6030A1Aa4f2055Df44149B7846628F7",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "COMP",
+      "address": "0x9a751a2faf5e64412b97de88a8ee720fca750cd0",
+      "aggregatorAddress": "0x2217fE4CE584800131cEFC440B9f2937E50ebf1a",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "SUSHI",
+      "address": "0xff769b953c645c93f6259e3e53e753ff04fef57c",
+      "aggregatorAddress": "0xC4b4fAD3DC8C08DBa5d639A6e435f116b9282DB0",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "KP3R",
+      "address": "0xfca9af1d8fc20a9a397ca5c83f213e073bbe99c7",
+      "aggregatorAddress": "0xad26BAb8AAB6514AC56f66ae0c1bb9afACCC1d0A",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "MIR",
+      "address": "0xa68839a74980816bf5538c57123d4fe1e533fec0",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "SNX",
+      "address": "0xd63b97b0e4f89a192f65a3ff80d2f30a6769a42e",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "PHTR",
+      "address": "0x3c092017367d6b08fba3ab277e0b396d6fb44a6f",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mTSLA",
+      "address": "0x8b8a8a8e99c8ec95d6f2d37c8b10614def3a9a3c",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mAMZN",
+      "address": "0x533bbd55bf746e79c385c272d95d9e334175124e",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "ZRX",
+      "address": "0xe44551789339f206fe114cedac119af732080683",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "AAVE",
+      "address": "0x16f4620d13aa77632ce95befebaf53bb48341ae8",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mMSFT",
+      "address": "0xc6fab4089874561876f79c9faa5063c82a450d8c",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "mAAPL",
+      "address": "0xecb5c3f8a0af4d47d2e154177aeee2c801837e16",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    },
+    {
+      "name": "YFI",
+      "address": "0x20ef7735b17c3bbee35d4240db80aa80e85e2d0c",
+      "aggregatorAddress": "0x24959556020AE5D39e5bAEC2bd6Bf12420C25aB5",
+      "block": 9009503,
+      "decimals": 8
+    }
+  ]
+}
