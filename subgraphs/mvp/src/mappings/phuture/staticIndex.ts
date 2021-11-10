@@ -67,11 +67,11 @@ export function handleIndexTransfer(event: TransferEvent): void {
   // let value = event.params.value.toBgDecimal().div(BigInt.fromI32(10).pow(index.decimals.toI32() as u8).toBigDecimal());
 
   let transferType: string;
-  if (Address.zero().equals(from)) {
+  if (from.equals(Address.zero())) {
     index.totalSupply = index.totalSupply.plus(event.params.value);
 
     transferType = "Mint";
-  } else if (Address.zero().equals(to)) {
+  } else if (to.equals(Address.zero())) {
     index.totalSupply = index.totalSupply.minus(event.params.value);
 
     transferType = "Burn";
