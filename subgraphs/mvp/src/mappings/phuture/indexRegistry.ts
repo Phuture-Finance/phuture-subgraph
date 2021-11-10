@@ -1,4 +1,4 @@
-import { RoleHash } from "@phuture/subgraph-helpers";
+import { ASSET_ROLE } from "@phuture/subgraph-helpers";
 import { UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
 import { Transfer } from "../../types/templates/Asset/Asset";
 import { SetImageURL, SetName, SetSymbol } from "../../types/templates/StaticIndex/IndexRegistry";
@@ -66,7 +66,7 @@ export function handleSetSymbol(event: SetSymbol): void {
 }
 
 export function handleRoleGranted(event: RoleGranted): void {
-  if (!event.params.role.equals(RoleHash)) return;
+  if (!event.params.role.equals(ASSET_ROLE)) return;
 
   let asset = loadOrCreateAsset(event.params.account);
 
@@ -75,7 +75,7 @@ export function handleRoleGranted(event: RoleGranted): void {
 }
 
 export function handleRoleRevoked(event: RoleRevoked): void {
-  if (!event.params.role.equals(RoleHash)) return;
+  if (!event.params.role.equals(ASSET_ROLE)) return;
 
   let asset = loadOrCreateAsset(event.params.account);
   if (!asset.isWhitelisted) return;
