@@ -36,6 +36,10 @@ dataSources:
           handler: handleSetName
         - event: SetSymbol(address,string)
           handler: handleSetSymbol
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
       file: ./src/mappings/phuture/indexRegistry.ts
 
   - kind: ethereum/contract
