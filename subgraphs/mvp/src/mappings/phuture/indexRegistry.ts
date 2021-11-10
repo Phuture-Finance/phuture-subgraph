@@ -1,4 +1,4 @@
-import { RoleHash } from '@phuture/subgraph-helpers'
+import { RoleHash } from "@phuture/subgraph-helpers";
 import { UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
 import { Transfer } from "../../types/templates/Asset/Asset";
 import { SetImageURL, SetName, SetSymbol } from "../../types/templates/StaticIndex/IndexRegistry";
@@ -32,7 +32,7 @@ export function handleTransfer(event: Transfer): void {
 
   let stat = updateStat(event);
   stat.totalValueLocked = stat.totalValueLocked.plus(
-    convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice)
+    convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice),
   );
 
   stat.save();
