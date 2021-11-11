@@ -1,6 +1,5 @@
 import { Address, BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { Index, Transfer, UserIndex } from "../../types/schema";
-import { Transfer as TransferEvent } from "../../types/templates/StaticIndex/StaticIndex";
 import { EMISSION_CONTROLLER_ADDRESS } from "../../../consts";
 import {
   updateDailyIndexStat,
@@ -12,16 +11,13 @@ import {
 import { loadOrCreateAccount, loadOrCreateTransaction } from "../entities";
 import { ONE_BI } from "@phuture/subgraph-helpers";
 
-// Add more events into function signature.
-export function handleAllIndexesTransfers(event: TransferEvent): void {
+export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
 
   let index = Index.load(event.address.toHexString());
   if (!index) return;
 
-  let from = event.params.from;
   loadOrCreateAccount(from);
-  let to = event.params.to;
   loadOrCreateAccount(to);
 
   let transfers = tx.transfers;
@@ -36,7 +32,7 @@ export function handleAllIndexesTransfers(event: TransferEvent): void {
       fromUserIndex.balance = BigDecimal.zero();
     }
 
-    fromUserIndex.balance = fromUserIndex.balance.minus(event.params.value.toBigDecimal());
+    fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -59,18 +55,18 @@ export function handleAllIndexesTransfers(event: TransferEvent): void {
       index.uniqueHolders = index.uniqueHolders.plus(ONE_BI);
     }
 
-    toUserIndex.balance = toUserIndex.balance.plus(event.params.value.toBigDecimal());
+    toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
 
     toUserIndex.save();
   }
 
   let transferType: string;
   if (from.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.plus(event.params.value);
+    index.totalSupply = index.totalSupply.plus(value);
 
     transferType = "Mint";
   } else if (to.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.minus(event.params.value);
+    index.totalSupply = index.totalSupply.minus(value);
 
     transferType = "Burn";
   } else {
@@ -90,7 +86,7 @@ export function handleAllIndexesTransfers(event: TransferEvent): void {
   transfer.type = transferType;
   transfer.from = from;
   transfer.to = to;
-  transfer.value = event.params.value;
+  transfer.value = value;
   transfer.save();
 
   tx.transfers = transfers.concat([transfer.id]);

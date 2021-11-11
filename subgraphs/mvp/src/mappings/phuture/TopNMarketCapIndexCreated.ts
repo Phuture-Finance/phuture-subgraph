@@ -5,6 +5,7 @@ import {
   fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount, loadOrCreateTransaction,
 } from '../entities'
 import { updateStat } from './stats'
+import { TopNMarketCapIndex } from "../../types/templates";
 import { TopNMarketCapIndexCreated } from '../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory'
 
 export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated): void {
@@ -39,8 +40,7 @@ export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated
 
   userIndex.save();
 
-  // TODO: create after transfer handler implementation.
-  // StaticIndex.create(event.params.index);
+  TopNMarketCapIndex.create(event.params.index);
 
   index.save();
 

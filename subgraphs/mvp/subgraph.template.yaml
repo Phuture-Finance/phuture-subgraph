@@ -250,7 +250,6 @@ templates:
         - Index
         - Asset
         - DailyIndexStat
-        - Debug
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
@@ -271,12 +270,11 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/phuture/staticIndex.ts
+      file: ./src/mappings/phuture/TrackedIndex.ts
       entities:
         - Index
         - Asset
         - DailyIndexStat
-        - Debug
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
@@ -298,12 +296,11 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/phuture/staticIndex.ts
+      file: ./src/mappings/phuture/TopNMarketCapIndex.ts
       entities:
         - Index
         - Asset
         - DailyIndexStat
-        - Debug
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json

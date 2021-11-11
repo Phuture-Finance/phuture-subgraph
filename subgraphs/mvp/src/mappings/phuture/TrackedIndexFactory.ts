@@ -8,6 +8,7 @@ import {
 import { Index, IndexAsset, UserIndex } from '../../types/schema'
 import { TrackedIndexCreated } from '../../types/TrackedIndexFactory/TrackedIndexFactory'
 import { updateStat } from './stats'
+import { TrackedIndex } from '../../types/templates'
 
 export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   let tx = loadOrCreateTransaction(event);
@@ -66,8 +67,7 @@ export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
 
   userIndex.save();
 
-  // TODO: create after transfer handler implementation.
-  // StaticIndex.create(event.params.index);
+  TrackedIndex.create(event.params.index);
 
   index.save();
 
