@@ -1,5 +1,5 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index'
-import { IndexTopN, ONE_BI } from '@phuture/subgraph-helpers'
+import { IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
 import {
   fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount,
   loadOrCreateAsset,
@@ -21,7 +21,7 @@ export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
   index._assets = [];
-  index.type = IndexTopN;
+  index.type = IndexTracked;
 
   let paramAssets = event.params.assets;
   for (let i = 0; i < paramAssets.length; i++) {
