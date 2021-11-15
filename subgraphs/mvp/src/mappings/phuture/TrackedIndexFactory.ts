@@ -1,13 +1,14 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
-import { IndexTopN, ONE_BI } from "@phuture/subgraph-helpers";
+import { IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
 import {
   fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount,
   loadOrCreateAsset, loadOrCreateIndex,
   loadOrCreateTransaction,
 } from "../entities";
-import { IndexAsset, UserIndex } from "../../types/schema";
+import { Index, IndexAsset, UserIndex } from "../../types/schema";
 import { TrackedIndexCreated } from "../../types/TrackedIndexFactory/TrackedIndexFactory";
 import { updateStat } from "./stats";
+import { TrackedIndex } from '../../types/templates'
 
 export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   let tx = loadOrCreateTransaction(event);
@@ -19,11 +20,8 @@ export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   index.baseVolume = BigDecimal.zero();
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
-  index.feeAUM = BigInt.zero();
-  index.feeBurn = BigInt.zero();
-  index.feeMint = BigInt.zero();
   index._assets = [];
-  index.type = IndexTopN;
+  index.type = IndexTracked;
 
   let paramAssets = event.params.assets;
   for (let i = 0; i < paramAssets.length; i++) {
@@ -69,8 +67,7 @@ export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
 
   userIndex.save();
 
-  // TODO: create after transfer handler implementation.
-  // StaticIndex.create(event.params.index);
+  TrackedIndex.create(event.params.index);
 
   index.save();
 

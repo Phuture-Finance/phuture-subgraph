@@ -292,7 +292,58 @@ templates:
           file: ../abis/Phuture/StaticIndex.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleIndexTransfer
+          handler: handleStaticIndexTransfer
+
+  - kind: ethereum/contract
+    name: TrackedIndex
+    network: {{network}}
+    source:
+      abi: TrackedIndex
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/phuture/TrackedIndex.ts
+      entities:
+        - Index
+        - Asset
+        - DailyIndexStat
+      abis:
+        - name: IndexRegistry
+          file: ../abis/Phuture/IndexRegistry.json
+        - name: TrackedIndexFactory
+          file: ../abis/Phuture/TrackedIndexFactory.json
+        - name: TrackedIndex
+          file: ../abis/Phuture/TrackedIndex.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTrackedIndexTransfer
+
+
+  - kind: ethereum/contract
+    name: TopNMarketCapIndex
+    network: {{network}}
+    source:
+      abi: TopNMarketCapIndex
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/phuture/TopNMarketCapIndex.ts
+      entities:
+        - Index
+        - Asset
+        - DailyIndexStat
+      abis:
+        - name: IndexRegistry
+          file: ../abis/Phuture/IndexRegistry.json
+        - name: TopNMarketCapIndexFactory
+          file: ../abis/Phuture/TopNMarketCapIndexFactory.json
+        - name: TopNMarketCapIndex
+          file: ../abis/Phuture/TopNMarketCapIndex.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTopNMarketCapIndexTransfer
 
   - kind: ethereum/contract
     name: UniswapPair

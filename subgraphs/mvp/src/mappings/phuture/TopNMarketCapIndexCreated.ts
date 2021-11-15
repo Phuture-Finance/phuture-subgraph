@@ -1,10 +1,11 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
-import { IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
+import { IndexTopN, ONE_BI } from "@phuture/subgraph-helpers";
 import { UserIndex } from "../../types/schema";
 import {
   fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount, loadOrCreateIndex, loadOrCreateTransaction,
 } from "../entities";
 import { updateStat } from "./stats";
+import { TopNMarketCapIndex } from "../../types/templates";
 import { TopNMarketCapIndexCreated } from "../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory";
 
 export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated): void {
@@ -16,11 +17,8 @@ export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated
   index.baseVolume = BigDecimal.zero();
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
-  index.feeAUM = BigInt.zero();
-  index.feeBurn = BigInt.zero();
-  index.feeMint = BigInt.zero();
   index._assets = [];
-  index.type = IndexTracked;
+  index.type = IndexTopN;
 
   index.totalSupply = BigInt.zero();
   index.decimals = fetchTokenDecimals(event.params.index);
@@ -41,8 +39,7 @@ export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated
 
   userIndex.save();
 
-  // TODO: create after transfer handler implementation.
-  // StaticIndex.create(event.params.index);
+  TopNMarketCapIndex.create(event.params.index);
 
   index.save();
 
