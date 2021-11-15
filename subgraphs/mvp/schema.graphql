@@ -72,6 +72,10 @@ type Index @entity {
   basePrice: BigDecimal!
   baseVolume: BigDecimal!
 
+  feeBurn: BigInt!
+  feeMint: BigInt!
+  feeAUM: BigInt!
+
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
   weeklyStats: [WeeklyIndexStat!]! @derivedFrom(field: "index")

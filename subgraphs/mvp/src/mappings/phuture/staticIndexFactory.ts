@@ -1,8 +1,8 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { IndexStatic, ONE_BI } from '@phuture/subgraph-helpers'
+import { IndexStatic, ONE_BI } from "@phuture/subgraph-helpers";
 
 import { StaticIndexCreated } from "../../types/Index/StaticIndexFactory";
-import { Index, IndexAsset, UserIndex } from "../../types/schema";
+import { IndexAsset, UserIndex } from "../../types/schema";
 import { StaticIndex } from "../../types/templates";
 import { updateStat } from "./stats";
 import {
@@ -11,19 +11,23 @@ import {
   fetchTokenSymbol,
   loadOrCreateAccount,
   loadOrCreateAsset,
-  loadOrCreateTransaction
+  loadOrCreateIndex,
+  loadOrCreateTransaction,
 } from "../entities";
 
 export function handleStaticIndexCreated(event: StaticIndexCreated): void {
   let tx = loadOrCreateTransaction(event);
 
   let indexId = event.params.index.toHexString();
-  let index = new Index(indexId);
+  let index = loadOrCreateIndex(event.params.index);
 
   index.marketCap = BigDecimal.zero();
   index.baseVolume = BigDecimal.zero();
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
+  index.feeAUM = BigInt.zero();
+  index.feeBurn = BigInt.zero();
+  index.feeMint = BigInt.zero();
   index._assets = [];
   index.type = IndexStatic;
 

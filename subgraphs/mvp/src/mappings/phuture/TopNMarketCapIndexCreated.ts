@@ -1,22 +1,24 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index'
-import { IndexTracked, ONE_BI } from '@phuture/subgraph-helpers'
-import { Index, UserIndex } from "../../types/schema";
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
+import { IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
+import { UserIndex } from "../../types/schema";
 import {
-  fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount, loadOrCreateTransaction,
-} from '../entities'
-import { updateStat } from './stats'
-import { TopNMarketCapIndexCreated } from '../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory'
+  fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount, loadOrCreateIndex, loadOrCreateTransaction,
+} from "../entities";
+import { updateStat } from "./stats";
+import { TopNMarketCapIndexCreated } from "../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory";
 
 export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated): void {
   let tx = loadOrCreateTransaction(event);
 
-  let indexId = event.params.index.toHexString();
-  let index = new Index(indexId);
+  let index = loadOrCreateIndex(event.params.index);
 
   index.marketCap = BigDecimal.zero();
   index.baseVolume = BigDecimal.zero();
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
+  index.feeAUM = BigInt.zero();
+  index.feeBurn = BigInt.zero();
+  index.feeMint = BigInt.zero();
   index._assets = [];
   index.type = IndexTracked;
 
