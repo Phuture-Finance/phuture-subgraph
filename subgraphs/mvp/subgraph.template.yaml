@@ -113,14 +113,6 @@ dataSources:
       entities:
         - Index
       abis:
-        - name: Vault
-          file: ../abis/Phuture/Vault.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
         - name: FeePool
           file: ../abis/Phuture/FeePool.json
       eventHandlers:

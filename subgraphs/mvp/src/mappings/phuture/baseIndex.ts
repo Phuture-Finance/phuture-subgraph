@@ -11,7 +11,7 @@ import { IndexAsset, UserIndex } from "../../types/schema";
 import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates'
 import { updateStat } from "./stats";
 
-export function handleIndexCreation(type: String, event: ethereum.Event, indexAddress: Address, assets: Address[]): void {
+export function handleIndexCreation(type: string, event: ethereum.Event, indexAddress: Address, assets: Address[]): void {
   if (type != IndexTopN || type != IndexStatic || type != IndexTracked) {
     return;
   }
@@ -26,13 +26,7 @@ export function handleIndexCreation(type: String, event: ethereum.Event, indexAd
   index.uniqueHolders = BigInt.zero();
   index.basePrice = BigDecimal.zero();
   index._assets = [];
-  if (type === IndexTracked) {
-    index.type = IndexTracked;
-  } else if (type === IndexStatic) {
-    index.type = IndexStatic;
-  } else if (type === IndexTopN) {
-    index.type = IndexTopN;
-  }
+  index.type = type;
 
   if (type !== IndexTopN) {
     let paramAssets = assets;
