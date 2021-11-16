@@ -21,11 +21,6 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
-  index.marketCap = BigDecimal.zero();
-  index.baseVolume = BigDecimal.zero();
-  index.uniqueHolders = BigInt.zero();
-  index.basePrice = BigDecimal.zero();
-  index._assets = [];
   index.type = type;
 
   if (type !== IndexTopN) {
@@ -55,10 +50,6 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
     }
   }
 
-  index.totalSupply = BigInt.zero();
-  index.decimals = fetchTokenDecimals(indexAddress);
-  index.symbol = fetchTokenSymbol(indexAddress);
-  index.name = fetchTokenName(indexAddress);
   index.transaction = tx.id;
 
   loadOrCreateAccount(event.transaction.from);
