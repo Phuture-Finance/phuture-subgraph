@@ -308,9 +308,10 @@ templates:
         - name: TrackedIndex
           file: ../abis/Phuture/TrackedIndex.json
       eventHandlers:
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTrackedIndexTransfer
-
 
   - kind: ethereum/contract
     name: TopNMarketCapIndex
@@ -334,6 +335,8 @@ templates:
         - name: TopNMarketCapIndex
           file: ../abis/Phuture/TopNMarketCapIndex.json
       eventHandlers:
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTopNMarketCapIndexTransfer
 
