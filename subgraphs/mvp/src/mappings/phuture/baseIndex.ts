@@ -2,7 +2,7 @@ import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
 import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
 import {
-  fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount,
+  loadOrCreateAccount,
   loadOrCreateAsset,
   loadOrCreateIndex,
   loadOrCreateTransaction,

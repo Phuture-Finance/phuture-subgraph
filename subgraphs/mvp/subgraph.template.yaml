@@ -47,7 +47,7 @@ dataSources:
     network: {{network}}
     source:
       abi: StaticIndexFactory
-      address: '{{indexFactoryContractAddress}}'
+      address: '{{staticIndexFactoryContractAddress}}'
       startBlock: {{indexFactoryStartBlock}}
     mapping:
       kind: ethereum/events
@@ -75,8 +75,8 @@ dataSources:
     network: {{network}}
     source:
       abi: Vault
-      address: '{{vaultContractAddress}}'
-      startBlock: {{vaultStartBlock}}
+      address: '{{staticVaultContractAddress}}'
+      startBlock: {{staticVaultStartBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
