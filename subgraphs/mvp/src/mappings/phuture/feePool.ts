@@ -7,11 +7,11 @@ function saveFeeInBP(indexAddress: Address, amount: i32, type: string): void {
   let index = loadOrCreateIndex(indexAddress);
   let value = BigInt.fromI32(amount);
 
-  if (type === FeeInBPBurn) {
+  if (type == FeeInBPBurn) {
     index.feeBurn = value;
-  } else if (type === FeeInBPAUM) {
+  } else if (type == FeeInBPAUM) {
     index.feeAUM = value;
-  } else if (type === FeeInBPMint) {
+  } else if (type == FeeInBPMint) {
     index.feeMint = value;
   } else {
     return;

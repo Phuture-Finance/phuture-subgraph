@@ -20,7 +20,7 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
   let dayStartTimestamp = dayID * 86400;
 
   let stat = DailyStat.load(dayID.toString());
-  if (stat === null) {
+  if (!stat) {
     stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
     stat.totalValueLocked = BigDecimal.zero();
@@ -39,7 +39,7 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
 
 export function updateStat(event: ethereum.Event): Stat {
   let stat = Stat.load(FACTORY_ADDRESS.toString());
-  if (stat === null) {
+  if (!stat) {
     stat = new Stat(FACTORY_ADDRESS.toString());
     stat.totalValueLocked = BigDecimal.zero();
     stat.indexCount = BigInt.zero();
@@ -64,7 +64,7 @@ export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
   }
 
   let indexStat = HourlyIndexStat.load(indexID);
-  if (indexStat === null) {
+  if (!indexStat) {
     indexStat = new HourlyIndexStat(indexID);
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
@@ -91,7 +91,7 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
     throw new Error("TODO");
   }
   let indexStat = DailyIndexStat.load(indexID);
-  if (indexStat === null) {
+  if (!indexStat) {
     indexStat = new DailyIndexStat(indexID);
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
@@ -118,7 +118,7 @@ export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
     throw new Error("TODO");
   }
   let indexStat = WeeklyIndexStat.load(indexID);
-  if (indexStat === null) {
+  if (!indexStat) {
     indexStat = new WeeklyIndexStat(indexID);
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
@@ -145,7 +145,7 @@ export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat 
     throw new Error("TODO");
   }
   let indexStat = MonthlyIndexStat.load(indexID);
-  if (indexStat === null) {
+  if (!indexStat) {
     indexStat = new MonthlyIndexStat(indexID);
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
@@ -172,7 +172,7 @@ export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
     throw new Error("TODO");
   }
   let indexStat = YearlyIndexStat.load(indexID);
-  if (indexStat === null) {
+  if (!indexStat) {
     indexStat = new YearlyIndexStat(indexID);
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
@@ -200,7 +200,7 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
   }
 
   let dailyAssetStat = DailyAssetStat.load(dayAssetID);
-  if (dailyAssetStat === null) {
+  if (!dailyAssetStat) {
     dailyAssetStat = new DailyAssetStat(dayAssetID);
     dailyAssetStat.date = dayStartTimestamp;
     dailyAssetStat.asset = asset.id;

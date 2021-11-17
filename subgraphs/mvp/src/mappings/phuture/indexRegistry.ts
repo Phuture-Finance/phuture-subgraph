@@ -23,7 +23,7 @@ export function handleTransfer(event: Transfer): void {
   if (event.params.to.toHexString() != VAULT_ADDRESS) return;
 
   let asset = Asset.load(event.address.toHexString());
-  if (asset === null) return;
+  if (!asset) return;
 
   asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);

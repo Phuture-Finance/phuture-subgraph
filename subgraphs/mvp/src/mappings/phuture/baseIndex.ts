@@ -65,11 +65,11 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
 
   userIndex.save();
 
-  if (type === IndexTracked) {
+  if (type == IndexTracked) {
     TrackedIndex.create(indexAddress);
-  } else if (type === IndexStatic) {
+  } else if (type == IndexStatic) {
     StaticIndex.create(indexAddress);
-  } else if (type === IndexTopN) {
+  } else if (type == IndexTopN) {
     TopNMarketCapIndex.create(indexAddress);
   }
 

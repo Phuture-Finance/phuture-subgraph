@@ -25,7 +25,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   if (!from.equals(Address.zero()) && from.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
     let fromUserIndexId = from.toHexString().concat("-").concat(event.address.toHexString());
     let fromUserIndex = UserIndex.load(fromUserIndexId);
-    if (fromUserIndex === null) {
+    if (!fromUserIndex) {
       fromUserIndex = new UserIndex(fromUserIndexId);
       fromUserIndex.index = event.address.toHexString();
       fromUserIndex.user = from.toHexString();
@@ -44,7 +44,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   if (!to.equals(Address.zero()) && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
     let toUserIndexId = to.toHexString().concat("-").concat(event.address.toHexString());
     let toUserIndex = UserIndex.load(toUserIndexId);
-    if (toUserIndex === null) {
+    if (!toUserIndex) {
       toUserIndex = new UserIndex(toUserIndexId);
       toUserIndex.index = event.address.toHexString();
       toUserIndex.user = to.toHexString();
