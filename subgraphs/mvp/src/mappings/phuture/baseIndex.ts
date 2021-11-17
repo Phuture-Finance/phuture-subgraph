@@ -2,7 +2,7 @@ import { Address, ethereum } from "@graphprotocol/graph-ts";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
 import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
 import {
-  fetchTokenDecimals, fetchTokenName, fetchTokenSymbol, loadOrCreateAccount,
+  loadOrCreateAccount,
   loadOrCreateAsset,
   loadOrCreateIndex,
   loadOrCreateTransaction,
@@ -21,11 +21,6 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
-  index.marketCap = BigDecimal.zero();
-  index.baseVolume = BigDecimal.zero();
-  index.uniqueHolders = BigInt.zero();
-  index.basePrice = BigDecimal.zero();
-  index._assets = [];
   index.type = type;
 
   if (type !== IndexTopN) {
@@ -55,10 +50,6 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
     }
   }
 
-  index.totalSupply = BigInt.zero();
-  index.decimals = fetchTokenDecimals(indexAddress);
-  index.symbol = fetchTokenSymbol(indexAddress);
-  index.name = fetchTokenName(indexAddress);
   index.transaction = tx.id;
 
   loadOrCreateAccount(event.transaction.from);
@@ -74,11 +65,11 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
 
   userIndex.save();
 
-  if (type === IndexTracked) {
+  if (type == IndexTracked) {
     TrackedIndex.create(indexAddress);
-  } else if (type === IndexStatic) {
+  } else if (type == IndexStatic) {
     StaticIndex.create(indexAddress);
-  } else if (type === IndexTopN) {
+  } else if (type == IndexTopN) {
     TopNMarketCapIndex.create(indexAddress);
   }
 

@@ -6,7 +6,7 @@ export function loadOrCreateTransaction(event: ethereum.Event): Transaction {
   let id = event.transaction.hash.toHexString();
 
   let tx = Transaction.load(id);
-  if (tx === null) {
+  if (!tx) {
     tx = new Transaction(id);
     tx.blockNumber = event.block.number;
     tx.timestamp = event.block.timestamp;

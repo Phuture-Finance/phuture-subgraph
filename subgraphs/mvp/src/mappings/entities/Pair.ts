@@ -5,7 +5,7 @@ export function loadOrCreatePair(pairAddr: Address, address0: string, address1: 
   let id = pairAddr.toHexString();
 
   let pair = Pair.load(id);
-  if (pair === null) {
+  if (!pair) {
     pair = new Pair(id);
     pair.asset0 = address0;
     pair.asset1 = address1;
