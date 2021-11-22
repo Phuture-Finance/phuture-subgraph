@@ -8,7 +8,7 @@ import {
   loadOrCreateTransaction,
 } from "../entities";
 import { IndexAsset, UserIndex } from "../../types/schema";
-import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates'
+import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
 import { updateStat } from "./stats";
 
 export function handleIndexCreation(type: string, event: ethereum.Event, indexAddress: Address, assets: Address[]): void {

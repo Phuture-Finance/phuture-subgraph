@@ -3,6 +3,7 @@
 import { AnswerUpdated } from "../../../types/{{{name}}}/AggregatorInterface";
 import { Asset, Index, IndexAsset } from "../../../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { loadOrCreateIndexAsset } from "../../entities";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let asset = Asset.load("{{{address}}}");
@@ -15,7 +16,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
   let indexes = asset._indexes;
   for (let i = 0; i < indexes.length; i++) {
-    let indexAsset = IndexAsset.load(indexes[i]);
+    let indexAsset = loadOrCreateIndexAsset(indexes[i], asset.id);
     if (!indexAsset) {
       return;
     }
