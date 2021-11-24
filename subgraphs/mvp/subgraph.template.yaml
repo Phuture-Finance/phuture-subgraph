@@ -99,6 +99,37 @@ dataSources:
           handler: handleTransfer
       file: ./src/mappings/phuture/vault.ts
 
+  - kind: ethereum/contract
+    name: FeePool
+    network: {{network}}
+    source:
+      abi: FeePool
+      address: '{{feePoolContractAddress}}'
+      startBlock: {{feePoolStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Index
+      abis:
+        - name: FeePool
+          file: ../abis/Phuture/FeePool.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      eventHandlers:
+        - event: SetMintingFeeInBP(indexed address,indexed address,uint16)
+          handler: handleSetMintingFeeInBP
+        - event: SetBurningFeeInBP(indexed address,indexed address,uint16)
+          handler: handleSetBurningFeeInBP
+        - event: SetAUMFeeInBP(indexed address,indexed address,uint16)
+          handler: handleSetAUMFeeInBP
+      file: ./src/mappings/phuture/feePool.ts
+
   {{#swapFactories}}
   - kind: ethereum/contract
     name: {{{name}}}
