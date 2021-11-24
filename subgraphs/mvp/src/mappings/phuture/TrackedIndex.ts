@@ -1,6 +1,11 @@
+import { Transfer as TrackedIndexTransferEvent, UpdateAnatomy } from "../../types/templates/TrackedIndex/TrackedIndex";
 import { handleAllIndexesTransfers } from "./transfer";
-import { Transfer as TrackedIndexTransferEvent } from "../../types/templates/TrackedIndex/TrackedIndex";
+import { updateAnatomy } from "./updateAnatomy";
 
 export function handleTrackedIndexTransfer(event: TrackedIndexTransferEvent): void {
   handleAllIndexesTransfers(event, event.params.from, event.params.to, event.params.value);
+}
+
+export function handleUpdateAnatomy(event: UpdateAnatomy): void {
+  updateAnatomy(event.address, event.params.assets, event.params.weights);
 }

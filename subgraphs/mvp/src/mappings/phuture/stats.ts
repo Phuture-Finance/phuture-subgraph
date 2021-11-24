@@ -28,7 +28,7 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
   }
 
   let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
-  if (allTimeStat !== null) {
+  if (allTimeStat) {
     stat.indexCount = allTimeStat.indexCount;
   }
 
@@ -195,7 +195,7 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
   let dayAssetID = event.address.toHexString().concat("-").concat(BigInt.fromI32(dayID).toString());
 
   let asset = Asset.load(event.address.toHexString());
-  if (asset == null) {
+  if (!asset) {
     return null;
   }
 

@@ -1,6 +1,6 @@
 export const CHAINLINK_ADDRESS = "{{chainLinkAddress}}";
 
-export const FACTORY_ADDRESS = "{{indexFactoryContractAddress}}";
+export const FACTORY_ADDRESS = "{{StaticIndexFactoryContractAddress}}";
 export const VAULT_ADDRESS = "{{vaultContractAddress}}";
 
 export const EMISSION_ADDRESS = "{{emissionContractAddress}}";

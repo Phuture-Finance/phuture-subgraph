@@ -47,7 +47,7 @@ dataSources:
     network: {{network}}
     source:
       abi: StaticIndexFactory
-      address: '{{indexFactoryContractAddress}}'
+      address: '{{StaticIndexFactoryContractAddress}}'
       startBlock: {{indexFactoryStartBlock}}
     mapping:
       kind: ethereum/events
@@ -306,6 +306,7 @@ templates:
         - Index
         - Asset
         - DailyIndexStat
+        - Debug
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
@@ -314,9 +315,10 @@ templates:
         - name: TrackedIndex
           file: ../abis/Phuture/TrackedIndex.json
       eventHandlers:
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTrackedIndexTransfer
-
 
   - kind: ethereum/contract
     name: TopNMarketCapIndex
@@ -340,6 +342,8 @@ templates:
         - name: TopNMarketCapIndex
           file: ../abis/Phuture/TopNMarketCapIndex.json
       eventHandlers:
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTopNMarketCapIndexTransfer
 
