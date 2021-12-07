@@ -1,15 +1,15 @@
-import { Address, BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Index, Transfer, UserIndex } from "../../types/schema";
-import { EMISSION_CONTROLLER_ADDRESS } from "../../../consts";
+import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Index, Transfer, UserIndex } from '../../types/schema';
+import { EMISSION_CONTROLLER_ADDRESS } from '../../../consts';
 import {
   updateDailyIndexStat,
   updateHourlyIndexStat,
   updateMonthlyIndexStat,
   updateWeeklyIndexStat,
-  updateYearlyIndexStat
-} from "./stats";
-import { loadOrCreateAccount, loadOrCreateTransaction } from "../entities";
-import { ONE_BI } from "@phuture/subgraph-helpers";
+  updateYearlyIndexStat,
+} from './stats';
+import { loadOrCreateAccount, loadOrCreateTransaction } from '../entities';
+import { ONE_BI } from '@phuture/subgraph-helpers';
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -23,7 +23,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   let transfers = tx.transfers;
 
   if (!from.equals(Address.zero()) && from.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
-    let fromUserIndexId = from.toHexString().concat("-").concat(event.address.toHexString());
+    let fromUserIndexId = from.toHexString().concat('-').concat(event.address.toHexString());
     let fromUserIndex = UserIndex.load(fromUserIndexId);
     if (!fromUserIndex) {
       fromUserIndex = new UserIndex(fromUserIndexId);
@@ -42,7 +42,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   }
 
   if (!to.equals(Address.zero()) && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
-    let toUserIndexId = to.toHexString().concat("-").concat(event.address.toHexString());
+    let toUserIndexId = to.toHexString().concat('-').concat(event.address.toHexString());
     let toUserIndex = UserIndex.load(toUserIndexId);
     if (!toUserIndex) {
       toUserIndex = new UserIndex(toUserIndexId);
@@ -64,21 +64,19 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   if (from.equals(Address.zero())) {
     index.totalSupply = index.totalSupply.plus(value);
 
-    transferType = "Mint";
+    transferType = 'Mint';
   } else if (to.equals(Address.zero())) {
     index.totalSupply = index.totalSupply.minus(value);
 
-    transferType = "Burn";
+    transferType = 'Burn';
   } else {
-    transferType = "Send";
+    transferType = 'Send';
   }
 
   index.save();
 
   let transfer = new Transfer(
-    event.transaction.hash.toHexString().concat("-").concat(
-      BigInt.fromI32(transfers.length).toString()
-    )
+    event.transaction.hash.toHexString().concat('-').concat(BigInt.fromI32(transfers.length).toString()),
   );
 
   transfer.index = event.address.toHexString();

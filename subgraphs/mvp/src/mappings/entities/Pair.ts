@@ -1,5 +1,5 @@
-import { Pair } from "../../types/schema";
-import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { Pair } from '../../types/schema';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 export function loadOrCreatePair(pairAddr: Address, address0: string, address1: string): Pair {
   let id = pairAddr.toHexString();

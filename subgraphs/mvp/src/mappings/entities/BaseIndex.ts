@@ -1,10 +1,6 @@
-import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
-import {
-  fetchTokenDecimals,
-  fetchTokenName,
-  fetchTokenSymbol,
-} from "../entities/Asset";
-import { Index } from "../../types/schema";
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
+import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from '../entities/Asset';
+import { Index } from '../../types/schema';
 
 export function loadOrCreateIndex(address: Address): Index {
   let index = Index.load(address.toHexString());

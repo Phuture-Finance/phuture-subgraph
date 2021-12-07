@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
 import {
   Asset,
@@ -10,9 +10,9 @@ import {
   MonthlyIndexStat,
   Stat,
   WeeklyIndexStat,
-  YearlyIndexStat
-} from "../../types/schema";
-import { FACTORY_ADDRESS } from "../../../consts";
+  YearlyIndexStat,
+} from '../../types/schema';
+import { FACTORY_ADDRESS } from '../../../consts';
 
 export function updateDailyStat(event: ethereum.Event): DailyStat {
   let timestamp = event.block.timestamp.toI32();
@@ -56,11 +56,11 @@ export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / 3600;
   let startTimestamp = ID * 3600;
-  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
-    throw new Error("TODO");
+    throw new Error('TODO');
   }
 
   let indexStat = HourlyIndexStat.load(indexID);
@@ -84,11 +84,11 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / 86400;
   let startTimestamp = ID * 86400;
-  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
-    throw new Error("TODO");
+    throw new Error('TODO');
   }
   let indexStat = DailyIndexStat.load(indexID);
   if (!indexStat) {
@@ -111,11 +111,11 @@ export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 7);
   let startTimestamp = ID * (86400 * 7);
-  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
-    throw new Error("TODO");
+    throw new Error('TODO');
   }
   let indexStat = WeeklyIndexStat.load(indexID);
   if (!indexStat) {
@@ -138,11 +138,11 @@ export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat 
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 30);
   let startTimestamp = ID * 86400 * 30;
-  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
-    throw new Error("TODO");
+    throw new Error('TODO');
   }
   let indexStat = MonthlyIndexStat.load(indexID);
   if (!indexStat) {
@@ -165,11 +165,11 @@ export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
   let timestamp = event.block.timestamp.toI32();
   let ID = timestamp / (86400 * 365);
   let startTimestamp = ID * (86400 * 365);
-  let indexID = event.address.toHexString().concat("-").concat(BigInt.fromI32(ID).toString());
+  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
   let index = Index.load(event.address.toHexString());
   if (!index) {
-    throw new Error("TODO");
+    throw new Error('TODO');
   }
   let indexStat = YearlyIndexStat.load(indexID);
   if (!indexStat) {
@@ -192,7 +192,7 @@ export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | nu
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
-  let dayAssetID = event.address.toHexString().concat("-").concat(BigInt.fromI32(dayID).toString());
+  let dayAssetID = event.address.toHexString().concat('-').concat(BigInt.fromI32(dayID).toString());
 
   let asset = Asset.load(event.address.toHexString());
   if (!asset) {

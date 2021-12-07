@@ -126,7 +126,7 @@ dataSources:
           handler: handleSetMintingFeeInBP
         - event: SetBurningFeeInBP(indexed address,indexed address,uint16)
           handler: handleSetBurningFeeInBP
-        - event: SetAUMFeeInBP(indexed address,indexed address,uint16)
+        - event: SetAUMScaledPerSecondsRate(indexed address,indexed address,uint256)
           handler: handleSetAUMFeeInBP
       file: ./src/mappings/phuture/feePool.ts
 

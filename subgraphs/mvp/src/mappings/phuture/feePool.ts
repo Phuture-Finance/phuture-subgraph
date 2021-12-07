@@ -1,18 +1,17 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { FeeInBPAUM, FeeInBPBurn, FeeInBPMint } from "@phuture/subgraph-helpers";
-import { loadOrCreateIndex } from "../entities";
-import { SetAUMFeeInBP, SetBurningFeeInBP, SetMintingFeeInBP } from "../../types/FeePool/FeePool";
+import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { FeeInBPAUM, FeeInBPBurn, FeeInBPMint } from '@phuture/subgraph-helpers';
+import { loadOrCreateIndex } from '../entities';
+import { SetAUMScaledPerSecondsRate, SetBurningFeeInBP, SetMintingFeeInBP } from '../../types/FeePool/FeePool';
 
-function saveFeeInBP(indexAddress: Address, amount: i32, type: string): void {
+function saveFeeInBP(indexAddress: Address, amount: BigInt, type: string): void {
   let index = loadOrCreateIndex(indexAddress);
-  let value = BigInt.fromI32(amount);
 
   if (type == FeeInBPBurn) {
-    index.feeBurn = value;
+    index.feeBurn = amount;
   } else if (type == FeeInBPAUM) {
-    index.feeAUM = value;
+    index.feeAUM = amount;
   } else if (type == FeeInBPMint) {
-    index.feeMint = value;
+    index.feeMint = amount;
   } else {
     return;
   }
@@ -21,13 +20,13 @@ function saveFeeInBP(indexAddress: Address, amount: i32, type: string): void {
 }
 
 export function handleSetMintingFeeInBP(event: SetMintingFeeInBP): void {
-  saveFeeInBP(event.params.index, event.params.mintingFeeInBP, FeeInBPMint);
+  saveFeeInBP(event.params.index, BigInt.fromI32(event.params.mintingFeeInBP), FeeInBPMint);
 }
 
 export function handleSetBurningFeeInBP(event: SetBurningFeeInBP): void {
-  saveFeeInBP(event.params.index, event.params.burningFeeInPB, FeeInBPBurn);
+  saveFeeInBP(event.params.index, BigInt.fromI32(event.params.burningFeeInPB), FeeInBPBurn);
 }
 
-export function handleSetAUMFeeInBP(event: SetAUMFeeInBP): void {
-  saveFeeInBP(event.params.index, event.params.AUMFeeInBP, FeeInBPAUM);
+export function handleSetAUMFeeInBP(event: SetAUMScaledPerSecondsRate): void {
+  saveFeeInBP(event.params.index, event.params.AUMScaledPerSecondsRate, FeeInBPAUM);
 }

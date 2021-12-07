@@ -1,9 +1,9 @@
-import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { Asset } from "../../types/schema";
-import { ERC20 } from "../../types/Vault/ERC20";
-import { ERC20SymbolBytes } from "../../types/Vault/ERC20SymbolBytes";
-import { ERC20NameBytes } from "../../types/Vault/ERC20NameBytes";
-import { ONE_BD, ONE_BI } from "@phuture/subgraph-helpers";
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { Asset } from '../../types/schema';
+import { ERC20 } from '../../types/Vault/ERC20';
+import { ERC20SymbolBytes } from '../../types/Vault/ERC20SymbolBytes';
+import { ERC20NameBytes } from '../../types/Vault/ERC20NameBytes';
+import { ONE_BD, ONE_BI } from '@phuture/subgraph-helpers';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();
@@ -30,14 +30,14 @@ export function loadOrCreateAsset(address: Address): Asset {
 }
 
 export function isNullEthValue(value: string): boolean {
-  return value == "0x0000000000000000000000000000000000000000000000000000000000000001";
+  return value == '0x0000000000000000000000000000000000000000000000000000000000000001';
 }
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
   let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress);
 
-  let symbolValue = "UNKNOWN";
+  let symbolValue = 'UNKNOWN';
   let symbolResult = contract.try_symbol();
   if (symbolResult.reverted) {
     let symbolResultBytes = contractSymbolBytes.try_symbol();
@@ -55,7 +55,7 @@ export function fetchTokenName(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
   let contractNameBytes = ERC20NameBytes.bind(tokenAddress);
 
-  let nameValue = "unknown";
+  let nameValue = 'unknown';
   let nameResult = contract.try_name();
   if (nameResult.reverted) {
     let nameResultBytes = contractNameBytes.try_name();
@@ -72,7 +72,7 @@ export function fetchTokenName(tokenAddress: Address): string {
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress);
 
-  let totalSupplyValue = BigInt.fromString("0");
+  let totalSupplyValue = BigInt.fromString('0');
   let totalSupplyResult = contract.try_totalSupply();
   if (!totalSupplyResult.reverted) {
     totalSupplyValue = totalSupplyResult.value;
@@ -97,7 +97,7 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   let bd = ONE_BD;
 
   for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
-    bd = bd.times(BigDecimal.fromString("10"));
+    bd = bd.times(BigDecimal.fromString('10'));
   }
 
   return bd;

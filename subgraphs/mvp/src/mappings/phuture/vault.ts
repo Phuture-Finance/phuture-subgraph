@@ -1,6 +1,6 @@
-import { Transfer } from "../../types/Vault/Vault";
-import { Address } from "@graphprotocol/graph-ts";
-import { convertTokenToDecimal, loadOrCreateAsset, loadOrCreateIndexAsset } from "../entities";
+import { Transfer } from '../../types/Vault/Vault';
+import { Address } from '@graphprotocol/graph-ts';
+import { convertTokenToDecimal, loadOrCreateAsset, loadOrCreateIndexAsset } from '../entities';
 
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.equals(Address.zero())) return;
@@ -14,7 +14,7 @@ export function handleTransfer(event: Transfer): void {
   if (indexAsset == null) return;
 
   indexAsset.vaultTotalSupply = indexAsset.vaultTotalSupply.plus(
-    convertTokenToDecimal(event.params.amount, asset.decimals)
+    convertTokenToDecimal(event.params.amount, asset.decimals),
   );
 
   indexAsset.save();

@@ -1,13 +1,13 @@
-import { ASSET_ROLE } from "@phuture/subgraph-helpers";
-import { UpdateAsset } from "../../types/IndexRegistry/IndexRegistry";
-import { Transfer } from "../../types/templates/Asset/Asset";
-import { SetImageURL, SetName, SetSymbol } from "../../types/templates/StaticIndex/IndexRegistry";
-import { RoleGranted, RoleRevoked } from "../../types/IndexRegistry/IndexRegistry";
-import { Asset, Index } from "../../types/schema";
-import { Asset as AssetTemplate } from "../../types/templates";
-import { VAULT_ADDRESS } from "../../../consts";
-import { updateDailyAssetStat, updateStat } from "./stats";
-import { convertTokenToDecimal, loadOrCreateAsset } from "../entities";
+import { ASSET_ROLE } from '@phuture/subgraph-helpers';
+import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
+import { Transfer } from '../../types/templates/Asset/Asset';
+import { SetImageURL, SetName, SetSymbol } from '../../types/templates/StaticIndex/IndexRegistry';
+import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';
+import { Asset, Index } from '../../types/schema';
+import { Asset as AssetTemplate } from '../../types/templates';
+import { VAULT_ADDRESS } from '../../../consts';
+import { updateDailyAssetStat, updateStat } from './stats';
+import { convertTokenToDecimal, loadOrCreateAsset } from '../entities';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);

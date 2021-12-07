@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 export namespace bigDecimal {
   export const DEFAULT_DECIMALS = 18;

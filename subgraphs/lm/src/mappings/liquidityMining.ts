@@ -1,9 +1,9 @@
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { bigDecimal, ONE_BD } from "@phuture/subgraph-helpers";
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { bigDecimal, ONE_BD } from '@phuture/subgraph-helpers';
 
-import { LP, PHTR } from "../../consts";
-import { Stake, Unstake, UnstakeRange } from "../types/LiquidityMining/LiquidityMining";
-import { APR, Reserve, Reward, Total, VestingRange } from "../types/schema";
+import { LP, PHTR } from '../../consts';
+import { Stake, Unstake, UnstakeRange } from '../types/LiquidityMining/LiquidityMining';
+import { APR, Reserve, Reward, Total, VestingRange } from '../types/schema';
 
 function toPHTR(amount: BigDecimal): BigDecimal {
   const reserve = Reserve.load(LP);
@@ -42,15 +42,15 @@ function toPHTR(amount: BigDecimal): BigDecimal {
 }
 
 function updateAPR(amount: BigInt, block: BigInt): void {
-  let apr = APR.load("0");
+  let apr = APR.load('0');
   if (apr == null) {
-    apr = new APR("0");
+    apr = new APR('0');
     apr.Wn = BigDecimal.zero();
     apr.n = ONE_BD;
   } else {
-    let total = Total.load("0");
+    let total = Total.load('0');
     if (total == null) {
-      total = new Total("0");
+      total = new Total('0');
       total.APR = BigDecimal.zero();
       total.reward = BigInt.zero();
     }
@@ -75,9 +75,9 @@ function updateAPR(amount: BigInt, block: BigInt): void {
 export function handleStake(event: Stake): void {
   const id = event.params.account
     .toHexString()
-    .concat("-")
+    .concat('-')
     .concat(BigInt.fromI32(event.params.rangeStartIndex).toString())
-    .concat("-")
+    .concat('-')
     .concat(BigInt.fromI32(event.params.rangeEndIndex).toString());
 
   let vesting = VestingRange.load(id);
@@ -106,9 +106,9 @@ export function handleUnstake(event: Unstake): void {
 export function handleUnstakeRange(event: UnstakeRange): void {
   const id = event.params.account
     .toHexString()
-    .concat("-")
+    .concat('-')
     .concat(BigInt.fromI32(event.params.rangeStartIndex).toString())
-    .concat("-")
+    .concat('-')
     .concat(BigInt.fromI32(event.params.rangeEndIndex).toString());
 
   const vesting = VestingRange.load(id);

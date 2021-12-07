@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 export namespace bytes {
   export const ADDRESS_LENGTH = 20;

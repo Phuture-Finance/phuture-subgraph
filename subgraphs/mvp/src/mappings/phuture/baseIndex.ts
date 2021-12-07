@@ -1,17 +1,17 @@
-import { Address, ethereum } from "@graphprotocol/graph-ts";
-import { BigDecimal } from "@graphprotocol/graph-ts/index";
-import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from "@phuture/subgraph-helpers";
-import {
-  loadOrCreateAccount,
-  loadOrCreateAsset,
-  loadOrCreateIndex,
-  loadOrCreateTransaction,
-} from "../entities";
-import { IndexAsset, UserIndex } from "../../types/schema";
+import { Address, ethereum } from '@graphprotocol/graph-ts';
+import { BigDecimal } from '@graphprotocol/graph-ts/index';
+import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
+import { loadOrCreateAccount, loadOrCreateAsset, loadOrCreateIndex, loadOrCreateTransaction } from '../entities';
+import { IndexAsset, UserIndex } from '../../types/schema';
 import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
-import { updateStat } from "./stats";
+import { updateStat } from './stats';
 
-export function handleIndexCreation(type: string, event: ethereum.Event, indexAddress: Address, assets: Address[]): void {
+export function handleIndexCreation(
+  type: string,
+  event: ethereum.Event,
+  indexAddress: Address,
+  assets: Address[],
+): void {
   let tx = loadOrCreateTransaction(event);
 
   let indexId = indexAddress.toHexString();
@@ -24,7 +24,7 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
     for (let i = 0; i < paramAssets.length; i++) {
       let assetId = paramAssets[i].toHexString();
 
-      let indexAssetId = indexId.concat("-").concat(assetId);
+      let indexAssetId = indexId.concat('-').concat(assetId);
 
       let indexAsset = new IndexAsset(indexAssetId);
       indexAsset.index = indexId;
@@ -50,7 +50,7 @@ export function handleIndexCreation(type: string, event: ethereum.Event, indexAd
 
   loadOrCreateAccount(event.transaction.from);
 
-  let userIndexId = event.transaction.from.toHexString().concat("-").concat(indexAddress.toHexString());
+  let userIndexId = event.transaction.from.toHexString().concat('-').concat(indexAddress.toHexString());
   let userIndex = UserIndex.load(userIndexId);
   if (!userIndex) {
     userIndex = new UserIndex(userIndexId);

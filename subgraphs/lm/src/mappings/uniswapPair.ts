@@ -1,8 +1,8 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { Reserve } from "../types/schema";
-import { LP, PHTR, USDC } from "../../consts";
-import { Sync, Transfer } from "../types/UniswapPair/UniswapPair";
+import { Reserve } from '../types/schema';
+import { LP, PHTR, USDC } from '../../consts';
+import { Sync, Transfer } from '../types/UniswapPair/UniswapPair';
 
 export function handleSync(event: Sync): void {
   let reserve = Reserve.load(LP);

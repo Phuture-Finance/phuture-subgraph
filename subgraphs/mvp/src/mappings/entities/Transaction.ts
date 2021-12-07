@@ -1,6 +1,6 @@
-import { ethereum } from "@graphprotocol/graph-ts";
+import { ethereum } from '@graphprotocol/graph-ts';
 
-import { Transaction } from "../../types/schema";
+import { Transaction } from '../../types/schema';
 
 export function loadOrCreateTransaction(event: ethereum.Event): Transaction {
   let id = event.transaction.hash.toHexString();

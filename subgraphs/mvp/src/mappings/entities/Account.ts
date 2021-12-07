@@ -1,5 +1,5 @@
-import { Address } from "@graphprotocol/graph-ts";
-import { User } from "../../types/schema";
+import { Address } from '@graphprotocol/graph-ts';
+import { User } from '../../types/schema';
 
 export function loadOrCreateAccount(address: Address): void {
   if (address.equals(Address.zero())) {
