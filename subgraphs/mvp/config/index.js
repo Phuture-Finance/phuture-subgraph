@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const Mustache = require('mustache');
-
+const subgraphCfg = require('./config.js');
 const config = require('./config.json');
 
 const subgraphTemplatePath = path.join(__dirname, '../subgraph.template.yaml');
 const subgraphTemplate = fs.readFileSync(subgraphTemplatePath, 'utf8');
 
 const subgraphPath = path.join(__dirname, '../subgraph.yaml');
-const subgraph = Mustache.render(subgraphTemplate, config);
+const subgraph = Mustache.render(subgraphTemplate, subgraphCfg.data);
 
 fs.writeFileSync(subgraphPath, subgraph, 'utf8');
 
@@ -20,7 +20,7 @@ const consts = Mustache.render(constsTemplate, config);
 
 fs.writeFileSync(constsPath, consts, 'utf8');
 
-config.pairs.forEach((item) => {
+subgraphCfg.pairs.forEach((item) => {
   const chainLinkPath = path.join(__dirname, '../src/mappings/chainlink/aggregators/');
   const templatePath = path.join(chainLinkPath, 'aggregator.template.tsx');
   const template = fs.readFileSync(templatePath, 'utf8');

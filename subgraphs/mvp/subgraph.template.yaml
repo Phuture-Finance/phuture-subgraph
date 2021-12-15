@@ -9,8 +9,8 @@ dataSources:
     network: {{network}}
     source:
       abi: IndexRegistry
-      address: '{{indexRegistryContractAddress}}'
-      startBlock: {{indexRegistryStartBlock}}
+      address: '{{Registry}}'
+      startBlock: {{RegistryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,8 +30,6 @@ dataSources:
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
-        - event: SetImageURL(address,string)
-          handler: handleSetImageURL
         - event: SetName(address,string)
           handler: handleSetName
         - event: SetSymbol(address,string)
@@ -47,8 +45,8 @@ dataSources:
     network: {{network}}
     source:
       abi: StaticIndexFactory
-      address: '{{StaticIndexFactoryContractAddress}}'
-      startBlock: {{indexFactoryStartBlock}}
+      address: '{{StaticIndexFactory}}'
+      startBlock: {{StaticIndexFactoryRegistryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -71,12 +69,12 @@ dataSources:
       file: ./src/mappings/phuture/staticIndexFactory.ts
 
   - kind: ethereum/contract
-    name: Vault
+    name: vToken
     network: {{network}}
     source:
-      abi: Vault
-      address: '{{vaultContractAddress}}'
-      startBlock: {{vaultStartBlock}}
+      abi: vToken
+      address: '{{vTokenFactory}}'
+      startBlock: {{vTokenFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -85,9 +83,12 @@ dataSources:
         - Asset
         - Index
         - IndexAsset
+        - vToken
       abis:
-        - name: Vault
-          file: ../abis/Phuture/Vault.json
+        - name: vToken
+          file: ../abis/Phuture/vToken.json
+        - name: vTokenFactory
+          file: ../abis/Phuture/vTokenFactory.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -95,17 +96,46 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed address,uint256)
-          handler: handleTransfer
-      file: ./src/mappings/phuture/vault.ts
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handlerTransfer
+        - event: UpdateDeposit(indexed address,uint256)
+          handler: handlerUpdateDeposit
+      file: ./src/mappings/phuture/vToken.ts
+
+  - kind: ethereum/contract
+    name: vTokenFactory
+    network: {{network}}
+    source:
+      abi: vTokenFactory
+      address: '{{vTokenFactory}}'
+      startBlock: {{vTokenFactoryBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - vToken
+      abis:
+        - name: vTokenFactory
+          file: ../abis/Phuture/vTokenFactory.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      eventHandlers:
+        - event: VTokenCreated(address,address,bytes32)
+          handler: handleVTokenCreated
+      file: ./src/mappings/phuture/vTokenFactory.ts
 
   - kind: ethereum/contract
     name: FeePool
     network: {{network}}
     source:
       abi: FeePool
-      address: '{{feePoolContractAddress}}'
-      startBlock: {{feePoolStartBlock}}
+      address: '{{FeePool}}'
+      startBlock: {{FeePoolRegistryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -167,8 +197,8 @@ dataSources:
     network: {{network}}
     source:
       abi: TrackedIndexFactory
-      address: '{{TrackedIndexFactoryAddress}}'
-      startBlock: {{TrackedIndexFactoryStartBlock}}
+      address: '{{TrackedIndexFactory}}'
+      startBlock: {{TrackedIndexFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -195,8 +225,8 @@ dataSources:
     network: {{network}}
     source:
       abi: TopNMarketCapIndexFactory
-      address: '{{TopNMarketCapIndexFactoryAddress}}'
-      startBlock: {{TopNMarketCapIndexFactoryStartBlock}}
+      address: '{{TopNMarketCapIndexFactory}}'
+      startBlock: {{TopNMarketCapIndexFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

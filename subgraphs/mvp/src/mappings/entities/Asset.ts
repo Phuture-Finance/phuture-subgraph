@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { Asset } from '../../types/schema';
-import { ERC20 } from '../../types/Vault/ERC20';
-import { ERC20SymbolBytes } from '../../types/Vault/ERC20SymbolBytes';
-import { ERC20NameBytes } from '../../types/Vault/ERC20NameBytes';
+import { ERC20 } from '../../types/vToken/ERC20';
+import { ERC20SymbolBytes } from '../../types/vToken/ERC20SymbolBytes';
+import { ERC20NameBytes } from '../../types/vToken/ERC20NameBytes';
 import { ONE_BD, ONE_BI } from '@phuture/subgraph-helpers';
 
 export function loadOrCreateAsset(address: Address): Asset {
@@ -22,6 +22,7 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.vaultBaseReserve = BigDecimal.zero();
     asset.indexCount = BigInt.zero();
     asset._indexes = [];
+    asset.vToken = [];
 
     asset.save();
   }

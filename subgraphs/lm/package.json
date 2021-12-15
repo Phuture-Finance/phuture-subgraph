@@ -6,10 +6,12 @@
     "start": "npm run create:local && npm run deploy:local",
     "precodegen": "rimraf src/types src/mappings/chainlink/aggregators/*.ts && node config/index.js",
     "codegen": "graph codegen --output-dir src/types/",
-    "build": "graph build"
+    "build": "graph build",
+    "create:local": "graph create phuture/lm --node http://0.0.0.0:8020",
+    "deploy:local": "graph deploy phuture/lm --ipfs http://0.0.0.0:5001 --node http://0.0.0.0:8020"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.22.4",
+    "@graphprotocol/graph-cli": "^0.25.1",
     "mustache": "^3.1.0",
     "rimraf": "^2.6.3"
   },

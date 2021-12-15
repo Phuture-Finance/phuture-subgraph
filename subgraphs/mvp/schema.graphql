@@ -18,6 +18,8 @@ type Asset @entity {
   basePrice: BigDecimal!
   marketCap: BigInt!
 
+  vToken: [vToken!]! @derivedFrom(field: "asset")
+
   vaultReserve: BigDecimal!
   vaultBaseReserve: BigDecimal!
 
@@ -83,13 +85,19 @@ type Index @entity {
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
 }
 
+type vToken @entity {
+  "Address (hash)"
+  id: ID!
+  asset: Asset!
+  tokenType: Bytes!
+  deposited: BigInt
+}
+
 type IndexAsset @entity {
   id: ID! # Set to `${index.id}-${asset.id}`
   index: Index!
   asset: Asset!
   weight: BigInt!
-
-  vaultTotalSupply: BigDecimal!
 
   basePrice: BigDecimal!
   marketCap: BigDecimal!

@@ -32,8 +32,6 @@ export function handleIndexCreation(
       indexAsset.basePrice = BigDecimal.zero();
       indexAsset.marketCap = BigDecimal.zero();
 
-      indexAsset.vaultTotalSupply = BigDecimal.zero();
-
       let asset = loadOrCreateAsset(paramAssets[i]);
 
       asset.indexCount = asset.indexCount.plus(ONE_BI);
