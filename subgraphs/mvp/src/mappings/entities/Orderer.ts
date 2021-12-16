@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { Order, OrderDetails } from '../../types/schema';
+import { Order, OrderDetailsInfo } from '../../types/schema';
 
 export function loadOrCreateOrder(address: Address): Order {
   let id = address.toHexString();
@@ -12,13 +12,13 @@ export function loadOrCreateOrder(address: Address): Order {
   return order as Order;
 }
 
-export function loadOrCreateOrderDetails(order_id: BigInt, asset: Address): OrderDetails {
+export function loadOrCreateOrderDetails(order_id: BigInt, asset: Address): OrderDetailsInfo {
   let id = order_id.toString().concat('-').concat(asset.toHexString());
 
-  let orderDetails = OrderDetails.load(id);
+  let orderDetails = OrderDetailsInfo.load(id);
   if (!orderDetails) {
-    orderDetails = new OrderDetails(id);
+    orderDetails = new OrderDetailsInfo(id);
   }
 
-  return orderDetails as OrderDetails;
+  return orderDetails as OrderDetailsInfo;
 }

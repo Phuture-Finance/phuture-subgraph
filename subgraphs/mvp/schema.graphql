@@ -95,10 +95,10 @@ type Order @entity {
   id: ID!
   index: Index!
   order_id: BigInt!
-  orderDetails: [OrderDetails!]! @derivedFrom(field: "order")
+  orderDetails: [OrderDetailsInfo!]! @derivedFrom(field: "order")
 }
 
-type OrderDetails @entity {
+type OrderDetailsInfo @entity {
   id: ID! # Set to `${order.id}-${asset.id}`
   order: Order!
   asset: Asset!
