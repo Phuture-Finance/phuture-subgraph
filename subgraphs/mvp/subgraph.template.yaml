@@ -73,8 +73,8 @@ dataSources:
     network: {{network}}
     source:
       abi: vToken
-      address: '{{vTokenFactory}}'
-      startBlock: {{vTokenFactoryBlockNumber}}
+      address: '{{VTokenFactory}}'
+      startBlock: {{VTokenFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -107,8 +107,8 @@ dataSources:
     network: {{network}}
     source:
       abi: vTokenFactory
-      address: '{{vTokenFactory}}'
-      startBlock: {{vTokenFactoryBlockNumber}}
+      address: '{{VTokenFactory}}'
+      startBlock: {{VTokenFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -128,6 +128,39 @@ dataSources:
         - event: VTokenCreated(address,address,bytes32)
           handler: handleVTokenCreated
       file: ./src/mappings/phuture/vTokenFactory.ts
+
+  - kind: ethereum/contract
+    name: Orderer
+    network: {{network}}
+    source:
+      abi: Orderer
+      address: '{{Orderer}}'
+      startBlock: {{OrdererBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Asset
+        - Index
+        - Orderer
+      abis:
+        - name: Orderer
+          file: ../abis/Phuture/Orderer.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      eventHandlers:
+        - event: PlaceOrder(address,uint256)
+          handler: handlerPlaceOrder
+        - event: UpdateOrder(uint256,address,uint256,bool)
+          handler: handlerUpdateOrder
+        - event: CompleteOrder(uint256,address,uint256,address,uint256)
+          handler: handlerCompleteOrder
+      file: ./src/mappings/phuture/Orderer.ts
 
   - kind: ethereum/contract
     name: FeePool

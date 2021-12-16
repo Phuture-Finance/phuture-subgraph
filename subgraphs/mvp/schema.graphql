@@ -85,6 +85,27 @@ type Index @entity {
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
 }
 
+enum OrderSideType {
+  Buy
+  Sell
+}
+
+type Order @entity {
+  "Address (hash)"
+  id: ID!
+  index: Index!
+  order_id: BigInt!
+  orderDetails: [OrderDetails!]! @derivedFrom(field: "order")
+}
+
+type OrderDetails @entity {
+  id: ID! # Set to `${order.id}-${asset.id}`
+  order: Order!
+  asset: Asset!
+  shares: BigInt!
+  side: OrderSideType!
+}
+
 type vToken @entity {
   "Address (hash)"
   id: ID!
