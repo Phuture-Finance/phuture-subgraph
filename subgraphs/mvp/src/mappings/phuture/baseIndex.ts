@@ -1,4 +1,4 @@
-import {Address, BigInt, ethereum} from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
 import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
 import { loadOrCreateAccount, loadOrCreateAsset, loadOrCreateIndex, loadOrCreateTransaction } from '../entities';
@@ -11,7 +11,7 @@ export function handleIndexCreation(
   event: ethereum.Event,
   indexAddress: Address,
   assets: Address[],
-  weights: Array<i32>
+  weights: Array<i32>,
 ): void {
   let tx = loadOrCreateTransaction(event);
 
