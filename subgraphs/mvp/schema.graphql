@@ -18,7 +18,8 @@ type Asset @entity {
   basePrice: BigDecimal!
   marketCap: BigInt!
 
-  vToken: [vToken!]! @derivedFrom(field: "asset")
+  _vTokens: [ID!]!
+  vTokens: [vToken!]! @derivedFrom(field: "asset")
 
   vaultReserve: BigDecimal!
   vaultBaseReserve: BigDecimal!
@@ -59,7 +60,6 @@ type Index @entity {
   totalSupply: BigInt!
   # metadata
   decimals: BigInt!
-  imageUrl: String
   symbol: String!
   name: String!
 
@@ -89,7 +89,7 @@ type vToken @entity {
   "Address (hash)"
   id: ID!
   asset: Asset!
-  tokenType: Bytes!
+  tokenType: String!
   deposited: BigInt
 }
 

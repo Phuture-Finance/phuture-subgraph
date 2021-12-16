@@ -22,7 +22,6 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.vaultBaseReserve = BigDecimal.zero();
     asset.indexCount = BigInt.zero();
     asset._indexes = [];
-    asset.vToken = [];
 
     asset.save();
   }
