@@ -10,7 +10,7 @@
     "deploy:local": "graph deploy phuture/ia --ipfs http://0.0.0.0:5001 --node http://0.0.0.0:8020"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.22.4",
+    "@graphprotocol/graph-cli": "^0.25.1",
     "mustache": "^3.1.0",
     "rimraf": "^2.6.3"
   },

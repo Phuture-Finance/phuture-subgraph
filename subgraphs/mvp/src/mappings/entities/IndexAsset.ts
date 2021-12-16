@@ -12,8 +12,6 @@ export function loadOrCreateIndexAsset(indexId: string, assetId: string): IndexA
     indexAsset.asset = assetId;
     indexAsset.basePrice = BigDecimal.zero();
     indexAsset.marketCap = BigDecimal.zero();
-
-    indexAsset.vaultTotalSupply = BigDecimal.zero();
   }
 
   indexAsset.save();

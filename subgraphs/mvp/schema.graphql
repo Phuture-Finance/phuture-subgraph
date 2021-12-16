@@ -18,6 +18,9 @@ type Asset @entity {
   basePrice: BigDecimal!
   marketCap: BigInt!
 
+  _vTokens: [ID!]!
+  vTokens: [vToken!]! @derivedFrom(field: "asset")
+
   vaultReserve: BigDecimal!
   vaultBaseReserve: BigDecimal!
 
@@ -57,7 +60,6 @@ type Index @entity {
   totalSupply: BigInt!
   # metadata
   decimals: BigInt!
-  imageUrl: String
   symbol: String!
   name: String!
 
@@ -83,13 +85,40 @@ type Index @entity {
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
 }
 
+enum OrderSideType {
+  Buy
+  Sell
+}
+
+type Order @entity {
+  "Address (hash)"
+  id: ID!
+  index: Index!
+  order_id: BigInt!
+  orderDetails: [OrderDetailsInfo!]! @derivedFrom(field: "order")
+}
+
+type OrderDetailsInfo @entity {
+  id: ID! # Set to `${order.id}-${asset.id}`
+  order: Order!
+  asset: Asset!
+  shares: BigInt!
+  side: OrderSideType!
+}
+
+type vToken @entity {
+  "Address (hash)"
+  id: ID!
+  asset: Asset!
+  tokenType: String!
+  deposited: BigInt
+}
+
 type IndexAsset @entity {
   id: ID! # Set to `${index.id}-${asset.id}`
   index: Index!
   asset: Asset!
   weight: BigInt!
-
-  vaultTotalSupply: BigDecimal!
 
   basePrice: BigDecimal!
   marketCap: BigDecimal!

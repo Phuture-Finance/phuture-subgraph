@@ -17,14 +17,16 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'rinkeby:https://rinkeby.infura.io/v3/0565f8efaf994d2ebad586057c1ca181'
+      ethereum: rinkeby:https://rinkeby.infura.io/v3/{INFURA_KEY:-2fda9b434b9846d0b8d16fa44dffb97f}
       RUST_LOG: info
+
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:
       - '5001:5001'
     volumes:
       - ./data/ipfs:/data/ipfs
+
   postgres:
     image: postgres
     ports:
