@@ -141,7 +141,8 @@ dataSources:
       entities:
         - Asset
         - Index
-        - Orderer
+        - Order
+        - OrderDetailsInfo
       abis:
         - name: Orderer
           file: ../abis/Phuture/Orderer.json
