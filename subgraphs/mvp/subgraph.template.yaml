@@ -96,8 +96,6 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handlerTransfer
         - event: UpdateDeposit(indexed address,uint256)
           handler: handlerUpdateDeposit
       file: ./src/mappings/phuture/vToken.ts
@@ -143,7 +141,8 @@ dataSources:
       entities:
         - Asset
         - Index
-        - Orderer
+        - Order
+        - OrderDetailsInfo
       abis:
         - name: Orderer
           file: ../abis/Phuture/Orderer.json

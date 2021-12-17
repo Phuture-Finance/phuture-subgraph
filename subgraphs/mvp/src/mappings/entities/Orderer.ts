@@ -1,12 +1,19 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { Order, OrderDetailsInfo } from '../../types/schema';
+import { Order, OrderDetailsInfo, _OrderIdLink } from '../../types/schema';
 
-export function loadOrCreateOrder(address: Address): Order {
-  let id = address.toHexString();
-  let order = Order.load(id);
+export function loadOrCreateOrderLink(order_id: BigInt): _OrderIdLink {
+  let orderLink = _OrderIdLink.load(order_id.toHexString());
+  if (!orderLink) {
+    orderLink = new _OrderIdLink(order_id.toHexString());
+  }
+
+  return orderLink as _OrderIdLink;
+}
+
+export function loadOrCreateOrder(id: Address): Order {
+  let order = Order.load(id.toHexString());
   if (!order) {
-    order = new Order(id);
-    order.index = id;
+    order = new Order(id.toHexString());
   }
 
   return order as Order;
