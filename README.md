@@ -1,25 +1,23 @@
 # Phuture Subgraph
 
-To generate entity structures from the graphql scheme we need to execute `npm run codegen` for each subgraph
-stored in `subgraphs` folder.
+To generate entity structures from the graphql scheme you need to execute `npm run codegen` for each subgraph stored in `subgraphs` folder.
 
-```bash
+```console
 npm run codegen
 
-// To pretify codegenrated and the rest code written on typescript.
+# To pretify codegenrated and the rest code written on typescript.
 npm run lint:fix
 ```
 
-Then we have to build code-generated entities for the storage and graphql, with the defined typescripts which
-are handling the events from the blockchain.
+Then you have to build code-generated entities for the storage and graphql, with the defined typescripts which are handling the events from the blockchain.
 
-```bash
+```console
 npm run build
 ```
 
 ## Subgraph declaration
 
-Each of the subgraph must declare such list of the scripts in `package.json`
+Each of the subgraph must declare such list of the scripts in `package.json`.
 
 ```json
 {
@@ -32,31 +30,33 @@ Each of the subgraph must declare such list of the scripts in `package.json`
   }
 }
 ```
-Short explanation of the specified list of scripts:
+
+### Short explanation of the specified list of scripts:
 - `precodegen` drops the caches previously code generated entities, `node config/index.js` execute templating for this files like: `{subgraph}/subgraph.yaml`, `{subgraph}/consts.ts`, etc.
-- `codegen` executes code-generation process, simply saying everything what is defined int the `{subgraph}/schema.graphql` 
-- `build` executes typescript compilation to wasm bytecode which going to be running on the graph hosted server
-- `create:local` create subgraph entity in the self-hosted node, `${name_of_your_subgraph}` must be uniq name of your subgraph
-- `deploy:local` executes compilation of typescripts and deploying the metadata information to local ipfs node, and deploying wasm binaries to the local graph node
+- `codegen` executes code-generation process, simply saying everything what is defined int the `{subgraph}/schema.graphql`.
+- `build` executes typescript compilation to wasm bytecode which going to be running on the graph hosted server.
+- `create:local` create subgraph entity in the self-hosted node, `${name_of_your_subgraph}` must be uniq name of your subgraph.
+- `deploy:local` executes compilation of typescripts and deploying the metadata information to local ipfs node, and deploying wasm binaries to the local graph node.
 
 ## Local development
 
-For local development we have prepared `docker-compose.dev.yml` and `docker-compose.yml` files, where we define list of the services needed for graph-node instance.
-Short list of the graph relation between services:
+For local development we have prepared `docker-compose.dev.yml` and `docker-compose.yml` files, where the list of the services needed for graph-node instance is defined.
 
-```bash
-// run services with connection to infura api
+### Short list of the graph relation between services:
+
+```console
+# run services with connection to infura api
 INFURA_KEY={your_infura_key} docker-compose -f docker-compose.dev.yml up -d
 
-// run services with connection to local private node in ganache
+# run services with connection to local private node in ganache
 docker-compose -f docker-compose.yml up -d
 ```
 
-Short overview of the services relation.
+### Overview of the services relation
 
 ![alt text](docs/images/services.png "Services overview")
 
-## Subgraph overview
+### Subgraph overview
 
 ![alt text](docs/images/subgraph.png "Subgraph overview")
 
@@ -64,8 +64,7 @@ Short overview of the services relation.
 
 ### Definition of storable entities 
 
-If we want to store aggregated data in database to be able to query them by grapql after, we need to define such
-entities in `schema.graphql` file:
+If you want to store aggregated data in database to be able to query them by grapql after, we need to define such entities in `schema.graphql` file:
 
 ```graphql
 type vToken @entity {
@@ -77,8 +76,7 @@ type vToken @entity {
 }
 ```
 
-When new entities are ready we need to generate typescript data structures for them, by running `npm run codegen` in the subgraph folder.
-All code-generated entities we store in `{subgraph}/types/schema.ts` file, for this specific Entity, data must be following:
+When new entities are ready you need to generate typescript data structures for them, by running `npm run codegen` in the subgraph folder. All code-generated entities are stored in `{subgraph}/types/schema.ts` file, for this specific Entity, data might be following:
 
 ```typescript
 export class vToken extends Entity {
@@ -153,11 +151,9 @@ export class vToken extends Entity {
 }
 ```
 
-In such typescript definition `id` field always become a primary key and used for loading/saving. 
-All entities are storable in postgres, so when we define new entity with this fields set, in postgres must be created
-table with similar structure. 
+In such typescript definition `id` field always become a primary key and used for loading/saving. All entities are storable in postgres, so when we define new entity with this fields set, in postgres must be created table with similar structure. 
 
-Here is example of table structure created in postgres for the `vToken` entity:
+#### Here is example of table structure created in postgres for the `vToken` entity:
 
 ```postgresql
 create table sgd3.v_token
@@ -176,11 +172,9 @@ create table sgd3.v_token
 
 ### Events processing
 
-To track events from the blockchain we should define these events in the subgraph configuration file, where we 
-specify abi files and events structure, also we need to set the address of smart-contract and the block start 
-number to start scanning the blockchain.
+To track events from the blockchain you should define these events in the subgraph configuration file, where you specify abi files and events structure, also you need to set the address of smart-contract and the block start number to start scanning the blockchain.
 
-Example of `bugraph.template.yaml`:
+Example of `subgraph.template.yaml`:
 
 ```yaml
   - kind: ethereum/contract
@@ -211,9 +205,7 @@ Example of `bugraph.template.yaml`:
       file: ./src/mappings/phuture/vTokenFactory.ts
 ```
 
-Here we define all smart-contract which we are listening, and the mapping between event and event handler, in such case
-we are listening `VTokenCreated` events, and execute `handleVTokenCreated` handler function with the event data. To
-show how we store this entity lets have an example of the code of this handler:
+Here you define all smart-contract which we are listening, and the mapping between event and event handler, in such case subgraph node would be listening `VTokenCreated` events, and executing `handleVTokenCreated` handler function with the event data. To show how application store this entity lets have an example of the code of this handler:
 
 ```typescript
 export function loadOrCreateVToken(address: Address): vToken {
@@ -244,5 +236,4 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 
 ```
 
-So here we receive the data from event, do some business logic relevant to this entity and making a save request in
-to database, so after we will be available to make a queries to this data.
+##### So here node receive the data from event, do some business logic relevant to this entity and making a save request in to database, so after clients will be available to make a queries to this data.
