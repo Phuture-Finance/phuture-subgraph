@@ -355,6 +355,8 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleStaticIndexTransfer
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
 
   - kind: ethereum/contract
     name: TrackedIndex
