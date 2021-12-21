@@ -98,6 +98,8 @@ dataSources:
       eventHandlers:
         - event: UpdateDeposit(indexed address,uint256)
           handler: handlerUpdateDeposit
+        - event: VTokenTransfer(indexed address,indexed address,uint256)
+          handler: handlerVTokenTransfer
       file: ./src/mappings/phuture/vToken.ts
 
   - kind: ethereum/contract
@@ -353,6 +355,8 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleStaticIndexTransfer
+        - event: UpdateAnatomy(address[],uint8[])
+          handler: handleUpdateAnatomy
 
   - kind: ethereum/contract
     name: TrackedIndex

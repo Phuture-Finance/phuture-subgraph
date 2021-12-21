@@ -116,7 +116,8 @@ type vToken @entity {
   id: ID!
   asset: Asset!
   tokenType: String!
-  deposited: BigInt
+  deposited: BigInt!
+  platformTotalSupply: BigInt!
 }
 
 type IndexAsset @entity {
@@ -124,8 +125,9 @@ type IndexAsset @entity {
   index: Index!
   asset: Asset!
   weight: BigInt!
+  shares: BigInt!
 
-  basePrice: BigDecimal!
+  basePrice: BigDecimal! @deprecated
   marketCap: BigDecimal!
 }
 
