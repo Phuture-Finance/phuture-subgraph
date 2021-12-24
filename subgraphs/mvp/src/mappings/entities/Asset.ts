@@ -1,9 +1,9 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { Asset } from '../../types/schema';
-import { ERC20 } from '../../types/vToken/ERC20';
-import { ERC20SymbolBytes } from '../../types/vToken/ERC20SymbolBytes';
-import { ERC20NameBytes } from '../../types/vToken/ERC20NameBytes';
 import { ONE_BD, ONE_BI } from '@phuture/subgraph-helpers';
+import { ERC20 } from '../../types/templates/Asset/ERC20';
+import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
+import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();

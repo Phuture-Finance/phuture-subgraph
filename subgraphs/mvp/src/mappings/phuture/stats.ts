@@ -188,16 +188,11 @@ export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
   return indexStat as YearlyIndexStat;
 }
 
-export function updateDailyAssetStat(event: ethereum.Event): DailyAssetStat | null {
+export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): DailyAssetStat | null {
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
-  let dayAssetID = event.address.toHexString().concat('-').concat(BigInt.fromI32(dayID).toString());
-
-  let asset = Asset.load(event.address.toHexString());
-  if (!asset) {
-    return null;
-  }
+  let dayAssetID = asset.id.concat('-').concat(BigInt.fromI32(dayID).toString());
 
   let dailyAssetStat = DailyAssetStat.load(dayAssetID);
   if (!dailyAssetStat) {

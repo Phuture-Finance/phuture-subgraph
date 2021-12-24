@@ -69,40 +69,6 @@ dataSources:
       file: ./src/mappings/phuture/staticIndexFactory.ts
 
   - kind: ethereum/contract
-    name: vToken
-    network: {{network}}
-    source:
-      abi: vToken
-      address: '{{VTokenFactory}}'
-      startBlock: {{VTokenFactoryBlockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Asset
-        - Index
-        - IndexAsset
-        - vToken
-      abis:
-        - name: vToken
-          file: ../abis/Phuture/vToken.json
-        - name: vTokenFactory
-          file: ../abis/Phuture/vTokenFactory.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-      eventHandlers:
-        - event: UpdateDeposit(indexed address,uint256)
-          handler: handlerUpdateDeposit
-        - event: VTokenTransfer(indexed address,indexed address,uint256)
-          handler: handlerVTokenTransfer
-      file: ./src/mappings/phuture/vToken.ts
-
-  - kind: ethereum/contract
     name: vTokenFactory
     network: {{network}}
     source:
@@ -128,6 +94,8 @@ dataSources:
         - event: VTokenCreated(address,address,bytes32)
           handler: handleVTokenCreated
       file: ./src/mappings/phuture/vTokenFactory.ts
+
+  # TODO: add new entity for CreditUpdate event, @entity Credit 1:1 to id(from address), index, governor, amount, dept
 
   - kind: ethereum/contract
     name: Orderer
@@ -327,6 +295,12 @@ templates:
       abis:
         - name: Asset
           file: ../abis/ERC20/ERC20.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -438,3 +412,26 @@ templates:
           handler: handleSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+
+  - kind: ethereum/contract
+    name: vToken
+    network: {{network}}
+    source:
+      abi: vToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - vToken
+      abis:
+        - name: vToken
+          file: ../abis/Phuture/vToken.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+      eventHandlers:
+        - event: UpdateDeposit(indexed address,uint256)
+          handler: handlerUpdateDeposit
+        - event: VTokenTransfer(indexed address,indexed address,uint256)
+          handler: handlerVTokenTransfer
+      file: ./src/mappings/phuture/vToken.ts

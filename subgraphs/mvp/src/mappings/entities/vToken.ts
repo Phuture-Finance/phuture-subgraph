@@ -14,8 +14,8 @@ export function loadOrCreateVToken(address: Address): vToken {
   return vt as vToken;
 }
 
-export function loadVToken(address: Address): vToken | null {
-  let id = address.toHexString();
+export function loadVToken(address: Address | null): vToken | null {
+  if (!address) return null;
 
-  return vToken.load(id);
+  return vToken.load(address.toHexString());
 }

@@ -5,9 +5,7 @@ import { SetName, SetSymbol } from '../../types/templates/StaticIndex/IndexRegis
 import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';
 import { Asset, Index } from '../../types/schema';
 import { Asset as AssetTemplate } from '../../types/templates';
-import { VAULT_ADDRESS } from '../../../consts';
-import { updateDailyAssetStat, updateStat } from './stats';
-import { convertTokenToDecimal, loadOrCreateAsset } from '../entities';
+import { convertTokenToDecimal, loadOrCreateAsset, loadVToken } from '../entities';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -19,26 +17,7 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.save();
 }
 
-export function handleTransfer(event: Transfer): void {
-  if (event.params.to.toHexString() != VAULT_ADDRESS) return;
-
-  let asset = Asset.load(event.address.toHexString());
-  if (!asset) return;
-
-  asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
-  asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
-
-  asset.save();
-
-  let stat = updateStat(event);
-  stat.totalValueLocked = stat.totalValueLocked.plus(
-    convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice),
-  );
-
-  stat.save();
-
-  updateDailyAssetStat(event);
-}
+export function handleTransfer(event: Transfer): void {}
 
 export function handleSetName(event: SetName): void {
   let index = Index.load(event.address.toHexString());
