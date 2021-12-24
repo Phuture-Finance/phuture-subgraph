@@ -1,7 +1,8 @@
-import { VTokenCreated } from '../../types/vToken/vTokenFactory';
 import { Address } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
 import { DYNAMIC_TYPE, DYNAMIC_TYPE_HASH, STATIC_TYPE, STATIC_TYPE_HASH } from '@phuture/subgraph-helpers';
+import { VTokenCreated } from '../../types/vTokenFactory/vTokenFactory';
+import { vToken } from '../../types/templates';
 
 export function handleVTokenCreated(event: VTokenCreated): void {
   if (event.params.vToken.equals(Address.zero())) return;
@@ -24,6 +25,9 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 
   asset._vTokens = value;
   asset.save();
+
+  // Generate template for monitoring new address.
+  vToken.create(event.params.vToken);
 
   vt.save();
 }

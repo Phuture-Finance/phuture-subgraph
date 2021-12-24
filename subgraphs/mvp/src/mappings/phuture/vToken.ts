@@ -1,18 +1,46 @@
-// @ts-ignore
-import { UpdateDeposit, VTokenTransfer } from '../../types/vToken/vToken';
-import { loadOrCreateVToken, loadVToken } from '../entities';
+import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
+import { convertTokenToDecimal, loadOrCreateVToken, loadVToken } from '../entities';
+import { updateDailyAssetStat, updateStat } from './stats';
+import { Asset, vToken } from '../../types/schema';
+import { Address, log } from '@graphprotocol/graph-ts';
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
-  let fromVToken = loadVToken(event.params.from);
-  if (fromVToken) {
-    fromVToken.platformTotalSupply -= event.params.amount;
-    fromVToken.save();
-  }
+  let vt = vToken.load(event.address.toHexString());
+  if (!vt) return;
 
-  let toVToken = loadVToken(event.params.to);
-  if (toVToken) {
-    toVToken.platformTotalSupply += event.params.amount;
-    toVToken.save();
+  if (event.params.from.equals(Address.zero())) {
+    updateVToken(vt, event, true);
+  }
+  if (event.params.to.equals(Address.zero())) {
+    updateVToken(vt, event, false);
+  }
+}
+
+function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
+  if (isInc) {
+    vt.platformTotalSupply = vt.platformTotalSupply.plus(event.params.amount);
+  } else {
+    vt.platformTotalSupply = vt.platformTotalSupply.minus(event.params.amount);
+  }
+  vt.save();
+
+  let asset = Asset.load(vt.asset);
+  if (asset) {
+    if (isInc) {
+      asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.amount, asset.decimals));
+    } else {
+      asset.vaultReserve = asset.vaultReserve.minus(convertTokenToDecimal(event.params.amount, asset.decimals));
+    }
+    asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
+    asset.save();
+
+    let stat = updateStat(event);
+    stat.totalValueLocked = stat.totalValueLocked.plus(
+      convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
+    );
+    stat.save();
+
+    updateDailyAssetStat(event, asset);
   }
 }
 
