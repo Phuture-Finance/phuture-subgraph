@@ -59,6 +59,21 @@ let data = {
   VTokenFactoryBlockNumber: 9825230,
 };
 
+data['emissionControllerContractAddress'] = '0xc8b08ada13359b01e6e42d8f48159181a299f42b';
+
+data['swapFactories'] = [
+  // {
+  //   "name": "SushiswapFactory",
+  //   "factoryAddress": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+  //   "startBlock": 9009503
+  // },
+  {
+    'name': 'UniswapFactory',
+    'factoryAddress': data.UniswapV2Factory,
+    'startBlock': 9813080,
+  },
+];
+
 data['network'] = 'rinkeby';
 
 let pairs = [
