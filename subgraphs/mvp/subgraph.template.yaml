@@ -69,12 +69,12 @@ dataSources:
       file: ./src/mappings/phuture/staticIndexFactory.ts
 
   - kind: ethereum/contract
-    name: vTokenFactory
+    name: StaticVTokenFactory
     network: {{network}}
     source:
       abi: vTokenFactory
-      address: '{{VTokenFactory}}'
-      startBlock: {{VTokenFactoryBlockNumber}}
+      address: '{{StaticVTokenFactory}}'
+      startBlock: {{StaticVTokenFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -91,8 +91,35 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: VTokenCreated(address,address,bytes32)
-          handler: handleVTokenCreated
+        - event: VTokenCreated(address,address)
+          handler: handleStaticVTokenCreated
+      file: ./src/mappings/phuture/vTokenFactory.ts
+
+  - kind: ethereum/contract
+    name: DynamicVTokenFactory
+    network: {{network}}
+    source:
+      abi: vTokenFactory
+      address: '{{DynamicVTokenFactory}}'
+      startBlock: {{DynamicVTokenFactoryBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - vToken
+      abis:
+        - name: vTokenFactory
+          file: ../abis/Phuture/vTokenFactory.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      eventHandlers:
+        - event: VTokenCreated(address,address)
+          handler: handleDynamicVTokenCreated
       file: ./src/mappings/phuture/vTokenFactory.ts
 
   # TODO: add new entity for CreditUpdate event, @entity Credit 1:1 to id(from address), index, governor, amount, dept
@@ -329,7 +356,7 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleStaticIndexTransfer
-        - event: UpdateAnatomy(address[],uint8[])
+        - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
 
   - kind: ethereum/contract
@@ -355,7 +382,7 @@ templates:
         - name: TrackedIndex
           file: ../abis/Phuture/TrackedIndex.json
       eventHandlers:
-        - event: UpdateAnatomy(address[],uint8[])
+        - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTrackedIndexTransfer
@@ -382,7 +409,7 @@ templates:
         - name: TopNMarketCapIndex
           file: ../abis/Phuture/TopNMarketCapIndex.json
       eventHandlers:
-        - event: UpdateAnatomy(address[],uint8[])
+        - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTopNMarketCapIndexTransfer

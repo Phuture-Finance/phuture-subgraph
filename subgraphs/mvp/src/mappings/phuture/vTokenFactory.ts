@@ -1,10 +1,11 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
-import { DYNAMIC_TYPE, DYNAMIC_TYPE_HASH, STATIC_TYPE, STATIC_TYPE_HASH } from '@phuture/subgraph-helpers';
-import { VTokenCreated } from '../../types/vTokenFactory/vTokenFactory';
+import { DYNAMIC_TYPE, STATIC_TYPE } from '@phuture/subgraph-helpers';
+import { VTokenCreated as StaticVTokenCreated } from '../../types/StaticVTokenFactory/vTokenFactory';
+import { VTokenCreated as DynamicVTokenCreated } from '../../types/DynamicVTokenFactory/vTokenFactory';
 import { vToken } from '../../types/templates';
 
-export function handleVTokenCreated(event: VTokenCreated): void {
+export function handleDynamicVTokenCreated(event: DynamicVTokenCreated): void {
   if (event.params.vToken.equals(Address.zero())) return;
 
   let vt = loadOrCreateVToken(event.params.vToken);
@@ -15,13 +16,31 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 
   let value = asset._vTokens;
 
-  if (event.params.vTokenType == STATIC_TYPE_HASH) {
-    vt.tokenType = STATIC_TYPE;
-    value = [vt.id].concat(asset._vTokens);
-  } else if (event.params.vTokenType == DYNAMIC_TYPE_HASH) {
-    vt.tokenType = DYNAMIC_TYPE;
-    value.push(vt.id);
-  }
+  vt.tokenType = DYNAMIC_TYPE;
+  value.push(vt.id);
+
+  asset._vTokens = value;
+  asset.save();
+
+  // Generate template for monitoring new address.
+  vToken.create(event.params.vToken);
+
+  vt.save();
+}
+
+export function handleStaticVTokenCreated(event: StaticVTokenCreated): void {
+  if (event.params.vToken.equals(Address.zero())) return;
+
+  let vt = loadOrCreateVToken(event.params.vToken);
+  vt.asset = event.params.asset.toHexString();
+
+  let assetAddr = Address.fromString(vt.asset);
+  let asset = loadOrCreateAsset(assetAddr);
+
+  let value = asset._vTokens;
+
+  vt.tokenType = STATIC_TYPE;
+  value = [vt.id].concat(asset._vTokens);
 
   asset._vTokens = value;
   asset.save();

@@ -1,22 +1,25 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, store } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
 import { loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
 
-export function updateAnatomy(address: Address, assets: Address[], weights: i32[]): void {
+export function updateAnatomy(address: Address, asset: Address, weight: i32): void {
   let index = loadOrCreateIndex(address);
 
-  let assetsAddresses: Array<string> = [];
+  let assetsAddresses = index._assets;
 
-  let copyOfAssets = assets;
-
-  for (let i = 0; i < copyOfAssets.length; i++) {
-    let indexAsset = loadOrCreateIndexAsset(address.toHexString(), copyOfAssets[i].toHexString());
-    if (!indexAsset) continue;
-
-    indexAsset.weight = BigInt.fromI32(weights[i] as i32);
+  let indexAsset = loadOrCreateIndexAsset(address.toHexString(), asset.toHexString());
+  if (weight == 0) {
+    assetsAddresses = [];
+    for (let i = 0; i < index._assets.length; i++) {
+      if (index._assets[i] != asset.toHexString()) {
+        assetsAddresses.push(index._assets[i]);
+      }
+    }
+    store.remove('IndexAsset', indexAsset.id);
+  } else {
+    assetsAddresses.push(asset.toHexString());
+    indexAsset.weight = BigInt.fromI32(weight as i32);
     indexAsset.save();
-
-    assetsAddresses[i] = copyOfAssets[i].toHexString();
   }
 
   index._assets = assetsAddresses;
