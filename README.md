@@ -32,6 +32,7 @@ Each of the subgraph must declare such list of the scripts in `package.json`.
 ```
 
 ### Short explanation of the specified list of scripts:
+
 - `precodegen` drops the caches previously code generated entities, `node config/index.js` execute templating for this files like: `{subgraph}/subgraph.yaml`, `{subgraph}/consts.ts`, etc.
 - `codegen` executes code-generation process, simply saying everything what is defined int the `{subgraph}/schema.graphql`.
 - `build` executes typescript compilation to wasm bytecode which going to be running on the graph hosted server.
@@ -54,15 +55,15 @@ docker-compose -f docker-compose.yml up -d
 
 ### Overview of the services relation
 
-![alt text](docs/images/services.png "Services overview")
+![alt text](docs/images/services.png 'Services overview')
 
 ### Subgraph overview
 
-![alt text](docs/images/subgraph.png "Subgraph overview")
+![alt text](docs/images/subgraph.png 'Subgraph overview')
 
 ## Example with processing `vToken` events
 
-### Definition of storable entities 
+### Definition of storable entities
 
 If you want to store aggregated data in database to be able to query them by grapql after, we need to define such entities in `schema.graphql` file:
 
@@ -82,58 +83,58 @@ When new entities are ready you need to generate typescript data structures for 
 export class vToken extends Entity {
   constructor(id: string) {
     super();
-    this.set("id", Value.fromString(id));
+    this.set('id', Value.fromString(id));
 
-    this.set("asset", Value.fromString(""));
-    this.set("tokenType", Value.fromString(""));
+    this.set('asset', Value.fromString(''));
+    this.set('tokenType', Value.fromString(''));
   }
 
   save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save vToken entity without an ID");
+    let id = this.get('id');
+    assert(id != null, 'Cannot save vToken entity without an ID');
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save vToken entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
+        'Cannot save vToken entity with non-string ID. ' +
+          'Considering using .toHex() to convert the "id" to a string.',
       );
-      store.set("vToken", id.toString(), this);
+      store.set('vToken', id.toString(), this);
     }
   }
 
   static load(id: string): vToken | null {
-    return changetype<vToken | null>(store.get("vToken", id));
+    return changetype<vToken | null>(store.get('vToken', id));
   }
 
   get id(): string {
-    let value = this.get("id");
+    let value = this.get('id');
     return value!.toString();
   }
 
   set id(value: string) {
-    this.set("id", Value.fromString(value));
+    this.set('id', Value.fromString(value));
   }
 
   get asset(): string {
-    let value = this.get("asset");
+    let value = this.get('asset');
     return value!.toString();
   }
 
   set asset(value: string) {
-    this.set("asset", Value.fromString(value));
+    this.set('asset', Value.fromString(value));
   }
 
   get tokenType(): string {
-    let value = this.get("tokenType");
+    let value = this.get('tokenType');
     return value!.toString();
   }
 
   set tokenType(value: string) {
-    this.set("tokenType", Value.fromString(value));
+    this.set('tokenType', Value.fromString(value));
   }
 
   get deposited(): BigInt | null {
-    let value = this.get("deposited");
+    let value = this.get('deposited');
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -143,15 +144,15 @@ export class vToken extends Entity {
 
   set deposited(value: BigInt | null) {
     if (!value) {
-      this.unset("deposited");
+      this.unset('deposited');
     } else {
-      this.set("deposited", Value.fromBigInt(<BigInt>value));
+      this.set('deposited', Value.fromBigInt(<BigInt>value));
     }
   }
 }
 ```
 
-In such typescript definition `id` field always become a primary key and used for loading/saving. All entities are storable in postgres, so when we define new entity with this fields set, in postgres must be created table with similar structure. 
+In such typescript definition `id` field always become a primary key and used for loading/saving. All entities are storable in postgres, so when we define new entity with this fields set, in postgres must be created table with similar structure.
 
 #### Here is example of table structure created in postgres for the `vToken` entity:
 
@@ -177,46 +178,46 @@ To track events from the blockchain you should define these events in the subgra
 Example of `subgraph.template.yaml`:
 
 ```yaml
-  - kind: ethereum/contract
-    name: vTokenFactory
-    network: {{network}}
-    source:
-      abi: vTokenFactory
-      address: '{{VTokenFactory}}'
-      startBlock: {{VTokenFactoryBlockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - vToken
-      abis:
-        - name: vTokenFactory
-          file: ../abis/Phuture/vTokenFactory.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-      eventHandlers:
-        - event: VTokenCreated(address,address,bytes32)
-          handler: handleVTokenCreated
-      file: ./src/mappings/phuture/vTokenFactory.ts
+- kind: ethereum/contract
+  name: vTokenFactory
+  network: { { network } }
+  source:
+    abi: vTokenFactory
+    address: '{{VTokenFactory}}'
+    startBlock: { { VTokenFactoryBlockNumber } }
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.5
+    language: wasm/assemblyscript
+    entities:
+      - vToken
+    abis:
+      - name: vTokenFactory
+        file: ../abis/Phuture/vTokenFactory.json
+      - name: ERC20
+        file: ../abis/ERC20/ERC20.json
+      - name: ERC20SymbolBytes
+        file: ../abis/ERC20/ERC20SymbolBytes.json
+      - name: ERC20NameBytes
+        file: ../abis/ERC20/ERC20NameBytes.json
+    eventHandlers:
+      - event: VTokenCreated(address,address,bytes32)
+        handler: handleVTokenCreated
+    file: ./src/mappings/phuture/vTokenFactory.ts
 ```
 
 Here you define all smart-contract which we are listening, and the mapping between event and event handler, in such case subgraph node would be listening `VTokenCreated` events, and executing `handleVTokenCreated` handler function with the event data. To show how application store this entity lets have an example of the code of this handler:
 
 ```typescript
 export function loadOrCreateVToken(address: Address): vToken {
-    let id = address.toHexString();
-    let vt = vToken.load(id);
-    if (!vt) {
-        vt = new vToken(id);
-        vt.deposited = BigInt.zero();
-    }
+  let id = address.toHexString();
+  let vt = vToken.load(id);
+  if (!vt) {
+    vt = new vToken(id);
+    vt.deposited = BigInt.zero();
+  }
 
-    return vt as vToken;
+  return vt as vToken;
 }
 
 export function handleVTokenCreated(event: VTokenCreated): void {
@@ -224,16 +225,15 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 
   let vt = loadOrCreateVToken(event.params.vToken);
   vt.asset = event.params.asset.toHexString();
-  
+
   if (event.params.vTokenType == STATIC_TYPE_HASH) {
     vt.tokenType = STATIC_TYPE;
   } else if (event.params.vTokenType == DYNAMIC_TYPE_HASH) {
     vt.tokenType = DYNAMIC_TYPE;
   }
-  
+
   vt.save();
 }
-
 ```
 
 ##### So here node receive the data from event, do some business logic relevant to this entity and making a save request in to database, so after clients will be available to make a queries to this data.
