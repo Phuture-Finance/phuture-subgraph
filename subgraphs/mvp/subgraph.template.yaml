@@ -21,6 +21,10 @@ dataSources:
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
+        - name: UniswapFactory
+          file: ../abis/Uniswap/UniswapFactory.json
+        - name: UniswapPair
+          file: ../abis/Uniswap/UniswapPair.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes

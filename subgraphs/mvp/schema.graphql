@@ -30,11 +30,6 @@ type Asset @entity {
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 }
 
-type _Token @entity {
-  id: ID!
-  symbol: String!
-}
-
 type Swap @entity {
   id: ID!
 

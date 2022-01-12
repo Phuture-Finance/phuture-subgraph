@@ -2,7 +2,6 @@
 export const FACTORY_ADDRESS = '{{StaticIndexFactory}}';
 export const EMISSION_CONTROLLER_ADDRESS = '{{emissionControllerContractAddress}}';
 
-export const BASE_ADDRESS = '{{USDC}}';
+export const UNI_FACTORY_ADDRESS = '{{UniswapV2Factory}}';
 
-export const WHITELIST_ASSETS = [{{#assets}}
-    '{{.}}',{{/assets}}];
+export const BASE_ADDRESS = '{{USDC}}';

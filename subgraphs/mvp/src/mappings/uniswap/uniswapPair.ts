@@ -15,8 +15,14 @@ export function handleSync(event: Sync): void {
   pair.asset0Reserve = new BigDecimal(event.params.reserve0);
   pair.asset1Reserve = new BigDecimal(event.params.reserve1);
 
-  let asset0Reserve = convertTokenToDecimal(event.params.reserve0, asset0.decimals);
-  let asset1Reserve = convertTokenToDecimal(event.params.reserve1, asset1.decimals);
+  updateAssetsBasePrice(event.params.reserve0, event.params.reserve1, asset0, asset1);
+
+  pair.save();
+}
+
+export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0: Asset, asset1: Asset): void {
+  let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
+  let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
   if (asset0.id == BASE_ADDRESS) {
     asset0.basePrice = new BigDecimal(BigInt.fromI32(1));
@@ -33,8 +39,6 @@ export function handleSync(event: Sync): void {
     asset0.basePrice = asset0Reserve.div(asset1Reserve);
     asset0.save();
   }
-
-  pair.save();
 }
 
 export function handleTransfer(event: Transfer): void {
