@@ -17,31 +17,41 @@ export function handlerVTokenTransfer(event: VTokenTransfer): void {
 }
 
 function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
+  let asset = Asset.load(vt.asset);
+  if (!asset) {
+    log.warning('updateVToken: asset not found {}', [vt.asset]);
+    return;
+  }
+
   if (isInc) {
     vt.platformTotalSupply = vt.platformTotalSupply.plus(event.params.amount);
+    vt.platformTotalSupplyDec = vt.platformTotalSupplyDec.plus(
+      convertTokenToDecimal(event.params.amount, asset.decimals),
+    );
   } else {
     vt.platformTotalSupply = vt.platformTotalSupply.minus(event.params.amount);
+    vt.platformTotalSupplyDec = vt.platformTotalSupplyDec.minus(
+      convertTokenToDecimal(event.params.amount, asset.decimals),
+    );
   }
   vt.save();
 
-  let asset = Asset.load(vt.asset);
-  if (asset) {
-    if (isInc) {
-      asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.amount, asset.decimals));
-    } else {
-      asset.vaultReserve = asset.vaultReserve.minus(convertTokenToDecimal(event.params.amount, asset.decimals));
-    }
-    asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
-    asset.save();
-
-    let stat = updateStat(event);
-    stat.totalValueLocked = stat.totalValueLocked.plus(
-      convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
-    );
-    stat.save();
-
-    updateDailyAssetStat(event, asset);
+  // Update asset reserve values.
+  if (isInc) {
+    asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.amount, asset.decimals));
+  } else {
+    asset.vaultReserve = asset.vaultReserve.minus(convertTokenToDecimal(event.params.amount, asset.decimals));
   }
+  asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
+  asset.save();
+
+  let stat = updateStat(event);
+  stat.totalValueLocked = stat.totalValueLocked.plus(
+    convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
+  );
+  stat.save();
+
+  updateDailyAssetStat(event, asset);
 }
 
 export function handlerUpdateDeposit(event: UpdateDeposit): void {
