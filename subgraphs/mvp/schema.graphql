@@ -118,6 +118,7 @@ type vToken @entity {
   tokenType: String!
   deposited: BigInt!
   platformTotalSupply: BigInt!
+  platformTotalSupplyDec: BigDecimal!
 }
 
 type IndexAsset @entity {
