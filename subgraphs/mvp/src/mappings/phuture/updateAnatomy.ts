@@ -18,7 +18,9 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32)
     }
     store.remove('IndexAsset', indexAsset.id);
   } else {
-    assetsAddr.push(asset.id);
+    if (assetsAddr.indexOf(asset.id) == -1) {
+      assetsAddr.push(asset.id);
+    }
     indexAsset.weight = BigInt.fromI32(weight as i32);
     indexAsset.save();
   }

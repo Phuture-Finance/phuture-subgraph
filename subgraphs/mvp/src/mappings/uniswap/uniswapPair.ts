@@ -35,16 +35,14 @@ export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0
 
 function updateAssetBasePrice(baseAsset: Asset, asset: Asset, baseAssetReserve: BigDecimal, assetReserve: BigDecimal): void {
   if (baseAsset.basePrice.equals(BigDecimal.zero())) {
-    let newBasePrice = new BigDecimal(BigInt.fromI32(1));
-    updateIndexBasePriceByAsset(baseAsset, newBasePrice);
-    baseAsset.basePrice = newBasePrice;
+    baseAsset.basePrice = new BigDecimal(BigInt.fromI32(1));
     baseAsset.save();
+    updateIndexBasePriceByAsset(baseAsset);
   }
 
-  let newBasePrice = assetReserve.div(baseAssetReserve);
-  updateIndexBasePriceByAsset(asset, newBasePrice);
-  asset.basePrice = newBasePrice;
+  asset.basePrice = assetReserve.div(baseAssetReserve);
   asset.save();
+  updateIndexBasePriceByAsset(asset);
 }
 
 export function updateIndexBasePriceByIndex(index: Index): void {
@@ -61,31 +59,20 @@ export function updateIndexBasePriceByIndex(index: Index): void {
 
     let indexBasePrice = asset.basePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString("255")));
     index.basePrice = index.basePrice.plus(indexBasePrice);
-    index.marketCap = index.marketCap.plus(convertTokenToDecimal(asset.totalSupply, asset.decimals).times(indexBasePrice));
   }
+
+  index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
 
   index.save();
 }
 
 // Updating the index values after changing the base price.
-export function updateIndexBasePriceByAsset(asset: Asset, newAssetBasePrice: BigDecimal): void {
+export function updateIndexBasePriceByAsset(asset: Asset): void {
   for (let i = 0; i < asset._indexes.length; i++) {
     let index = Index.load(asset._indexes[i]);
     if(!index) continue;
 
-    let ia  = IndexAsset.load(index.id.concat('-').concat(asset.id));
-    if(!ia) continue;
-
-    // Decrease previous base price of the asset, at initial basePrice is zero.
-    let oldIndexBasePrice = asset.basePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString("255")));
-    index.basePrice = index.basePrice.minus(oldIndexBasePrice);
-    index.marketCap.minus(convertTokenToDecimal(asset.totalSupply, asset.decimals).times(oldIndexBasePrice));
-
-    let newIndexBasePrice = newAssetBasePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString("255")));
-    index.basePrice = index.basePrice.plus(newIndexBasePrice);
-    index.marketCap = index.marketCap.plus(convertTokenToDecimal(asset.totalSupply, asset.decimals).times(newIndexBasePrice));
-
-    index.save();
+    updateIndexBasePriceByIndex(index);
   }
 }
 
