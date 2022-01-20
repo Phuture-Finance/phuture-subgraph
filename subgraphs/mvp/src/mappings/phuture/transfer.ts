@@ -96,3 +96,5 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   updateMonthlyIndexStat(event);
   updateYearlyIndexStat(event);
 }
+
+// 1d 5d 1m 3m 6m 1y
