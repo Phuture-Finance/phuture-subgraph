@@ -127,9 +127,6 @@ type IndexAsset @entity {
   asset: Asset!
   weight: BigInt!
   shares: BigInt!
-
-  basePrice: BigDecimal! @deprecated
-  marketCap: BigDecimal!
 }
 
 type User @entity {

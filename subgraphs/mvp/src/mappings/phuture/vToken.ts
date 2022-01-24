@@ -1,8 +1,8 @@
 import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
-import { convertTokenToDecimal, loadOrCreateVToken, loadVToken } from '../entities';
+import {convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken, loadVToken} from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
-import { Asset, vToken } from '../../types/schema';
-import { Address, log } from '@graphprotocol/graph-ts';
+import {Asset, vToken } from '../../types/schema';
+import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
   let vt = vToken.load(event.address.toHexString());
@@ -13,6 +13,22 @@ export function handlerVTokenTransfer(event: VTokenTransfer): void {
   }
   if (event.params.to.equals(Address.zero())) {
     updateVToken(vt, event, false);
+  }
+
+  updateIndexShare(event.params.from, event.params.to, vt.asset, event.params.amount);
+}
+
+function updateIndexShare(from: Address, to: Address, assetAddr: string, amount: BigInt): void {
+  if (!from.equals(Address.zero())) {
+    let fromIA = loadOrCreateIndexAsset(from.toHexString(), assetAddr);
+    fromIA.shares = fromIA.shares.minus(amount);
+    fromIA.save();
+  }
+
+  if (!to.equals(Address.zero())) {
+    let toIA = loadOrCreateIndexAsset(to.toHexString(), assetAddr);
+    toIA.shares = toIA.shares.plus(amount);
+    toIA.save();
   }
 }
 

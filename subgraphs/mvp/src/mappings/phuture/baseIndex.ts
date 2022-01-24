@@ -30,8 +30,6 @@ export function handleIndexCreation(
     let indexAsset = new IndexAsset(indexAssetId);
     indexAsset.index = indexId;
     indexAsset.asset = assetId;
-    indexAsset.basePrice = BigDecimal.zero();
-    indexAsset.marketCap = BigDecimal.zero();
 
     let asset = loadOrCreateAsset(paramAssets[i]);
 
