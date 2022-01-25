@@ -8,7 +8,7 @@ import {
   updateWeeklyIndexStat,
   updateYearlyIndexStat,
 } from './stats';
-import { loadOrCreateAccount, loadOrCreateTransaction } from '../entities';
+import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction } from '../entities';
 import { ONE_BI } from '@phuture/subgraph-helpers';
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
@@ -73,6 +73,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     transferType = 'Send';
   }
 
+  index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
   index.save();
 
   let transfer = new Transfer(

@@ -1,7 +1,7 @@
 import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
 import {convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken, loadVToken} from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
-import {Asset, vToken } from '../../types/schema';
+import {Asset, Index, vToken} from '../../types/schema';
 import {Address, BigInt, log} from '@graphprotocol/graph-ts';
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
@@ -19,13 +19,13 @@ export function handlerVTokenTransfer(event: VTokenTransfer): void {
 }
 
 function updateIndexShare(from: Address, to: Address, assetAddr: string, amount: BigInt): void {
-  if (!from.equals(Address.zero())) {
+  if (!from.equals(Address.zero()) && Index.load(from.toHexString())) {
     let fromIA = loadOrCreateIndexAsset(from.toHexString(), assetAddr);
     fromIA.shares = fromIA.shares.minus(amount);
     fromIA.save();
   }
 
-  if (!to.equals(Address.zero())) {
+  if (!to.equals(Address.zero()) && Index.load(to.toHexString())) {
     let toIA = loadOrCreateIndexAsset(to.toHexString(), assetAddr);
     toIA.shares = toIA.shares.plus(amount);
     toIA.save();

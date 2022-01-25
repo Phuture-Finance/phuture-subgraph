@@ -49,7 +49,6 @@ export function updateIndexBasePriceByIndex(index: Index): void {
   if (index._assets.length == 0) return;
 
   index.basePrice = BigDecimal.zero();
-  index.marketCap = BigDecimal.zero();
   for (let i = 0; i < index._assets.length; i++) {
     let asset = Asset.load(index._assets[i]);
     if (!asset) continue;
