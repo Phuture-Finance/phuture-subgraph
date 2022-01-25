@@ -1,6 +1,6 @@
-import { Asset, Pair } from '../../types/schema';
+import { Asset, Index, IndexAsset, Pair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
-import { convertTokenToDecimal } from '../entities';
+import {convertTokenToDecimal } from '../entities';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { BASE_ADDRESS } from '../../../consts';
 
@@ -25,19 +25,53 @@ export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0
   let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
   if (asset0.id == BASE_ADDRESS) {
-    asset0.basePrice = new BigDecimal(BigInt.fromI32(1));
-    asset0.save();
-
-    asset1.basePrice = asset1Reserve.div(asset0Reserve);
-    asset1.save();
+    updateAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve);
   }
 
   if (asset1.id == BASE_ADDRESS) {
-    asset1.basePrice = new BigDecimal(BigInt.fromI32(1));
-    asset1.save();
+    updateAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve);
+  }
+}
 
-    asset0.basePrice = asset0Reserve.div(asset1Reserve);
-    asset0.save();
+function updateAssetBasePrice(baseAsset: Asset, asset: Asset, baseAssetReserve: BigDecimal, assetReserve: BigDecimal): void {
+  if (baseAsset.basePrice.equals(BigDecimal.zero())) {
+    baseAsset.basePrice = new BigDecimal(BigInt.fromI32(1));
+    baseAsset.save();
+    updateIndexBasePriceByAsset(baseAsset);
+  }
+
+  asset.basePrice = assetReserve.div(baseAssetReserve);
+  asset.save();
+  updateIndexBasePriceByAsset(asset);
+}
+
+export function updateIndexBasePriceByIndex(index: Index): void {
+  if (index._assets.length == 0) return;
+
+  index.basePrice = BigDecimal.zero();
+  for (let i = 0; i < index._assets.length; i++) {
+    let asset = Asset.load(index._assets[i]);
+    if (!asset) continue;
+
+    let ia  = IndexAsset.load(index.id.concat('-').concat(asset.id));
+    if (!ia) continue;
+
+    let indexBasePrice = asset.basePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString("255")));
+    index.basePrice = index.basePrice.plus(indexBasePrice);
+  }
+
+  index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
+
+  index.save();
+}
+
+// Updating the index values after changing the base price.
+export function updateIndexBasePriceByAsset(asset: Asset): void {
+  for (let i = 0; i < asset._indexes.length; i++) {
+    let index = Index.load(asset._indexes[i]);
+    if(!index) continue;
+
+    updateIndexBasePriceByIndex(index);
   }
 }
 
