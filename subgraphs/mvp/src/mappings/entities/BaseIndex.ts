@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from '../entities/Asset';
-import { Index } from '../../types/schema';
+import { Index, IndexFactory } from '../../types/schema';
 
 export function loadOrCreateIndex(address: Address): Index {
   let index = Index.load(address.toHexString());
@@ -23,4 +23,16 @@ export function loadOrCreateIndex(address: Address): Index {
   }
 
   return index as Index;
+}
+
+export function loadOrCreateIndexFactory(address: Address, type: string): IndexFactory {
+  let idxF = IndexFactory.load(address.toHexString());
+
+  if (!idxF) {
+    idxF = new IndexFactory(address.toHexString());
+    idxF.type = type;
+    idxF.save();
+  }
+
+  return idxF;
 }

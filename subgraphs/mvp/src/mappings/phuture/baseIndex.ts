@@ -1,7 +1,13 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
 import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
-import { loadOrCreateAccount, loadOrCreateAsset, loadOrCreateIndex, loadOrCreateTransaction } from '../entities';
+import {
+  loadOrCreateAccount,
+  loadOrCreateAsset,
+  loadOrCreateIndex,
+  loadOrCreateIndexFactory,
+  loadOrCreateTransaction
+} from '../entities';
 import { IndexAsset, UserIndex } from '../../types/schema';
 import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
 import { updateStat } from './stats';
@@ -14,12 +20,14 @@ export function handleIndexCreation(
   assets: Address[],
 ): void {
   let tx = loadOrCreateTransaction(event);
+  let idxF = loadOrCreateIndexFactory(event.address, type);
 
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
   index.type = type;
   index.transaction = tx.id;
+  index.indexFactory = idxF.id;
 
   let paramAssets = assets;
   for (let i = 0; i < paramAssets.length; i++) {
