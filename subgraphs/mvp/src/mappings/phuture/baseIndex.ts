@@ -32,19 +32,16 @@ export function handleIndexCreation(
   let paramAssets = assets;
   for (let i = 0; i < paramAssets.length; i++) {
     let assetId = paramAssets[i].toHexString();
-
-    let indexAssetId = indexId.concat('-').concat(assetId);
-
-    let indexAsset = new IndexAsset(indexAssetId);
-    indexAsset.index = indexId;
-    indexAsset.asset = assetId;
-
     let asset = loadOrCreateAsset(paramAssets[i]);
 
     asset.indexCount = asset.indexCount.plus(ONE_BI);
     asset._indexes = asset._indexes.concat([index.id]);
     asset.save();
 
+    let indexAssetId = indexId.concat('-').concat(assetId);
+    let indexAsset = new IndexAsset(indexAssetId);
+    indexAsset.index = indexId;
+    indexAsset.asset = assetId;
     indexAsset.save();
 
     index._assets = index._assets.concat([asset.id]);
