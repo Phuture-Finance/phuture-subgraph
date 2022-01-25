@@ -17,7 +17,7 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
   }
-
+  asset.marketCap = event.params.marketCap;
   asset.save();
 
   let baseAddr = Address.fromString(BASE_ADDRESS);
