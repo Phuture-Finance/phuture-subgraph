@@ -1,7 +1,7 @@
 import { Address, store } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
-import {loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset} from '../entities';
-import { updateIndexBasePriceByIndex } from "../uniswap/uniswapPair";
+import { loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
+import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
 export function updateAnatomy(address: Address, assetAddr: Address, weight: i32): void {
   let index = loadOrCreateIndex(address);

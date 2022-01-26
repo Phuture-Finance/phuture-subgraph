@@ -1,6 +1,6 @@
-import { Asset, Index, IndexAsset, Pair } from '../../types/schema';
+import { Asset, Index, IndexAsset, Pair, vToken } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
-import {convertTokenToDecimal } from '../entities';
+import { convertTokenToDecimal } from '../entities';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { BASE_ADDRESS } from '../../../consts';
 
@@ -33,16 +33,33 @@ export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0
   }
 }
 
-function updateAssetBasePrice(baseAsset: Asset, asset: Asset, baseAssetReserve: BigDecimal, assetReserve: BigDecimal): void {
+function updateAssetBasePrice(
+  baseAsset: Asset,
+  asset: Asset,
+  baseAssetReserve: BigDecimal,
+  assetReserve: BigDecimal,
+): void {
   if (baseAsset.basePrice.equals(BigDecimal.zero())) {
     baseAsset.basePrice = new BigDecimal(BigInt.fromI32(1));
     baseAsset.save();
     updateIndexBasePriceByAsset(baseAsset);
+    updateCapVToken(baseAsset);
   }
 
   asset.basePrice = assetReserve.div(baseAssetReserve);
   asset.save();
   updateIndexBasePriceByAsset(asset);
+  updateCapVToken(asset);
+}
+
+export function updateCapVToken(asset: Asset): void {
+  for (let i = 0; i < asset._vTokens.length; i++) {
+    let vt = vToken.load(asset._vTokens[i]);
+    if (!vt) continue;
+
+    vt.capitalisation = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
+    vt.save();
+  }
 }
 
 export function updateIndexBasePriceByIndex(index: Index): void {
@@ -53,10 +70,10 @@ export function updateIndexBasePriceByIndex(index: Index): void {
     let asset = Asset.load(index._assets[i]);
     if (!asset) continue;
 
-    let ia  = IndexAsset.load(index.id.concat('-').concat(asset.id));
+    let ia = IndexAsset.load(index.id.concat('-').concat(asset.id));
     if (!ia) continue;
 
-    let indexBasePrice = asset.basePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString("255")));
+    let indexBasePrice = asset.basePrice.times(ia.weight.toBigDecimal().div(BigDecimal.fromString('255')));
     index.basePrice = index.basePrice.plus(indexBasePrice);
   }
 
@@ -69,7 +86,7 @@ export function updateIndexBasePriceByIndex(index: Index): void {
 export function updateIndexBasePriceByAsset(asset: Asset): void {
   for (let i = 0; i < asset._indexes.length; i++) {
     let index = Index.load(asset._indexes[i]);
-    if(!index) continue;
+    if (!index) continue;
 
     updateIndexBasePriceByIndex(index);
   }

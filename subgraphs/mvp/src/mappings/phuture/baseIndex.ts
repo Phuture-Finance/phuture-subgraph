@@ -6,12 +6,12 @@ import {
   loadOrCreateAsset,
   loadOrCreateIndex,
   loadOrCreateIndexFactory,
-  loadOrCreateTransaction
+  loadOrCreateTransaction,
 } from '../entities';
 import { IndexAsset, UserIndex } from '../../types/schema';
 import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
 import { updateStat } from './stats';
-import { updateIndexBasePriceByIndex } from "../uniswap/uniswapPair";
+import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
 export function handleIndexCreation(
   type: string,
