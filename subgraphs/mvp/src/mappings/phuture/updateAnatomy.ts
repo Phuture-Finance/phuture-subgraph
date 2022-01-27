@@ -3,7 +3,7 @@ import { BigInt } from '@graphprotocol/graph-ts/index';
 import { loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
 import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
-export function updateAnatomy(address: Address, assetAddr: Address, weight: i32): void {
+export function updateAnatomy(address: Address, assetAddr: Address, weight: i32, ts: BigInt): void {
   let index = loadOrCreateIndex(address);
   let asset = loadOrCreateAsset(assetAddr);
   let indexAsset = loadOrCreateIndexAsset(address.toHexString(), assetAddr.toHexString());
@@ -45,5 +45,5 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32)
   index._assets = assetsAddr;
   index.save();
 
-  updateIndexBasePriceByIndex(index);
+  updateIndexBasePriceByIndex(index, ts);
 }

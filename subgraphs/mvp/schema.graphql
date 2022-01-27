@@ -253,6 +253,28 @@ type MonthlyIndexStat @entity {
   uniqueHolders: BigInt!
 }
 
+type ThreeMonthIndexStat @entity {
+  id: ID!
+  date: Int!
+  index: Index!
+
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
+}
+
+type HalfYearIndexStat @entity {
+  id: ID!
+  date: Int!
+  index: Index!
+
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
+}
+
 type YearlyIndexStat @entity {
   id: ID!
   date: Int!

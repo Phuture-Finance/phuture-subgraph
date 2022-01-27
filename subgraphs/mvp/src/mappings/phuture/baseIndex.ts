@@ -48,7 +48,7 @@ export function handleIndexCreation(
   }
 
   index.save();
-  updateIndexBasePriceByIndex(index);
+  updateIndexBasePriceByIndex(index, event.block.timestamp);
 
   loadOrCreateAccount(event.transaction.from);
 
@@ -70,7 +70,7 @@ export function handleIndexCreation(
     TopNMarketCapIndex.create(indexAddress);
   }
 
-  let stat = updateStat(event);
+  let stat = updateStat(event.block.timestamp);
   stat.indexCount = stat.indexCount.plus(ONE_BI);
   stat.save();
 }

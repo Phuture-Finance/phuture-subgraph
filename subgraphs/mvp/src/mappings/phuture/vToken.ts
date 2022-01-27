@@ -62,7 +62,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
   asset.save();
 
-  let stat = updateStat(event);
+  let stat = updateStat(event.block.timestamp);
   stat.totalValueLocked = stat.totalValueLocked.plus(
     convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
   );
