@@ -1,8 +1,8 @@
 import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
-import {convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken, loadVToken} from '../entities';
+import { convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken, loadVToken } from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
-import {Asset, Index, vToken} from '../../types/schema';
-import {Address, BigInt, log} from '@graphprotocol/graph-ts';
+import { Asset, Index, vToken } from '../../types/schema';
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
   let vt = vToken.load(event.address.toHexString());
@@ -50,6 +50,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
       convertTokenToDecimal(event.params.amount, asset.decimals),
     );
   }
+  vt.capitalisation = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
   vt.save();
 
   // Update asset reserve values.
@@ -61,7 +62,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
   asset.save();
 
-  let stat = updateStat(event);
+  let stat = updateStat(event.block.timestamp);
   stat.totalValueLocked = stat.totalValueLocked.plus(
     convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
   );

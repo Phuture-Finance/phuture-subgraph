@@ -4,18 +4,18 @@ import {
   Asset,
   DailyAssetStat,
   DailyIndexStat,
-  DailyStat,
+  DailyStat, HalfYearIndexStat,
   HourlyIndexStat,
   Index,
   MonthlyIndexStat,
-  Stat,
+  Stat, ThreeMonthIndexStat,
   WeeklyIndexStat,
   YearlyIndexStat,
 } from '../../types/schema';
 import { FACTORY_ADDRESS } from '../../../consts';
 
-export function updateDailyStat(event: ethereum.Event): DailyStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateDailyStat(ts: BigInt): DailyStat {
+  let timestamp = ts.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
 
@@ -37,7 +37,7 @@ export function updateDailyStat(event: ethereum.Event): DailyStat {
   return stat as DailyStat;
 }
 
-export function updateStat(event: ethereum.Event): Stat {
+export function updateStat(ts: BigInt): Stat {
   let stat = Stat.load(FACTORY_ADDRESS.toString());
   if (!stat) {
     stat = new Stat(FACTORY_ADDRESS.toString());
@@ -47,25 +47,19 @@ export function updateStat(event: ethereum.Event): Stat {
     stat.save();
   }
 
-  updateDailyStat(event);
+  updateDailyStat(ts);
 
   return stat as Stat;
 }
 
-export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateHourlyIndexStat(index: Index, ts: BigInt): HourlyIndexStat {
+  let timestamp = ts.toI32();
   let ID = timestamp / 3600;
   let startTimestamp = ID * 3600;
-  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
-  let index = Index.load(event.address.toHexString());
-  if (!index) {
-    throw new Error('TODO');
-  }
-
-  let indexStat = HourlyIndexStat.load(indexID);
+  let indexStat = HourlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
   if (!indexStat) {
-    indexStat = new HourlyIndexStat(indexID);
+    indexStat = new HourlyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
@@ -80,19 +74,14 @@ export function updateHourlyIndexStat(event: ethereum.Event): HourlyIndexStat {
   return indexStat as HourlyIndexStat;
 }
 
-export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
+  let timestamp = ts.toI32();
   let ID = timestamp / 86400;
   let startTimestamp = ID * 86400;
-  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
-  let index = Index.load(event.address.toHexString());
-  if (!index) {
-    throw new Error('TODO');
-  }
-  let indexStat = DailyIndexStat.load(indexID);
+  let indexStat = DailyIndexStat.load(index.id.concat('-').concat(ID.toString()));
   if (!indexStat) {
-    indexStat = new DailyIndexStat(indexID);
+    indexStat = new DailyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
@@ -107,19 +96,14 @@ export function updateDailyIndexStat(event: ethereum.Event): DailyIndexStat {
   return indexStat as DailyIndexStat;
 }
 
-export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateWeeklyIndexStat(index: Index, ts: BigInt): WeeklyIndexStat {
+  let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 7);
   let startTimestamp = ID * (86400 * 7);
-  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
-  let index = Index.load(event.address.toHexString());
-  if (!index) {
-    throw new Error('TODO');
-  }
-  let indexStat = WeeklyIndexStat.load(indexID);
+  let indexStat = WeeklyIndexStat.load(index.id.concat('-').concat(ID.toString()));
   if (!indexStat) {
-    indexStat = new WeeklyIndexStat(indexID);
+    indexStat = new WeeklyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
@@ -134,19 +118,14 @@ export function updateWeeklyIndexStat(event: ethereum.Event): WeeklyIndexStat {
   return indexStat as WeeklyIndexStat;
 }
 
-export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateMonthlyIndexStat(index: Index, ts: BigInt): MonthlyIndexStat {
+  let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 30);
   let startTimestamp = ID * 86400 * 30;
-  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
-  let index = Index.load(event.address.toHexString());
-  if (!index) {
-    throw new Error('TODO');
-  }
-  let indexStat = MonthlyIndexStat.load(indexID);
+  let indexStat = MonthlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
   if (!indexStat) {
-    indexStat = new MonthlyIndexStat(indexID);
+    indexStat = new MonthlyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
@@ -161,19 +140,58 @@ export function updateMonthlyIndexStat(event: ethereum.Event): MonthlyIndexStat 
   return indexStat as MonthlyIndexStat;
 }
 
-export function updateYearlyIndexStat(event: ethereum.Event): YearlyIndexStat {
-  let timestamp = event.block.timestamp.toI32();
+export function updateThreeMonthIndexStat(index: Index, ts: BigInt): ThreeMonthIndexStat {
+  let timestamp = ts.toI32();
+  let ID = timestamp / (86400 * 30);
+  let startTimestamp = ID * 86400 * 30 * 3;
+
+  let indexStat = ThreeMonthIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  if (!indexStat) {
+    indexStat = new ThreeMonthIndexStat(index.id.concat('-').concat(ID.toString()));
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as ThreeMonthIndexStat;
+}
+
+export function updateHalfYearIndexStat(index: Index, ts: BigInt): HalfYearIndexStat {
+  let timestamp = ts.toI32();
+  let ID = timestamp / (86400 * 30);
+  let startTimestamp = ID * 86400 * 30 * 6;
+
+  let indexStat = HalfYearIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  if (!indexStat) {
+    indexStat = new HalfYearIndexStat(index.id.concat('-').concat(ID.toString()));
+    indexStat.date = startTimestamp;
+    indexStat.index = index.id;
+  }
+
+  indexStat.marketCap = index.marketCap;
+  indexStat.uniqueHolders = index.uniqueHolders;
+  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+
+  indexStat.save();
+
+  return indexStat as HalfYearIndexStat;
+}
+
+export function updateYearlyIndexStat(index: Index, ts: BigInt): YearlyIndexStat {
+  let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 365);
   let startTimestamp = ID * (86400 * 365);
-  let indexID = event.address.toHexString().concat('-').concat(BigInt.fromI32(ID).toString());
 
-  let index = Index.load(event.address.toHexString());
-  if (!index) {
-    throw new Error('TODO');
-  }
-  let indexStat = YearlyIndexStat.load(indexID);
+  let indexStat = YearlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
   if (!indexStat) {
-    indexStat = new YearlyIndexStat(indexID);
+    indexStat = new YearlyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }

@@ -1,11 +1,17 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
 import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
-import { loadOrCreateAccount, loadOrCreateAsset, loadOrCreateIndex, loadOrCreateTransaction } from '../entities';
+import {
+  loadOrCreateAccount,
+  loadOrCreateAsset,
+  loadOrCreateIndex,
+  loadOrCreateIndexFactory,
+  loadOrCreateTransaction,
+} from '../entities';
 import { IndexAsset, UserIndex } from '../../types/schema';
 import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
 import { updateStat } from './stats';
-import { updateIndexBasePriceByIndex } from "../uniswap/uniswapPair";
+import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
 export function handleIndexCreation(
   type: string,
@@ -14,36 +20,35 @@ export function handleIndexCreation(
   assets: Address[],
 ): void {
   let tx = loadOrCreateTransaction(event);
+  let idxF = loadOrCreateIndexFactory(event.address, type);
 
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
   index.type = type;
   index.transaction = tx.id;
+  index.indexFactory = idxF.id;
 
   let paramAssets = assets;
   for (let i = 0; i < paramAssets.length; i++) {
     let assetId = paramAssets[i].toHexString();
-
-    let indexAssetId = indexId.concat('-').concat(assetId);
-
-    let indexAsset = new IndexAsset(indexAssetId);
-    indexAsset.index = indexId;
-    indexAsset.asset = assetId;
-
     let asset = loadOrCreateAsset(paramAssets[i]);
 
     asset.indexCount = asset.indexCount.plus(ONE_BI);
     asset._indexes = asset._indexes.concat([index.id]);
     asset.save();
 
+    let indexAssetId = indexId.concat('-').concat(assetId);
+    let indexAsset = new IndexAsset(indexAssetId);
+    indexAsset.index = indexId;
+    indexAsset.asset = assetId;
     indexAsset.save();
 
     index._assets = index._assets.concat([asset.id]);
   }
 
   index.save();
-  updateIndexBasePriceByIndex(index);
+  updateIndexBasePriceByIndex(index, event.block.timestamp);
 
   loadOrCreateAccount(event.transaction.from);
 
@@ -65,7 +70,7 @@ export function handleIndexCreation(
     TopNMarketCapIndex.create(indexAddress);
   }
 
-  let stat = updateStat(event);
+  let stat = updateStat(event.block.timestamp);
   stat.indexCount = stat.indexCount.plus(ONE_BI);
   stat.save();
 }

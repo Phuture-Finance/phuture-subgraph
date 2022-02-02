@@ -1,14 +1,15 @@
 import { Address, store } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
-import {loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset} from '../entities';
-import { updateIndexBasePriceByIndex } from "../uniswap/uniswapPair";
+import { loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
+import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
-export function updateAnatomy(address: Address, assetAddr: Address, weight: i32): void {
+export function updateAnatomy(address: Address, assetAddr: Address, weight: i32, ts: BigInt): void {
   let index = loadOrCreateIndex(address);
-  let assetsAddr = index._assets;
   let asset = loadOrCreateAsset(assetAddr);
-
   let indexAsset = loadOrCreateIndexAsset(address.toHexString(), assetAddr.toHexString());
+
+  let assetsAddr = index._assets;
+  let indicesAddr = asset._indexes;
   if (weight == 0) {
     assetsAddr = [];
     for (let i = 0; i < index._assets.length; i++) {
@@ -16,10 +17,26 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32)
         assetsAddr.push(index._assets[i]);
       }
     }
+
+    indicesAddr = [];
+    for (let i = 0; i < asset._indexes.length; i++) {
+      if (asset._indexes[i] != index.id) {
+        indicesAddr.push(asset._indexes[i]);
+      }
+    }
+
+    asset.indexCount = asset.indexCount.minus(BigInt.fromI32(1));
+    asset._indexes = indicesAddr;
+    asset.save();
+
     store.remove('IndexAsset', indexAsset.id);
   } else {
     if (assetsAddr.indexOf(asset.id) == -1) {
       assetsAddr.push(asset.id);
+
+      asset._indexes = asset._indexes.concat([index.id]);
+      asset.indexCount = asset.indexCount.plus(BigInt.fromI32(1));
+      asset.save();
     }
     indexAsset.weight = BigInt.fromI32(weight as i32);
     indexAsset.save();
@@ -28,5 +45,5 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32)
   index._assets = assetsAddr;
   index.save();
 
-  updateIndexBasePriceByIndex(index);
+  updateIndexBasePriceByIndex(index, ts);
 }

@@ -17,7 +17,7 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
   }
-
+  asset.marketCap = event.params.marketCap;
   asset.save();
 
   let baseAddr = Address.fromString(BASE_ADDRESS);
@@ -38,7 +38,7 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   let pair = UniswapPair.bind(pairAddr);
   let reserve = pair.getReserves();
 
-  updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset);
+  updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
 }
 
 export function handleSetName(event: SetName): void {

@@ -50,10 +50,16 @@ type Pair @entity {
   asset1Reserve: BigDecimal!
 }
 
+type IndexFactory @entity {
+  "Address (hash) of the factory"
+  id: ID!
+  type: String!
+  indices: [Index!]! @derivedFrom(field: "indexFactory")
+}
+
 type Index @entity {
   "Address (hash)"
   id: ID!
-
   type: String!
 
   # used for other stats like marketcap
@@ -68,6 +74,7 @@ type Index @entity {
   _assets: [ID!]!
 
   transaction: Transaction!
+  indexFactory: IndexFactory!
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
@@ -119,6 +126,7 @@ type vToken @entity {
   deposited: BigInt!
   platformTotalSupply: BigInt!
   platformTotalSupplyDec: BigDecimal!
+  capitalisation: BigDecimal!
 }
 
 type IndexAsset @entity {
@@ -235,6 +243,28 @@ type WeeklyIndexStat @entity {
 }
 
 type MonthlyIndexStat @entity {
+  id: ID!
+  date: Int!
+  index: Index!
+
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
+}
+
+type ThreeMonthIndexStat @entity {
+  id: ID!
+  date: Int!
+  index: Index!
+
+  basePrice: BigDecimal!
+  marketCap: BigDecimal!
+  baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
+}
+
+type HalfYearIndexStat @entity {
   id: ID!
   date: Int!
   index: Index!

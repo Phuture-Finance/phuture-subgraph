@@ -1,13 +1,6 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Index, Transfer, UserIndex } from '../../types/schema';
 import { EMISSION_CONTROLLER_ADDRESS } from '../../../consts';
-import {
-  updateDailyIndexStat,
-  updateHourlyIndexStat,
-  updateMonthlyIndexStat,
-  updateWeeklyIndexStat,
-  updateYearlyIndexStat,
-} from './stats';
 import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction } from '../entities';
 import { ONE_BI } from '@phuture/subgraph-helpers';
 
@@ -90,12 +83,6 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
   tx.transfers = transfers.concat([transfer.id]);
   tx.save();
-
-  updateHourlyIndexStat(event);
-  updateDailyIndexStat(event);
-  updateWeeklyIndexStat(event);
-  updateMonthlyIndexStat(event);
-  updateYearlyIndexStat(event);
 }
 
 // 1d 5d 1m 3m 6m 1y
