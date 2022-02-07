@@ -1,5 +1,8 @@
 CONTRACTS_PATH ?= .
 
+phuture-contracts:
+	git clone https://github.com/Phuture-Finance/phuture-contracts.git
+
 .PHONY update-contracts:
 update-contracts:
 	cp $(CONTRACTS_PATH)/FeePool.sol/FeePool.json subgraphs/abis/Phuture/FeePool.json
