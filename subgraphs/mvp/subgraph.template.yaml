@@ -50,7 +50,7 @@ dataSources:
     source:
       abi: StaticIndexFactory
       address: '{{StaticIndexFactory}}'
-      startBlock: {{StaticIndexFactoryRegistryBlockNumber}}
+      startBlock: {{StaticIndexFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -168,7 +168,7 @@ dataSources:
     source:
       abi: FeePool
       address: '{{FeePool}}'
-      startBlock: {{FeePoolRegistryBlockNumber}}
+      startBlock: {{FeePoolBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
