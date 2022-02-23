@@ -5,10 +5,7 @@ import { loadOrCreateIndexFactory } from "../entities";
 
 export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   let idxFactory = TrackedIndexFactory.bind(event.address);
-
-  let idxF = loadOrCreateIndexFactory(event.address, IndexTracked);
-  idxF.vTokenFactory = idxFactory.vTokenFactory().toHexString();
-  idxF.save();
+  let idxF = loadOrCreateIndexFactory(event.address, IndexTracked, idxFactory.vTokenFactory());
 
   let index = handleIndexCreation(IndexTracked, event, event.params.index, event.params.assets);
   index.indexFactory = idxF.id;
