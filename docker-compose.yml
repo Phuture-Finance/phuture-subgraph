@@ -41,7 +41,7 @@ services:
     ports:
       - '8545:8545'
     environment:
-      PRIVATE_KEY: c1da9f623ffd643ed5f8d0337e8b5cf84fb43da8846de686aff4af1e1d12076d
+      PRIVATE_KEY: c5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122
     volumes:
       - ./hardhat/data/artifacts:/phuture-contracts/artifacts
       - ./hardhat/data/typechain:/phuture-contracts/typechain
@@ -53,9 +53,11 @@ services:
     depends_on:
       - hardhat
     environment:
-      PRIVATE_KEY: c1da9f623ffd643ed5f8d0337e8b5cf84fb43da8846de686aff4af1e1d12076d
+      PRIVATE_KEY: c5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122
       GAS_PRICE_GWEI: 149
       SKIP_CONFIRMATION: 'true'
+      FORK: 'true'
+      MAINNET_HTTPS_URL: https://empty.com
     volumes:
       - ./hardhat/data/artifacts:/phuture-contracts/artifacts
       - ./hardhat/data/typechain:/phuture-contracts/typechain

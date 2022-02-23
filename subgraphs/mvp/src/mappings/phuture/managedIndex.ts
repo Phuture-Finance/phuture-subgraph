@@ -1,9 +1,9 @@
 import { handleAllIndexesTransfers } from './transfer';
-import { Transfer as TransferEvent } from '../../types/templates/StaticIndex/StaticIndex';
-import { UpdateAnatomy } from '../../types/templates/StaticIndex/StaticIndex';
+import { Transfer as TransferEvent } from '../../types/templates/ManagedIndex/ManagedIndex';
+import { UpdateAnatomy } from '../../types/templates/ManagedIndex/ManagedIndex';
 import { updateAnatomy } from './updateAnatomy';
 
-export function handleStaticIndexTransfer(event: TransferEvent): void {
+export function handleManagedIndexTransfer(event: TransferEvent): void {
   handleAllIndexesTransfers(event, event.params.from, event.params.to, event.params.value);
 }
 

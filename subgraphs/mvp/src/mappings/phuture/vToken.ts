@@ -1,5 +1,5 @@
 import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
-import { convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken, loadVToken } from '../entities';
+import { convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
 import { Asset, Index, vToken } from '../../types/schema';
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
@@ -74,6 +74,13 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
 export function handlerUpdateDeposit(event: UpdateDeposit): void {
   let vt = loadOrCreateVToken(event.address);
 
+  if (event.params.depositedAmount.gt(BigInt.zero())) {
+    vt.assetReserve = vt.assetReserve.plus(event.params.depositedAmount.toBigDecimal());
+  } else {
+    vt.assetReserve = vt.assetReserve.minus(vt.deposited.toBigDecimal());
+  }
+
   vt.deposited = event.params.depositedAmount;
+
   vt.save();
 }

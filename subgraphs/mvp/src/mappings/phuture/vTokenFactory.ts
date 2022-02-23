@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
 import { DYNAMIC_TYPE, STATIC_TYPE } from '@phuture/subgraph-helpers';
-import { VTokenCreated as StaticVTokenCreated } from '../../types/StaticVTokenFactory/vTokenFactory';
+import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';
 import { VTokenCreated as DynamicVTokenCreated } from '../../types/DynamicVTokenFactory/vTokenFactory';
 import { vToken } from '../../types/templates';
 
@@ -28,7 +28,7 @@ export function handleDynamicVTokenCreated(event: DynamicVTokenCreated): void {
   vt.save();
 }
 
-export function handleStaticVTokenCreated(event: StaticVTokenCreated): void {
+export function handleStaticVTokenCreated(event: ManagedVTokenCreated): void {
   if (event.params.vToken.equals(Address.zero())) return;
 
   let vt = loadOrCreateVToken(event.params.vToken);
