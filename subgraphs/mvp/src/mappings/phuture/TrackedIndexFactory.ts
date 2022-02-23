@@ -1,7 +1,16 @@
 import { IndexTracked } from '@phuture/subgraph-helpers';
 import { handleIndexCreation } from './baseIndex';
-import { TrackedIndexCreated } from '../../types/TrackedIndexFactory/TrackedIndexFactory';
+import { TrackedIndexCreated, TrackedIndexFactory } from '../../types/TrackedIndexFactory/TrackedIndexFactory';
+import { loadOrCreateIndexFactory } from "../entities";
 
 export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
-  handleIndexCreation(IndexTracked, event, event.params.index, event.params.assets);
+  let idxFactory = TrackedIndexFactory.bind(event.address);
+
+  let idxF = loadOrCreateIndexFactory(event.address, IndexTracked);
+  idxF.vTokenFactory = idxFactory.vTokenFactory().toHexString();
+  idxF.save();
+
+  let index = handleIndexCreation(IndexTracked, event, event.params.index, event.params.assets);
+  index.indexFactory = idxF.id;
+  index.save();
 }

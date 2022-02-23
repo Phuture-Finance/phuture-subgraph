@@ -76,13 +76,11 @@ export function handlerUpdateDeposit(event: UpdateDeposit): void {
 
   if (event.params.depositedAmount.gt(BigInt.zero())) {
     vt.assetReserve = vt.assetReserve.plus(event.params.depositedAmount.toBigDecimal());
+  } else {
+    vt.assetReserve = vt.assetReserve.minus(vt.deposited.toBigDecimal());
   }
 
-  if (event.params.depositedAmount.equals(BigInt.zero())) {
-    vt.assetReserve = vt.assetReserve.minus(vt.deposited.toBigDecimal());
-  } else {
-    vt.deposited = event.params.depositedAmount;
-  }
+  vt.deposited = event.params.depositedAmount;
 
   vt.save();
 }

@@ -5,7 +5,6 @@ import {
   loadOrCreateAccount,
   loadOrCreateAsset,
   loadOrCreateIndex,
-  loadOrCreateIndexFactory,
   loadOrCreateTransaction,
 } from '../entities';
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
@@ -20,14 +19,12 @@ export function handleIndexCreation(
   assets: Address[],
 ): Index {
   let tx = loadOrCreateTransaction(event);
-  let idxF = loadOrCreateIndexFactory(event.address, type);
 
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
   index.type = type;
   index.transaction = tx.id;
-  index.indexFactory = idxF.id;
 
   let paramAssets = assets;
   for (let i = 0; i < paramAssets.length; i++) {

@@ -1,10 +1,18 @@
 import { IndexTopN } from '@phuture/subgraph-helpers';
 import { handleIndexCreation } from './baseIndex';
-import { TopNMarketCapIndexCreated } from '../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory';
+import { TopNMarketCapIndexCreated, TopNMarketCapIndexFactory } from '../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory';
+import { loadOrCreateIndexFactory } from "../entities";
 
 export function handleTopNMarketCapIndexCreated(event: TopNMarketCapIndexCreated): void {
+  let idxFactory = TopNMarketCapIndexFactory.bind(event.address);
+
+  let idxF = loadOrCreateIndexFactory(event.address, IndexTopN);
+  idxF.vTokenFactory = idxFactory.vTokenFactory().toHexString();
+  idxF.save();
+
   let index = handleIndexCreation(IndexTopN, event, event.params.index, []);
 
+  index.indexFactory = idxF.id;
   index.sector = event.params.category;
   index.save();
 }

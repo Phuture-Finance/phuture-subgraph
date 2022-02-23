@@ -75,6 +75,9 @@ type IndexFactory @entity {
   "Address (hash) of the factory"
   id: ID!
   type: String!
+
+  vTokenFactory: String!
+
   indices: [Index!]! @derivedFrom(field: "indexFactory")
 }
 
