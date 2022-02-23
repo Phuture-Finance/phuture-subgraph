@@ -1,6 +1,6 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
-import { ManagedStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
+import { IndexManaged, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
 import {
   loadOrCreateAccount,
   loadOrCreateAsset,
@@ -64,7 +64,7 @@ export function handleIndexCreation(
 
   if (type == IndexTracked) {
     TrackedIndex.create(indexAddress);
-  } else if (type == ManagedStatic) {
+  } else if (type == IndexManaged) {
     ManagedIndex.create(indexAddress);
   } else if (type == IndexTopN) {
     TopNMarketCapIndex.create(indexAddress);
