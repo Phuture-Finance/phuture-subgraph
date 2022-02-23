@@ -1,6 +1,6 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
-import { IndexStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
+import { ManagedStatic, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
 import {
   loadOrCreateAccount,
   loadOrCreateAsset,
@@ -8,8 +8,8 @@ import {
   loadOrCreateIndexFactory,
   loadOrCreateTransaction,
 } from '../entities';
-import { IndexAsset, UserIndex } from '../../types/schema';
-import { TrackedIndex, TopNMarketCapIndex, StaticIndex } from '../../types/templates';
+import { IndexAsset, UserIndex, Index } from '../../types/schema';
+import { TrackedIndex, TopNMarketCapIndex, ManagedIndex } from '../../types/templates';
 import { updateStat } from './stats';
 import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
 
@@ -18,7 +18,7 @@ export function handleIndexCreation(
   event: ethereum.Event,
   indexAddress: Address,
   assets: Address[],
-): void {
+): Index {
   let tx = loadOrCreateTransaction(event);
   let idxF = loadOrCreateIndexFactory(event.address, type);
 
@@ -64,8 +64,8 @@ export function handleIndexCreation(
 
   if (type == IndexTracked) {
     TrackedIndex.create(indexAddress);
-  } else if (type == IndexStatic) {
-    StaticIndex.create(indexAddress);
+  } else if (type == ManagedStatic) {
+    ManagedIndex.create(indexAddress);
   } else if (type == IndexTopN) {
     TopNMarketCapIndex.create(indexAddress);
   }
@@ -73,4 +73,6 @@ export function handleIndexCreation(
   let stat = updateStat(event.block.timestamp);
   stat.indexCount = stat.indexCount.plus(ONE_BI);
   stat.save();
+
+  return index;
 }

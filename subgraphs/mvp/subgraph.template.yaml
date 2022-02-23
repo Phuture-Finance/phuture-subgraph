@@ -48,9 +48,9 @@ dataSources:
     name: Index
     network: {{network}}
     source:
-      abi: StaticIndexFactory
-      address: '{{StaticIndexFactory}}'
-      startBlock: {{StaticIndexFactoryBlockNumber}}
+      abi: ManagedIndexFactory
+      address: '{{ManagedIndexFactory}}'
+      startBlock: {{ManagedIndexFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -59,8 +59,8 @@ dataSources:
         - Index
         - IndexAsset
       abis:
-        - name: StaticIndexFactory
-          file: ../abis/Phuture/StaticIndexFactory.json
+        - name: ManagedIndexFactory
+          file: ../abis/Phuture/ManagedIndexFactory.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -68,17 +68,17 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: StaticIndexCreated(address,address[],uint8[])
-          handler: handleStaticIndexCreated
-      file: ./src/mappings/phuture/staticIndexFactory.ts
+        - event: ManagedIndexCreated(address,address[],uint8[])
+          handler: handleManagedIndexCreated
+      file: ./src/mappings/phuture/managedIndexFactory.ts
 
   - kind: ethereum/contract
-    name: StaticVTokenFactory
+    name: ManagedVTokenFactory
     network: {{network}}
     source:
       abi: vTokenFactory
-      address: '{{StaticVTokenFactory}}'
-      startBlock: {{StaticVTokenFactoryBlockNumber}}
+      address: '{{ManagedVTokenFactory}}'
+      startBlock: {{ManagedVTokenFactoryBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -337,15 +337,15 @@ templates:
           handler: handleTransfer
 
   - kind: ethereum/contract
-    name: StaticIndex
+    name: ManagedIndex
     network: {{network}}
     source:
-      abi: StaticIndex
+      abi: ManagedIndex
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/phuture/staticIndex.ts
+      file: ./src/mappings/phuture/managedIndex.ts
       entities:
         - Index
         - Asset
@@ -353,13 +353,13 @@ templates:
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
-        - name: StaticIndexFactory
-          file: ../abis/Phuture/StaticIndexFactory.json
-        - name: StaticIndex
-          file: ../abis/Phuture/StaticIndex.json
+        - name: ManagedIndexFactory
+          file: ../abis/Phuture/ManagedIndexFactory.json
+        - name: ManagedIndex
+          file: ../abis/Phuture/ManagedIndex.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleStaticIndexTransfer
+          handler: handleManagedIndexTransfer
         - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
 
@@ -419,6 +419,32 @@ templates:
           handler: handleTopNMarketCapIndexTransfer
 
   - kind: ethereum/contract
+    name: SushiswapPair
+    network: {{network}}
+    source:
+      abi: UniswapPair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/sushiswap/pair.ts
+      entities:
+        - Asset
+        - Pair
+      abis:
+        - name: UniswapPair
+          file: ../abis/Uniswap/UniswapPair.json
+        - name: UniswapFactory
+          file: ../abis/Uniswap/UniswapFactory.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+      eventHandlers:
+        - event: Sync(uint112,uint112)
+          handler: handleSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+
+  - kind: ethereum/contract
     name: UniswapPair
     network: {{network}}
     source:
@@ -466,3 +492,23 @@ templates:
         - event: VTokenTransfer(indexed address,indexed address,uint256)
           handler: handlerVTokenTransfer
       file: ./src/mappings/phuture/vToken.ts
+
+  - kind: ethereum/contract
+    name: erc20
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - erc20
+      abis:
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/phuture/erc20.ts
+

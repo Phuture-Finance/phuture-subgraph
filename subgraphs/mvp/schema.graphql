@@ -15,6 +15,7 @@ type Asset @entity {
   _indexes: [ID!]!
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
+  basePriceSushi: BigDecimal!
   basePrice: BigDecimal!
   marketCap: BigInt!
 
@@ -48,6 +49,26 @@ type Pair @entity {
 
   asset0Reserve: BigDecimal!
   asset1Reserve: BigDecimal!
+}
+
+type SushiPair @entity {
+  id: ID!
+
+  swap: Swap!
+
+  asset0: Asset!
+  asset1: Asset!
+
+  totalSupply: BigInt!
+
+  asset0Reserve: BigDecimal!
+  asset1Reserve: BigDecimal!
+}
+
+type DEX @entity {
+  id: ID!
+  router: String!
+  type: String!
 }
 
 type IndexFactory @entity {
@@ -84,6 +105,14 @@ type Index @entity {
   feeBurn: BigInt!
   feeMint: BigInt!
   feeAUM: BigInt!
+
+  "BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1"
+  feeAUMPercent: BigInt!
+
+  "When index was created"
+  created: BigInt!
+  "Index Creation Category"
+  sector: BigInt!
 
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
@@ -127,6 +156,8 @@ type vToken @entity {
   platformTotalSupply: BigInt!
   platformTotalSupplyDec: BigDecimal!
   capitalisation: BigDecimal!
+  totalAmount: BigDecimal!
+  assetReserve: BigDecimal!
 }
 
 type IndexAsset @entity {
