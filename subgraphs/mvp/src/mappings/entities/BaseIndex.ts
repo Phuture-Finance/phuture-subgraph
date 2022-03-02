@@ -25,12 +25,13 @@ export function loadOrCreateIndex(address: Address): Index {
   return index as Index;
 }
 
-export function loadOrCreateIndexFactory(address: Address, type: string): IndexFactory {
+export function loadOrCreateIndexFactory(address: Address, type: string, vTokeFactory: Address): IndexFactory {
   let idxF = IndexFactory.load(address.toHexString());
 
   if (!idxF) {
     idxF = new IndexFactory(address.toHexString());
     idxF.type = type;
+    idxF.vTokenFactory = vTokeFactory.toHexString();
     idxF.save();
   }
 
