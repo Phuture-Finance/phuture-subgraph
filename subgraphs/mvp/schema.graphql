@@ -155,6 +155,7 @@ type vToken @entity {
   id: ID!
   asset: Asset!
   tokenType: String!
+  factory: String!
   deposited: BigInt!
   platformTotalSupply: BigInt!
   platformTotalSupplyDec: BigDecimal!

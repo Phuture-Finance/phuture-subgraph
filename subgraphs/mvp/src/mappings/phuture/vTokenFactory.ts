@@ -10,6 +10,7 @@ export function handleDynamicVTokenCreated(event: DynamicVTokenCreated): void {
 
   let vt = loadOrCreateVToken(event.params.vToken);
   vt.asset = event.params.asset.toHexString();
+  vt.factory = event.address.toHexString();
 
   let assetAddr = Address.fromString(vt.asset);
   let asset = loadOrCreateAsset(assetAddr);
@@ -33,6 +34,7 @@ export function handleStaticVTokenCreated(event: ManagedVTokenCreated): void {
 
   let vt = loadOrCreateVToken(event.params.vToken);
   vt.asset = event.params.asset.toHexString();
+  vt.factory = event.address.toHexString();
 
   let assetAddr = Address.fromString(vt.asset);
   let asset = loadOrCreateAsset(assetAddr);
