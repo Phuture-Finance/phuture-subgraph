@@ -16,7 +16,7 @@ function saveFeeInBP(indexAddress: Address, amount: BigInt, type: string): void 
 
     // k = (x/10000) / (1 - x/10000)
     // ((k / (1e27)) ** t) - 1
-    // index.feeAUMPercent = k.div(BigInt.fromI32(1e27 as i32)).pow(36).minus(BigInt.fromI32(1));
+    // index.feeAUMPercent = k.div(BigInt.fromI32(1e27 as i32)).pow(362).minus(BigInt.fromI32(1));
   } else if (type == FeeInBPMint) {
     index.feeMint = amount;
   } else {

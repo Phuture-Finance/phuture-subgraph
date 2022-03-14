@@ -64,7 +64,7 @@ export function updateCapVToken(asset: Asset): void {
     let vt = vToken.load(asset._vTokens[i]);
     if (!vt) continue;
 
-    vt.capitalisation = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
+    vt.capitalization = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
     vt.save();
   }
 }
