@@ -1,9 +1,7 @@
 name: Generate
 on:
   pull_request:
-    types:
-      - opened
-  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
