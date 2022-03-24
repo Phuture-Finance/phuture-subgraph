@@ -1,7 +1,8 @@
 name: Generate
 on:
   pull_request:
-    branches: [ develop ]
+    types:
+      - opened
   workflow_dispatch:
 jobs:
   build:
