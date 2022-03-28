@@ -1,0 +1,56 @@
+name: Unzip
+on:
+  pull_request:
+    branches: [ develop ]
+
+env:
+  TMPDIR: /tmp/unzip
+
+jobs:
+  file_existence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          path: './pathToRepo/'
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "./pathToRepo/zip/mvp-output.zip"
+
+      - name: File exists
+        if: steps.check_files.outputs.files_exists == 'true'
+        # Only runs if all of the files exists
+        run: |
+          echo zip file exits
+          ls ./pathToRepo/zip/
+          unzip ./pathToRepo/zip/*.zip -d $TMPDIR
+          cp $TMPDIR/mvp-output/subgraph/abi/* ./pathToRepo/subgraphs/abis/Phuture/
+          cp $TMPDIR/mvp-output/subgraph/*.json ./pathToRepo/subgraphs/mvp/config/
+          rm ./pathToRepo/zip/*.zip
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: Build
+        run: cd ./pathToRepo && npm install --force && npm run codegen
+
+        # TODO the graph test cannot be used in this branch yet
+        #      - name: Run integration tests
+        #        run: cd ./pathToRepo/subgraphs/mvp && graph test -r
+
+      # It should have a squashed commit before merging to develop
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Updated subgraphs files'
+          add: '["./zip", "./subgraphs/abis", "./subgraphs/mvp/config"]'
+          cwd: './pathToRepo/'
+          default_author: github_actions
+          committer_name: GitHub Actions
