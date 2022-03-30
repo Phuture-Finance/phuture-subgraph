@@ -6,12 +6,20 @@
       { "internalType": "address", "name": "_reweightingLogic", "type": "address" },
       { "internalType": "uint16", "name": "_defaultMintingFeeInBP", "type": "uint16" },
       { "internalType": "uint16", "name": "_defaultBurningFeeInBP", "type": "uint16" },
-      { "internalType": "uint256", "name": "_defaultAUMScaledPerSecondsRate", "type": "uint256" },
-      { "internalType": "uint16", "name": "_defaultGovernorFeePercentageInBP", "type": "uint16" },
-      { "internalType": "address", "name": "_governorFactory", "type": "address" }
+      { "internalType": "uint256", "name": "_defaultAUMScaledPerSecondsRate", "type": "uint256" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "index", "type": "address" },
+      { "indexed": false, "internalType": "address[]", "name": "_assets", "type": "address[]" },
+      { "indexed": false, "internalType": "uint8[]", "name": "_weights", "type": "uint8[]" }
+    ],
+    "name": "ManagedIndexCreated",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -35,41 +43,15 @@
     "anonymous": false,
     "inputs": [
       { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "defaultGovernorFeePercentageInBP", "type": "uint16" }
-    ],
-    "name": "SetDefaultGovernorFeePercentageInBP",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
       { "indexed": false, "internalType": "uint16", "name": "mintingFeeInBP", "type": "uint16" }
     ],
     "name": "SetDefaultMintingFeeInBP",
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "governorFactory", "type": "address" }
-    ],
-    "name": "SetGovernorFactory",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": false, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "address[]", "name": "assets", "type": "address[]" }
-    ],
-    "name": "TrackedIndexCreated",
-    "type": "event"
-  },
-  {
     "inputs": [
       { "internalType": "address[]", "name": "_assets", "type": "address[]" },
+      { "internalType": "uint8[]", "name": "_weights", "type": "uint8[]" },
       {
         "components": [
           { "internalType": "string", "name": "name", "type": "string" },
@@ -101,22 +83,8 @@
   },
   {
     "inputs": [],
-    "name": "defaultGovernorFeePercentageInBP",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "defaultMintingFeeInBP",
     "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "governorFactory",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -149,22 +117,8 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint16", "name": "_defaultGovernorFeePercentageInBP", "type": "uint16" }],
-    "name": "setDefaultGovernorFeePercentageInBP",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [{ "internalType": "uint16", "name": "_mintingFeeInBP", "type": "uint16" }],
     "name": "setDefaultMintingFeeInBP",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "_governorFactory", "type": "address" }],
-    "name": "setGovernorFactory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

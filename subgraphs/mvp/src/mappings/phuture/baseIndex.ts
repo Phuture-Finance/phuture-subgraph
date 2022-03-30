@@ -25,6 +25,7 @@ export function handleIndexCreation(
 
   index.type = type;
   index.transaction = tx.id;
+  index.created = tx.timestamp;
 
   let paramAssets = assets;
   for (let i = 0; i < paramAssets.length; i++) {
