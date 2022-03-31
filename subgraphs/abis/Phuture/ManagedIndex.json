@@ -12,12 +12,6 @@
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": false, "internalType": "address", "name": "governor", "type": "address" }],
-    "name": "SetGovernor",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
     "inputs": [
       { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
       { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
@@ -95,20 +89,6 @@
   },
   {
     "inputs": [],
-    "name": "category",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "creditChargeDisabled",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "decimals",
     "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
     "stateMutability": "view",
@@ -123,13 +103,6 @@
   },
   {
     "inputs": [],
-    "name": "governor",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "inactiveAnatomy",
     "outputs": [{ "internalType": "address[]", "name": "_assets", "type": "address[]" }],
     "stateMutability": "view",
@@ -137,13 +110,8 @@
   },
   {
     "inputs": [
-      { "internalType": "uint8", "name": "_topN", "type": "uint8" },
-      { "internalType": "uint256", "name": "_category", "type": "uint256" },
-      { "internalType": "uint256", "name": "_snapshot", "type": "uint256" },
       { "internalType": "address[]", "name": "_assets", "type": "address[]" },
-      { "internalType": "uint256[]", "name": "_capitalizations", "type": "uint256[]" },
-      { "internalType": "uint256", "name": "_totalCapitalization", "type": "uint256" },
-      { "internalType": "address", "name": "_governor", "type": "address" }
+      { "internalType": "uint8[]", "name": "_weights", "type": "uint8[]" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -193,17 +161,12 @@
     "stateMutability": "view",
     "type": "function"
   },
-  { "inputs": [], "name": "reweight", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
   {
-    "inputs": [{ "internalType": "bool", "name": "_disabled", "type": "bool" }],
-    "name": "setCreditChargeDisabled",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "_governor", "type": "address" }],
-    "name": "setGovernor",
+    "inputs": [
+      { "internalType": "address[]", "name": "_updatedAssets", "type": "address[]" },
+      { "internalType": "uint8[]", "name": "_updatedWeights", "type": "uint8[]" }
+    ],
+    "name": "reweight",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -219,13 +182,6 @@
     "inputs": [],
     "name": "symbol",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "topN",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
     "stateMutability": "view",
     "type": "function"
   },
