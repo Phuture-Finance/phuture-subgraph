@@ -18,7 +18,7 @@ import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS } from '../../../consts';
+import { UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS, BASE_ASSETS } from '../../../consts';
 import { updateSushiAssetsBasePrice } from "../sushiswap/pair";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
@@ -30,16 +30,8 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.marketCap = event.params.marketCap;
   asset.save();
 
-  let bases = [
-    Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
-    Address.fromString("0x6B175474E89094C44Da98b954EedeAC495271d0F"),
-    Address.fromString("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
-    Address.fromString("0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"),
-    Address.fromString("0x6B3595068778DD592e39A122f4f5a5cF09C90fE2"),
-  ];
-
-  for (let i = 0; i < bases.length; i++) {
-    let baseAddr = bases[i];
+  for (let i = 0; i < BASE_ASSETS.length; i++) {
+    let baseAddr = Address.fromString(BASE_ASSETS[i]);
 
     if (event.params.asset.equals(baseAddr)) continue;
 
