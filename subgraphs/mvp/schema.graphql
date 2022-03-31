@@ -159,7 +159,7 @@ type vToken @entity {
   deposited: BigInt!
   platformTotalSupply: BigInt!
   platformTotalSupplyDec: BigDecimal!
-  capitalisation: BigDecimal!
+  capitalization: BigDecimal!
   assetReserve: BigDecimal!
 }
 

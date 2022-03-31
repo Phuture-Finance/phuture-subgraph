@@ -18,8 +18,8 @@ import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { BASE_ADDRESS, UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS } from '../../../consts';
-import {updateSushiAssetsBasePrice} from "../sushiswap/pair";
+import { UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS, BASE_ASSETS } from '../../../consts';
+import { updateSushiAssetsBasePrice } from "../sushiswap/pair";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -30,43 +30,58 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.marketCap = event.params.marketCap;
   asset.save();
 
-  let baseAddr = Address.fromString(BASE_ADDRESS);
-  if (event.params.asset.equals(baseAddr)) return;
+  for (let i = 0; i < BASE_ASSETS.length; i++) {
+    let baseAddr = Address.fromString(BASE_ASSETS[i]);
 
-  let assetBase = loadOrCreateAsset(baseAddr);
+    if (event.params.asset.equals(baseAddr)) continue;
 
-  let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
-  let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
+    let assetBase = loadOrCreateAsset(baseAddr);
 
-  if (!pairAddr.reverted && !Address.zero().equals(pairAddr.value)) {
-    let p = loadOrCreatePair(pairAddr.value, assetBase.id, asset.id);
-    p.save();
+    let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
+    let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
 
-    // Track the address of this pair.
-    UniswapPairTemplate.create(pairAddr.value);
+    if (!pairAddr.reverted && !Address.zero().equals(pairAddr.value)) {
+      // Track the address of this pair.
+      UniswapPairTemplate.create(pairAddr.value);
 
-    let pair = UniswapPair.bind(pairAddr.value);
-    let reserve = pair.getReserves();
+      let pair = UniswapPair.bind(pairAddr.value);
+      let reserve = pair.getReserves();
+      let token0 = pair.token0();
+      let token1 = pair.token1();
 
-    updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
-  }
+      let p = loadOrCreatePair(pairAddr.value, token0.toHexString(), token1.toHexString());
+      p.asset0 = token0.toHexString();
+      p.asset1 = token1.toHexString();
+      p.asset0Reserve = reserve.value0.toBigDecimal();
+      p.asset1Reserve = reserve.value1.toBigDecimal();
+      p.save();
 
-  // SushiSwap factory
-  let sushi = SushiswapFactory.bind(Address.fromString(SUSHI_FACTORY_ADDRESS));
-  let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
+      updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+    }
 
-  if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
-    log.warning("SUSHI ADDR!: {}", [sushiPairAddr.value.toHexString()]);
+    // SushiSwap factory
+    let sushi = SushiswapFactory.bind(Address.fromString(SUSHI_FACTORY_ADDRESS));
+    let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
 
-    let sp = loadOrCreateSushiPair(sushiPairAddr.value, assetBase.id, asset.id);
-    sp.save();
+    if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
+      log.warning("SUSHI ADDR!: {}", [sushiPairAddr.value.toHexString()]);
 
-    SushiswapPairTemplate.create(sushiPairAddr.value);
+      SushiswapPairTemplate.create(sushiPairAddr.value);
 
-    let spair = SushiswapPair.bind(sushiPairAddr.value);
-    let sreserve = spair.getReserves();
+      let pair = SushiswapPair.bind(sushiPairAddr.value);
+      let reserve = pair.getReserves();
+      let token0 = pair.token0();
+      let token1 = pair.token1();
 
-    updateSushiAssetsBasePrice(sreserve.value0, sreserve.value1, assetBase, asset, event.block.timestamp);
+      let sp = loadOrCreateSushiPair(sushiPairAddr.value, token0.toHexString(), token1.toHexString());
+      sp.asset0 = token0.toHexString();
+      sp.asset1 = token1.toHexString();
+      sp.asset0Reserve = reserve.value0.toBigDecimal();
+      sp.asset1Reserve = reserve.value1.toBigDecimal();
+      sp.save();
+
+      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+    }
   }
 }
 

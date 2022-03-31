@@ -9,11 +9,11 @@ export function handleNewPair(event: PairCreated): void {
         dx = new DEX(event.address.toHexString());
         if (event.address.equals(Address.fromString(UNI_FACTORY_ADDRESS))) {
             dx.type = "uniswap";
-            dx.router = UNI_ROUTER_ADDRESS;
+            dx.router = UNI_ROUTER_ADDRESS.toLowerCase();
             dx.save();
         } else if (event.address.equals(Address.fromString(SUSHI_FACTORY_ADDRESS))) {
             dx.type = "sushiswap";
-            dx.router = SUSHI_ROUTER_ADDRESS;
+            dx.router = SUSHI_ROUTER_ADDRESS.toLowerCase();
             dx.save();
         }
     }

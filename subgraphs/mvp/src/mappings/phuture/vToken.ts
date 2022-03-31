@@ -50,7 +50,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
       convertTokenToDecimal(event.params.amount, asset.decimals),
     );
   }
-  vt.capitalisation = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
+  vt.capitalization = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
   vt.save();
 
   // Update asset reserve values.
