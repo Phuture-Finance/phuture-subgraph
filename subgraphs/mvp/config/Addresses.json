@@ -1,0 +1,15 @@
+{
+  "Base": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "WETH": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "FeePool": "0xa4bcdf64cdd5451b6ac3743b414124a6299b65ff",
+  "Registry": "0x1d80315fac6abd3efeebe97dec44461ba7556160",
+  "ManagedIndexFactory": "0xf91ac1098f3b154671ce83290114aae45ac0225f",
+  "ReweightingCredit": "0xd5c35f41bad857a2d4f34d7554e78d0391bacedf",
+  "TopNMarketCapCategories": "0xfa9dbd706c674801f50169f4b5862cce045408e6",
+  "TopNMarketCapIndexFactory": "0xb529e6c14e73e8618f8e073368fabd914bf96222",
+  "ManagedVTokenFactory": "0xfec95864b4f5d68158c1c67981bd5ca0bc651571",
+  "DynamicVTokenFactory": "0x6b22eee9ae8aae0893f465dddd63fbd394d9b4e4",
+  "Orderer": "0x4931b72a3f074a6c85dc62bba648d7f4fbd1d0ff",
+  "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+  "SushiV2Factory": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"
+}

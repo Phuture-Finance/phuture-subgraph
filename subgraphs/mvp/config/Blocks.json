@@ -1,0 +1,10 @@
+{
+  "UniswapV2FactoryBlockNumber": 10000835,
+  "SushiV2FactoryBlockNumber": 10794229,
+  "RegistryBlockNumber": 14494290,
+  "OrdererBlockNumber": 14494349,
+  "ManagedIndexFactoryBlockNumber": 14494368,
+  "ManagedVTokenFactoryBlockNumber": 14494358,
+  "DynamicVTokenFactoryBlockNumber": 14494359,
+  "TopNMarketCapIndexFactoryBlockNumber": 14494380
+}

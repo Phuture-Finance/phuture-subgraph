@@ -1,26 +1,62 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "previousAdmin", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "newAdmin", "type": "address" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
     ],
     "name": "AdminChanged",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "beacon", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
     "name": "BeaconUpgraded",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "share", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "share",
+        "type": "uint256"
+      }
     ],
     "name": "Burn",
     "type": "event"
@@ -28,9 +64,24 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "share", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "share",
+        "type": "uint256"
+      }
     ],
     "name": "Mint",
     "type": "event"
@@ -38,9 +89,24 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "AUMScaledPerSecondsRate", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "AUMScaledPerSecondsRate",
+        "type": "uint256"
+      }
     ],
     "name": "SetAUMScaledPerSecondsRate",
     "type": "event"
@@ -48,9 +114,24 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "burningFeeInPB", "type": "uint16" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "burningFeeInPB",
+        "type": "uint16"
+      }
     ],
     "name": "SetBurningFeeInBP",
     "type": "event"
@@ -58,43 +139,104 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "mintingFeeInBP", "type": "uint16" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "mintingFeeInBP",
+        "type": "uint16"
+      }
     ],
     "name": "SetMintingFeeInBP",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "implementation", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
     "name": "Upgraded",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
     "name": "Withdraw",
     "type": "event"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "AUMScaledPerSecondsRateOf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "recipient", "type": "address" },
-          { "internalType": "uint256", "name": "share", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct IFeePool.MintBurnInfo",
         "name": "_burnInfo",
@@ -108,11 +250,23 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "recipient", "type": "address" },
-          { "internalType": "uint256", "name": "share", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct IFeePool.MintBurnInfo[]",
         "name": "_burnInfo",
@@ -125,17 +279,41 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "burningFeeInBPOf",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "address", "name": "_oldGovernor", "type": "address" },
-      { "internalType": "address", "name": "_newGovernor", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oldGovernor",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newGovernor",
+        "type": "address"
+      }
     ],
     "name": "changeGovernorShare",
     "outputs": [],
@@ -143,7 +321,13 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_registry", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_registry",
+        "type": "address"
+      }
+    ],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -151,14 +335,38 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "uint16", "name": "_mintingFeeInBP", "type": "uint16" },
-      { "internalType": "uint16", "name": "_burningFeeInBP", "type": "uint16" },
-      { "internalType": "uint256", "name": "_AUMScaledPerSecondsRate", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_mintingFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_burningFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_AUMScaledPerSecondsRate",
+        "type": "uint256"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "recipient", "type": "address" },
-          { "internalType": "uint256", "name": "share", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct IFeePool.MintBurnInfo[]",
         "name": "_mintInfo",
@@ -172,11 +380,23 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "recipient", "type": "address" },
-          { "internalType": "uint256", "name": "share", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct IFeePool.MintBurnInfo",
         "name": "_mintInfo",
@@ -190,11 +410,23 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "recipient", "type": "address" },
-          { "internalType": "uint256", "name": "share", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct IFeePool.MintBurnInfo[]",
         "name": "_mintInfo",
@@ -207,16 +439,49 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "mintingFeeInBPOf",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "uint256", "name": "_AUMScaledPerSecondsRate", "type": "uint256" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_AUMScaledPerSecondsRate",
+        "type": "uint256"
+      }
     ],
     "name": "setAUMScaledPerSecondsRate",
     "outputs": [],
@@ -225,8 +490,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "uint16", "name": "_burningFeeInBP", "type": "uint16" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_burningFeeInBP",
+        "type": "uint16"
+      }
     ],
     "name": "setBurningFeeInBP",
     "outputs": [],
@@ -235,8 +508,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "uint16", "name": "_mintingFeeInBP", "type": "uint16" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_mintingFeeInBP",
+        "type": "uint16"
+      }
     ],
     "name": "setMintingFeeInBP",
     "outputs": [],
@@ -245,30 +526,74 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "address", "name": "", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
     "name": "shareOf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
     "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "totalSharesOf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "newImplementation", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
     "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -276,8 +601,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newImplementation", "type": "address" },
-      { "internalType": "bytes", "name": "data", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
     ],
     "name": "upgradeToAndCall",
     "outputs": [],
@@ -285,7 +618,13 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_index", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      }
+    ],
     "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -293,8 +632,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "address", "name": "_recipient", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      }
     ],
     "name": "withdrawPlatformFeeOf",
     "outputs": [],
@@ -303,11 +650,25 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_index", "type": "address" },
-      { "internalType": "address", "name": "_account", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      }
     ],
     "name": "withdrawableAmountOf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   }

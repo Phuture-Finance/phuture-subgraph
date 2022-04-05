@@ -1,28 +1,74 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "previousAdmin", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "newAdmin", "type": "address" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
     ],
     "name": "AdminChanged",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "beacon", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
     "name": "BeaconUpgraded",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "uint256", "name": "id", "type": "uint256" },
-      { "indexed": false, "internalType": "address", "name": "sellAsset", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "soldShares", "type": "uint256" },
-      { "indexed": false, "internalType": "address", "name": "buyAsset", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "boughtShares", "type": "uint256" }
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sellAsset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "soldShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "buyAsset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boughtShares",
+        "type": "uint256"
+      }
     ],
     "name": "CompleteOrder",
     "type": "event"
@@ -30,8 +76,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "creator", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "id", "type": "uint256" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
     ],
     "name": "PlaceOrder",
     "type": "event"
@@ -39,26 +95,69 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "uint256", "name": "id", "type": "uint256" },
-      { "indexed": false, "internalType": "address", "name": "asset", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "share", "type": "uint256" },
-      { "indexed": false, "internalType": "bool", "name": "isSellSide", "type": "bool" }
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "share",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isSellSide",
+        "type": "bool"
+      }
     ],
     "name": "UpdateOrder",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "implementation", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
     "name": "Upgraded",
     "type": "event"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_orderId", "type": "uint256" },
-      { "internalType": "address", "name": "_asset", "type": "address" },
-      { "internalType": "uint256", "name": "_shares", "type": "uint256" },
-      { "internalType": "enum IOrderer.OrderSide", "name": "_side", "type": "uint8" }
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_asset",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_shares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IOrderer.OrderSide",
+        "name": "_side",
+        "type": "uint8"
+      }
     ],
     "name": "addOrderDetails",
     "outputs": [],
@@ -69,12 +168,36 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "address", "name": "router", "type": "address" },
-          { "internalType": "address", "name": "factory", "type": "address" },
-          { "internalType": "address", "name": "account", "type": "address" },
-          { "internalType": "uint256", "name": "maxSellShares", "type": "uint256" },
-          { "internalType": "uint256", "name": "minSwapOutputAmount", "type": "uint256" },
-          { "internalType": "address[]", "name": "buyPath", "type": "address[]" }
+          {
+            "internalType": "address",
+            "name": "router",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "factory",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSellShares",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minSwapOutputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "buyPath",
+            "type": "address[]"
+          }
         ],
         "internalType": "struct IOrderer.ExternalSwap",
         "name": "_info",
@@ -88,9 +211,21 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_registry", "type": "address" },
-      { "internalType": "uint64", "name": "_orderLifetime", "type": "uint64" },
-      { "internalType": "uint16", "name": "_maxAllowedPriceImpactInBP", "type": "uint16" }
+      {
+        "internalType": "address",
+        "name": "_registry",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_orderLifetime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_maxAllowedPriceImpactInBP",
+        "type": "uint16"
+      }
     ],
     "name": "initialize",
     "outputs": [],
@@ -101,10 +236,26 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "address", "name": "sellAccount", "type": "address" },
-          { "internalType": "address", "name": "buyAccount", "type": "address" },
-          { "internalType": "uint256", "name": "maxSellShares", "type": "uint256" },
-          { "internalType": "address[]", "name": "buyPath", "type": "address[]" }
+          {
+            "internalType": "address",
+            "name": "sellAccount",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "buyAccount",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSellShares",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "buyPath",
+            "type": "address[]"
+          }
         ],
         "internalType": "struct IOrderer.InternalSwap",
         "name": "_info",
@@ -117,38 +268,84 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "lastOrderIdOf",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "maxAllowedPriceImpactInBP",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "orderLifetime",
-    "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_account", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      }
+    ],
     "name": "orderOf",
     "outputs": [
       {
         "components": [
-          { "internalType": "uint256", "name": "creationTimestamp", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
+          },
           {
             "components": [
-              { "internalType": "address", "name": "asset", "type": "address" },
-              { "internalType": "enum IOrderer.OrderSide", "name": "side", "type": "uint8" },
-              { "internalType": "uint256", "name": "shares", "type": "uint256" }
+              {
+                "internalType": "address",
+                "name": "asset",
+                "type": "address"
+              },
+              {
+                "internalType": "enum IOrderer.OrderSide",
+                "name": "side",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint256",
+                "name": "shares",
+                "type": "uint256"
+              }
             ],
             "internalType": "struct IOrderer.OrderAsset[]",
             "name": "assets",
@@ -166,15 +363,46 @@
   {
     "inputs": [],
     "name": "placeOrder",
-    "outputs": [{ "internalType": "uint256", "name": "_orderId", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_orderId",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "address", "name": "_asset", "type": "address" },
-      { "internalType": "uint256", "name": "_newTotalSupply", "type": "uint256" },
-      { "internalType": "uint256", "name": "_oldTotalSupply", "type": "uint256" }
+      {
+        "internalType": "address",
+        "name": "_asset",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newTotalSupply",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_oldTotalSupply",
+        "type": "uint256"
+      }
     ],
     "name": "reduceOrderAsset",
     "outputs": [],
@@ -182,35 +410,71 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_index", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      }
+    ],
     "name": "reweight",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint16", "name": "_maxAllowedPriceImpactInBP", "type": "uint16" }],
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_maxAllowedPriceImpactInBP",
+        "type": "uint16"
+      }
+    ],
     "name": "setMaxAllowedPriceImpactInBP",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint64", "name": "_orderLifetime", "type": "uint64" }],
+    "inputs": [
+      {
+        "internalType": "uint64",
+        "name": "_orderLifetime",
+        "type": "uint64"
+      }
+    ],
     "name": "setOrderLifetime",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
     "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "newImplementation", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
     "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -218,8 +482,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newImplementation", "type": "address" },
-      { "internalType": "bytes", "name": "data", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
     ],
     "name": "upgradeToAndCall",
     "outputs": [],
@@ -230,12 +502,36 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "address", "name": "router", "type": "address" },
-          { "internalType": "address", "name": "factory", "type": "address" },
-          { "internalType": "address", "name": "vTokenFactory", "type": "address" },
-          { "internalType": "uint256", "name": "sellAmount", "type": "uint256" },
-          { "internalType": "uint256", "name": "minSwapOutputAmount", "type": "uint256" },
-          { "internalType": "address[]", "name": "path", "type": "address[]" }
+          {
+            "internalType": "address",
+            "name": "router",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "factory",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vTokenFactory",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sellAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minSwapOutputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          }
         ],
         "internalType": "struct IOrderer.VaultSwap",
         "name": "_info",

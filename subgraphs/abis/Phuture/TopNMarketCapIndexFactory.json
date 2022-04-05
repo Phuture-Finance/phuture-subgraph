@@ -1,15 +1,51 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_registry", "type": "address" },
-      { "internalType": "address", "name": "_vTokenFactory", "type": "address" },
-      { "internalType": "address", "name": "_reweightingLogic", "type": "address" },
-      { "internalType": "address", "name": "_marketCapCategories", "type": "address" },
-      { "internalType": "uint16", "name": "_defaultMintingFeeInBP", "type": "uint16" },
-      { "internalType": "uint16", "name": "_defaultBurningFeeInBP", "type": "uint16" },
-      { "internalType": "uint256", "name": "_defaultAUMScaledPerSecondsRate", "type": "uint256" },
-      { "internalType": "uint16", "name": "_defaultGovernorFeePercentageInBP", "type": "uint16" },
-      { "internalType": "address", "name": "_governorFactory", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_registry",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_vTokenFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_reweightingLogic",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_marketCapCategories",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_defaultMintingFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_defaultBurningFeeInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defaultAUMScaledPerSecondsRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_defaultGovernorFeePercentageInBP",
+        "type": "uint16"
+      },
+      {
+        "internalType": "address",
+        "name": "_governorFactory",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -17,8 +53,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "AUMScaledPerSecondsRate", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "AUMScaledPerSecondsRate",
+        "type": "uint256"
+      }
     ],
     "name": "SetDefaultAUMScaledPerSecondsRate",
     "type": "event"
@@ -26,8 +72,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "burningFeeInBP", "type": "uint16" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "burningFeeInBP",
+        "type": "uint16"
+      }
     ],
     "name": "SetDefaultBurningFeeInBP",
     "type": "event"
@@ -35,8 +91,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "defaultGovernorFeePercentageInBP", "type": "uint16" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "defaultGovernorFeePercentageInBP",
+        "type": "uint16"
+      }
     ],
     "name": "SetDefaultGovernorFeePercentageInBP",
     "type": "event"
@@ -44,8 +110,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint16", "name": "mintingFeeInBP", "type": "uint16" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "mintingFeeInBP",
+        "type": "uint16"
+      }
     ],
     "name": "SetDefaultMintingFeeInBP",
     "type": "event"
@@ -53,8 +129,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "governorFactory", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "governorFactory",
+        "type": "address"
+      }
     ],
     "name": "SetGovernorFactory",
     "type": "event"
@@ -62,21 +148,52 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "category", "type": "uint256" },
-      { "indexed": false, "internalType": "uint256", "name": "topN", "type": "uint256" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "category",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "topN",
+        "type": "uint256"
+      }
     ],
     "name": "TopNMarketCapIndexCreated",
     "type": "event"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_category", "type": "uint256" },
-      { "internalType": "uint8", "name": "_topN", "type": "uint8" },
+      {
+        "internalType": "uint256",
+        "name": "_category",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_topN",
+        "type": "uint8"
+      },
       {
         "components": [
-          { "internalType": "string", "name": "name", "type": "string" },
-          { "internalType": "string", "name": "symbol", "type": "string" }
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          }
         ],
         "internalType": "struct IIndexFactory.NameDetails",
         "name": "_nameDetails",
@@ -84,145 +201,277 @@
       }
     ],
     "name": "createIndex",
-    "outputs": [{ "internalType": "address", "name": "index", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "defaultAUMScaledPerSecondsRate",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "defaultBurningFeeInBP",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "defaultGovernorFeePercentageInBP",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "defaultMintingFeeInBP",
-    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "governorFactory",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "marketCapCategories",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "maxAllowedTopN",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "registry",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "reweightingLogic",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "_AUMScaledPerSecondsRate", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_AUMScaledPerSecondsRate",
+        "type": "uint256"
+      }
+    ],
     "name": "setDefaultAUMScaledPerSecondsRate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint16", "name": "_burningFeeInBP", "type": "uint16" }],
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_burningFeeInBP",
+        "type": "uint16"
+      }
+    ],
     "name": "setDefaultBurningFeeInBP",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint16", "name": "_defaultGovernorFeePercentageInBP", "type": "uint16" }],
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_defaultGovernorFeePercentageInBP",
+        "type": "uint16"
+      }
+    ],
     "name": "setDefaultGovernorFeePercentageInBP",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint16", "name": "_mintingFeeInBP", "type": "uint16" }],
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_mintingFeeInBP",
+        "type": "uint16"
+      }
+    ],
     "name": "setDefaultMintingFeeInBP",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_governorFactory", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_governorFactory",
+        "type": "address"
+      }
+    ],
     "name": "setGovernorFactory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_marketCapCategories", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_marketCapCategories",
+        "type": "address"
+      }
+    ],
     "name": "setMarketCapCategories",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint8", "name": "_topN", "type": "uint8" }],
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "_topN",
+        "type": "uint8"
+      }
+    ],
     "name": "setMaxAllowedTopN",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_reweightingLogic", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_reweightingLogic",
+        "type": "address"
+      }
+    ],
     "name": "setReweightingLogic",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
     "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "vTokenFactory",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_index", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_index",
+        "type": "address"
+      }
+    ],
     "name": "withdrawToFeePool",
     "outputs": [],
     "stateMutability": "nonpayable",
