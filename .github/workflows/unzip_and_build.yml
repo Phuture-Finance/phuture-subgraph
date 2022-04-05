@@ -38,8 +38,10 @@ jobs:
           echo zip file exits
           ls ./pathToRepo/zip/
           unzip ./pathToRepo/zip/*.zip -d $TMPDIR
-          cp $TMPDIR/mvp-output/subgraph/abi/* ./pathToRepo/subgraphs/abis/Phuture/
-          cp $TMPDIR/mvp-output/subgraph/*.json ./pathToRepo/subgraphs/mvp/config/
+          pushd $TMPDIR/mvp-output/subgraph/abi/ && for a in "*.json"; do cat $a | jq | tee ./pathToRepo/subgraphs/abis/Phuture/$a > /dev/null; done; popd
+          pushd $TMPDIR/mvp-output/subgraph/ && for s in "*.json"; do cat $s | jq | tee ./pathToRepo/subgraphs/abis/mvp/config/$s > /dev/null; done; popd
+          #          cp $TMPDIR/mvp-output/subgraph/abi/* ./pathToRepo/subgraphs/abis/Phuture/
+          #          cp $TMPDIR/mvp-output/subgraph/*.json ./pathToRepo/subgraphs/mvp/config/
           rm ./pathToRepo/zip/*.zip
 
       - name: Use Node.js
