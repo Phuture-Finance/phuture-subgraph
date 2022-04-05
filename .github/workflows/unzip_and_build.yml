@@ -9,7 +9,7 @@ on:
       - main
       - develop
   pull_request:
-    branches: [ develop ]
+    #temp    branches: [ develop ]
 
 env:
   TMPDIR: /tmp/unzip
