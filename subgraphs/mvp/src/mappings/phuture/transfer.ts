@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Index, Transfer, UserIndex } from '../../types/schema';
 import { EMISSION_CONTROLLER_ADDRESS } from '../../../consts';
-import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction } from '../entities';
-import { ONE_BI } from '@phuture/subgraph-helpers';
+import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction, newUserIndexHistory, loadOrCreateDaylyUserIndexHistory } from '../entities';
+import { ONE_BI } from '../../../../helpers';
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -32,6 +32,18 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     fromUserIndex.save();
+
+    let fromUserIndexHistory= newUserIndexHistory(tx, fromUserIndex.user, fromUserIndex.index)
+    fromUserIndexHistory.balance = fromUserIndex.balance;
+    fromUserIndexHistory.timestamp = tx.timestamp;
+    fromUserIndexHistory.save();
+
+    let fromDailyUserIndexHistory =  loadOrCreateDaylyUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp.toI64());
+
+    fromDailyUserIndexHistory.total = fromDailyUserIndexHistory.total.plus(fromUserIndexHistory.balance);
+    fromDailyUserIndexHistory.number = fromDailyUserIndexHistory.number.plus(new BigDecimal(BigInt.fromI32(1)));
+    fromDailyUserIndexHistory.avgBalance = fromDailyUserIndexHistory.total.div(fromDailyUserIndexHistory.number);
+    fromDailyUserIndexHistory.save();
   }
 
   if (!to.equals(Address.zero()) && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
@@ -51,6 +63,21 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
 
     toUserIndex.save();
+
+    let toUserIndexHistory= newUserIndexHistory(tx, toUserIndex.user, toUserIndex.index)
+      toUserIndexHistory.balance = toUserIndex.balance;
+      toUserIndexHistory.timestamp = tx.timestamp;
+      toUserIndexHistory.save();
+
+    toUserIndexHistory.save();
+
+    let toDailyUserIndexHistory =  loadOrCreateDaylyUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp.toI64());
+
+
+    toDailyUserIndexHistory.total = toDailyUserIndexHistory.total.plus(toUserIndexHistory.balance);
+    toDailyUserIndexHistory.number = toDailyUserIndexHistory.number.plus(new BigDecimal(BigInt.fromI32(1)));
+    toDailyUserIndexHistory.avgBalance = toDailyUserIndexHistory.total.div(toDailyUserIndexHistory.number);
+    toDailyUserIndexHistory.save();
   }
 
   let transferType: string;
@@ -84,5 +111,4 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   tx.transfers = transfers.concat([transfer.id]);
   tx.save();
 }
-
 // 1d 5d 1m 3m 6m 1y

@@ -186,6 +186,32 @@ type UserIndex @entity {
   balance: BigDecimal!
 }
 
+type UserIndexHistory @entity {
+  id: ID!
+
+  timestamp: BigInt!
+
+  user: User!
+  index: Index!
+
+  balance: BigDecimal!
+}
+
+type DailyUserIndexHistory @entity {
+  id: ID!
+
+  # timestamp matching the starting of day GMT
+  timestamp: BigInt!
+
+  user: User!
+  index: Index!
+
+  total: BigDecimal!
+  number: BigDecimal!
+
+  avgBalance: BigDecimal!
+}
+
 type Transaction @entity {
   id: ID! # txn hash
   blockNumber: BigInt!
