@@ -41,6 +41,8 @@ jobs:
         # Only runs if all of the files exists
         run: |
           echo zip file exits
+          echo $SHELL
+          bash --version
           ls ./pathToRepo/zip/
           unzip ./pathToRepo/zip/*.zip -d $TMPDIR
           pushd $TMPDIR/mvp-output/subgraph/abi/ && for a in "*.json"; do cat $a | jq | tee ./pathToRepo/subgraphs/abis/Phuture/$a > /dev/null; done; popd
