@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # install tee and jq
-      - name: Install packages
-        run: sudo apt-get install -y coreutils jq
+      # - name: Install packages
+      #  run: sudo apt-get install -y coreutils jq
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,14 +40,9 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         # Only runs if all of the files exists
         run: |
-          echo zip file exits
-          echo $SHELL
-          bash --version
-          ls ./pathToRepo/zip/
           unzip ./pathToRepo/zip/*.zip -d $TMPDIR
-          ls ./pathToRepo/subgraphs/abis/Phuture/
-          #          for a in $TMPDIR/mvp-output/subgraph/*.json; do cat $a | jq | tee .pathToRepo/subgraphs/abis/Phuture/$(basename($a)) > /dev/null; done
-          for a in $TMPDIR/mvp-output/subgraph/*.json; do bn=$(basename $a) && cat $a | jq | tee ./pathToRepo/subgraphs/abis/Phuture/$bn > /dev/null; done
+          for f in $TMPDIR/mvp-output/subgraph/abi/*.json; do bn=$(basename $f) && cat $f | jq | tee ./pathToRepo/subgraphs/abis/Phuture/$bn > /dev/null; done
+          for f in $TMPDIR/mvp-output/subgraph/*.json; do bn=$(basename $f) && cat $f | jq | tee ./pathToRepo/subgraphs/mvp/config/$bn > /dev/null; done
           #pushd $TMPDIR/mvp-output/subgraph/ && for s in "*.json"; do cat $s | jq | tee ./pathToRepo/subgraphs/mvp/config/$s > /dev/null; done; popd
           #          cp $TMPDIR/mvp-output/subgraph/abi/* ./pathToRepo/subgraphs/abis/Phuture/
           #          cp $TMPDIR/mvp-output/subgraph/*.json ./pathToRepo/subgraphs/mvp/config/
