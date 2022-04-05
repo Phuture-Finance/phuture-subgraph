@@ -18,12 +18,17 @@ jobs:
   file_existence:
     runs-on: ubuntu-latest
     steps:
+      # install tee and jq
+      - name: Install packages
+        run: sudo apt-get install -y coreutils jq
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           path: './pathToRepo/'
+
 
       - name: Check file existence
         id: check_files
