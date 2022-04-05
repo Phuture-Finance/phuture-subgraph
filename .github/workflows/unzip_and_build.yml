@@ -46,7 +46,7 @@ jobs:
           ls ./pathToRepo/zip/
           unzip ./pathToRepo/zip/*.zip -d $TMPDIR
           ls ./pathToRepo/subgraphs/abis/Phuture/
-          pushd $TMPDIR/mvp-output/subgraph/abi/ && for a in *.json; do cat $a | jq | tee ../../../../subgraphs/abis/Phuture/$a > /dev/null; done; popd
+          for a in $TMPDIR/mvp-output/subgraph/*.json; do cat $a | jq | tee .pathToRepo/subgraphs/abis/Phuture/$(basename($a)) > /dev/null; done
           #pushd $TMPDIR/mvp-output/subgraph/ && for s in "*.json"; do cat $s | jq | tee ./pathToRepo/subgraphs/mvp/config/$s > /dev/null; done; popd
           #          cp $TMPDIR/mvp-output/subgraph/abi/* ./pathToRepo/subgraphs/abis/Phuture/
           #          cp $TMPDIR/mvp-output/subgraph/*.json ./pathToRepo/subgraphs/mvp/config/
