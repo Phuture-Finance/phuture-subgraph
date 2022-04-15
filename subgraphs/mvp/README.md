@@ -9,6 +9,8 @@ npm run precodegen
 npm run codegen
 # run post codegen
 npm run postcodegen
+# unit testing
+graph test -r
 # local deploy
 npm run create:local && npm run deploy:local:mainnet
 # remote deploy

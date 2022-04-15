@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import {bigDecimal, FeeInBPAUM, FeeInBPBurn, FeeInBPMint} from '@phuture/subgraph-helpers';
+import { FeeInBPAUM, FeeInBPBurn, FeeInBPMint } from '../../../../helpers';
 import { loadOrCreateIndex } from '../entities';
 import { SetAUMScaledPerSecondsRate, SetBurningFeeInBP, SetMintingFeeInBP } from '../../types/FeePool/FeePool';
 
