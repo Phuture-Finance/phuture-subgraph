@@ -35,8 +35,6 @@ export function handleUpdateAsset(event: UpdateAsset): void {
 
     if (event.params.asset.equals(baseAddr)) continue;
 
-    let assetBase = loadOrCreateAsset(baseAddr);
-
     let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
     let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
 
@@ -56,7 +54,10 @@ export function handleUpdateAsset(event: UpdateAsset): void {
       p.asset1Reserve = reserve.value1.toBigDecimal();
       p.save();
 
-      updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+      updateAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
     }
 
     // SushiSwap factory
@@ -80,7 +81,10 @@ export function handleUpdateAsset(event: UpdateAsset): void {
       sp.asset1Reserve = reserve.value1.toBigDecimal();
       sp.save();
 
-      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
     }
   }
 }

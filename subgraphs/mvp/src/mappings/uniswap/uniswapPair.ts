@@ -2,7 +2,7 @@ import { Asset, Index, IndexAsset, Pair, vToken } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
 import { convertTokenToDecimal } from '../entities';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { BASE_ADDRESS } from '../../../consts';
+import { DAI_ADDRESS, USDC_ADDRESS } from '../../../consts';
 import {
   updateDailyIndexStat, updateHalfYearIndexStat,
   updateHourlyIndexStat,
@@ -30,11 +30,11 @@ export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0
   let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
   let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
-  if (asset0.id == BASE_ADDRESS) {
+  if ([USDC_ADDRESS, DAI_ADDRESS].includes(asset0.id)) {
     updateAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve, ts);
   }
 
-  if (asset1.id == BASE_ADDRESS) {
+  if ([USDC_ADDRESS, DAI_ADDRESS].includes(asset1.id)) {
     updateAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve, ts);
   }
 }
@@ -49,12 +49,14 @@ function updateAssetBasePrice(
   if (baseAsset.basePrice.equals(BigDecimal.zero())) {
     baseAsset.basePrice = new BigDecimal(BigInt.fromI32(1));
     baseAsset.save();
+
     updateIndexBasePriceByAsset(baseAsset, ts);
     updateCapVToken(baseAsset);
   }
 
-  asset.basePrice = assetReserve.div(baseAssetReserve);
+  asset.basePrice = baseAssetReserve.div(assetReserve);
   asset.save();
+
   updateIndexBasePriceByAsset(asset, ts);
   updateCapVToken(asset);
 }
