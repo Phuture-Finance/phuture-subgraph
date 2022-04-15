@@ -1,13 +1,13 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { Order, OrderDetailsInfo, _OrderIdLink } from '../../types/schema';
+import { Order, OrderDetailsInfo, LastOrderIndex } from '../../types/schema';
 
-export function loadOrCreateOrderLink(order_id: BigInt): _OrderIdLink {
-  let orderLink = _OrderIdLink.load(order_id.toHexString());
+export function loadOrCreateLastOrderIndex(id: Address): LastOrderIndex {
+  let orderLink = LastOrderIndex.load(id.toHexString());
   if (!orderLink) {
-    orderLink = new _OrderIdLink(order_id.toHexString());
+    orderLink = new LastOrderIndex(id.toHexString());
   }
 
-  return orderLink as _OrderIdLink;
+  return orderLink as LastOrderIndex;
 }
 
 export function loadOrCreateOrder(id: Address): Order {

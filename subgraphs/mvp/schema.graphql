@@ -124,11 +124,6 @@ type Index @entity {
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
 }
 
-enum OrderSideType {
-  Buy
-  Sell
-}
-
 type Order @entity {
   "Address (hash)"
   id: ID!
@@ -142,12 +137,13 @@ type OrderDetailsInfo @entity {
   order: Order!
   asset: Asset!
   shares: BigInt!
-  side: OrderSideType!
+  side: String!
 }
 
-type _OrderIdLink @entity {
+type LastOrderIndex @entity {
   id: ID!
   index: Index!
+  order: Order!
 }
 
 type vToken @entity {

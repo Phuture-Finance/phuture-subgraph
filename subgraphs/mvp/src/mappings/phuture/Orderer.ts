@@ -1,25 +1,25 @@
 import { PlaceOrder, CompleteOrder, UpdateOrder } from '../../types/Orderer/Orderer';
-import { loadOrCreateOrder, loadOrCreateOrderDetails, loadOrCreateOrderLink } from '../entities/Orderer';
+import { loadOrCreateOrderDetails, loadOrCreateLastOrderIndex } from '../entities/Orderer';
+import { Order } from '../../types/schema';
 
 export function handlerPlaceOrder(event: PlaceOrder): void {
-  let order = loadOrCreateOrder(event.params.creator);
+  // let order = loadOrCreateOrder(event.params.creator);
+
+  let order = new Order(event.params.id.toString());
   order.order_id = event.params.id;
   order.index = event.params.creator.toHexString();
   order.save();
 
-  // Since creator (Index entity) is primary key, we have to additionally store this link
-  // to future events where we get only order_id but we don't know the index address
-  // to set the correct link to the Order entity. @see handlerUpdateOrder
-  let orderLink = loadOrCreateOrderLink(event.params.id);
-  orderLink.index = event.params.creator.toHexString();
-  orderLink.save();
+  let lastOrderIndex = loadOrCreateLastOrderIndex(event.params.creator);
+  lastOrderIndex.index = event.params.creator.toHexString();
+  lastOrderIndex.order = event.params.id.toString();
+  lastOrderIndex.save();
 }
 
 export function handlerUpdateOrder(event: UpdateOrder): void {
   let orderDetails = loadOrCreateOrderDetails(event.params.id, event.params.asset);
-  let orderLink = loadOrCreateOrderLink(event.params.id);
 
-  orderDetails.order = orderLink.index;
+  orderDetails.order = event.params.id.toString();
   orderDetails.asset = event.params.asset.toHexString();
   orderDetails.shares = event.params.share;
   orderDetails.side = event.params.isSellSide ? 'Sell' : 'Buy';
