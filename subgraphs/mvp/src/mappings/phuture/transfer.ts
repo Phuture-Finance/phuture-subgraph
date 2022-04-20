@@ -64,7 +64,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
     toUserIndex.save();
 
-    let toUserIndexHistory= newUserIndexHistory(tx, toUserIndex.user, toUserIndex.index)
+    let toUserIndexHistory = newUserIndexHistory(tx, toUserIndex.user, toUserIndex.index)
       toUserIndexHistory.balance = toUserIndex.balance;
       toUserIndexHistory.timestamp = tx.timestamp;
       toUserIndexHistory.save();

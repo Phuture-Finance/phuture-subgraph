@@ -16,6 +16,7 @@ type Asset @entity {
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
   basePriceSushi: BigDecimal!
+  basePriceUni: BigDecimal!
   basePrice: BigDecimal!
   marketCap: BigInt!
 
@@ -35,6 +36,15 @@ type Swap @entity {
   id: ID!
 
   pairs: [Pair!]! @derivedFrom(field: "swap")
+}
+
+type ChainLinkAgg @entity {
+  id: ID!
+  asset: Asset!
+  decimals: BigInt!
+  description: String!
+  answer: BigInt!
+  updatedAt: BigInt!
 }
 
 type Pair @entity {
@@ -165,6 +175,8 @@ type IndexAsset @entity {
   asset: Asset!
   weight: BigInt!
   shares: BigInt!
+
+  basePrice: BigDecimal!
 }
 
 type User @entity {

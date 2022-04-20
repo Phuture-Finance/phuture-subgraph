@@ -1,4 +1,4 @@
-let defaultPath = './hardhat-phf/';
+let defaultPath = './mainnet-fork/';
 if (process.env.CONFIG_PATH != null) {
   defaultPath = process.env.CONFIG_PATH;
 }
@@ -6,12 +6,13 @@ if (process.env.CONFIG_PATH != null) {
 const impAddr = require(defaultPath + 'Addresses.json');
 const impBlocks = require(defaultPath + 'Blocks.json');
 const impBaseAssets = require(defaultPath + 'BaseAssets.json');
+const pairs = require(defaultPath + 'ChainLink.json');
 
 let data = {
   ...impAddr,
   ...impBlocks,
 
-  BaseAssets: impBaseAssets,
+  BaseAssets: JSON.stringify(impBaseAssets),
 
   SushiswapV2Factory: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
   SushiV2FactoryBlockNumber:impBlocks.RegistryBlockNumber,
@@ -45,8 +46,9 @@ data['swapFactories'] = [
 ];
 
 data['network'] = 'mainnet';
+// data['pairs'] = pairs;
 
-let pairs = [
+let pairsRinkeby = [
   {
     'name': 'USDC',
     'address': '0x91b843dcb637323db7728e59995cfa02abb5111d',

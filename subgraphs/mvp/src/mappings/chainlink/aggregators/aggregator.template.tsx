@@ -2,12 +2,13 @@
 
 import { AnswerUpdated } from "../../../types/{{{name}}}/AggregatorInterface";
 import { Asset, Index, IndexAsset } from "../../../types/schema";
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
 import { loadOrCreateIndexAsset } from "../../entities";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let asset = Asset.load("{{{address}}}");
   if (!asset) {
+    log.error('can not find the asset', ["{{{address}}}"])
     return;
   }
 
@@ -45,22 +46,22 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
           )
       );
 
-    if (indexAsset.marketCap.gt(BigDecimal.zero())) {
-      index.marketCap = index.marketCap.minus(indexAsset.marketCap);
-    }
-
-    indexAsset.marketCap = asset.vaultReserve
-      .times(asset.indexCount.toBigDecimal())
-      .div(asset.totalSupply.toBigDecimal())
-      .times(newPrice);
-
-    index.marketCap = index.marketCap.plus(indexAsset.marketCap);
+    // if (indexAsset.marketCap.gt(BigDecimal.zero())) {
+    //   index.marketCap = index.marketCap.minus(indexAsset.marketCap);
+    // }
+    //
+    // indexAsset.marketCap = asset.vaultReserve
+    //   .times(asset.indexCount.toBigDecimal())
+    //   .div(asset.totalSupply.toBigDecimal())
+    //   .times(newPrice);
+    //
+    // index.marketCap = index.marketCap.plus(indexAsset.marketCap);
 
     indexAsset.save();
     index.save();
   }
 
-  asset.basePrice = newPrice;
+  asset.basePriceChainLink = newPrice;
 
   asset.save();
 }

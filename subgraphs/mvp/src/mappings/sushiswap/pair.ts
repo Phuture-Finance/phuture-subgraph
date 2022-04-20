@@ -1,8 +1,11 @@
 import { Asset, SushiPair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
-import { convertTokenToDecimal, exponentToBigDecimal } from '../entities';
+import {convertTokenToDecimal, exponentToBigDecimal} from '../entities';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { DAI_ADDRESS, USDC_ADDRESS, WETH_ADDRESS } from '../../../consts';
+
+const USDC_WETH_PAIR = '0x397ff1542f962076d0bfe58ea045ffa2d347aca0';
+const DAI_WETH_PAIR = '0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f';
 
 export function handleSync(event: Sync): void {
     let sp = SushiPair.load(event.address.toHexString());
@@ -20,16 +23,15 @@ export function handleSync(event: Sync): void {
     sp.save();
 }
 
-
 export function updateSushiAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0: Asset, asset1: Asset, ts: BigInt): void {
     let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
     let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
-    if ([USDC_ADDRESS, DAI_ADDRESS, WETH_ADDRESS].includes(asset0.id)) {
+    if ([WETH_ADDRESS].includes(asset0.id)) {
         updateSushiAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve, ts);
     }
 
-    if ([USDC_ADDRESS, DAI_ADDRESS, WETH_ADDRESS].includes(asset1.id)) {
+    if ([WETH_ADDRESS].includes(asset1.id)) {
         updateSushiAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve, ts);
     }
 }
@@ -41,21 +43,11 @@ function updateSushiAssetBasePrice(
     assetReserve: BigDecimal,
     ts: BigInt
 ): void {
-    if (WETH_ADDRESS == baseAsset.id) {
-        baseAsset.basePriceSushi = getEthPriceInUSD();
-        baseAsset.save();
-    } else if (baseAsset.basePriceSushi.equals(BigDecimal.zero())) {
-        baseAsset.basePriceSushi = new BigDecimal(BigInt.fromI32(1));
-        baseAsset.save();
-    }
+    baseAsset.basePriceSushi = getEthPriceInUSD();
+    baseAsset.save();
 
-    if (WETH_ADDRESS == baseAsset.id) {
-        asset.basePriceSushi = baseAssetReserve.div(assetReserve).times(baseAsset.basePriceSushi);
-        asset.save();
-    } else {
-        asset.basePriceSushi = baseAssetReserve.div(assetReserve);
-        asset.save();
-    }
+    asset.basePriceSushi = baseAssetReserve.div(assetReserve).times(baseAsset.basePriceSushi);
+    asset.save();
     /*
         p = Q_base / Q_quote
         p_s = Q_stablecoin / Q_base
@@ -64,7 +56,6 @@ function updateSushiAssetBasePrice(
         w_i = q_stablecoin_per_quote / q_stablecoin_per_quote
     */
 }
-
 
 export function handleTransfer(event: Transfer): void {
     let sp = SushiPair.load(event.address.toHexString());
@@ -80,9 +71,6 @@ export function handleTransfer(event: Transfer): void {
         sp.save();
     }
 }
-
-const USDC_WETH_PAIR = '0x397ff1542f962076d0bfe58ea045ffa2d347aca0';
-const DAI_WETH_PAIR = '0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f';
 
 export function getEthPriceInUSD(): BigDecimal {
     // fetch eth prices for each stablecoin

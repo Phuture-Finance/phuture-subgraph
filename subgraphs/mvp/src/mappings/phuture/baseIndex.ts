@@ -10,7 +10,7 @@ import {
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
 import { TrackedIndex, TopNMarketCapIndex, ManagedIndex } from '../../types/templates';
 import { updateStat } from './stats';
-import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
+import { updateIndexBasePriceByIndex } from '../uniswap/pair';
 
 export function handleIndexCreation(
   type: string,
