@@ -1,6 +1,6 @@
 import { Asset, Index, IndexAsset, vToken } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
-import {convertTokenToDecimal, exponentToBigDecimal} from "../mappings/entities";
+import {convertTokenToDecimal, exponentToBigDecimal, exponentToBigInt} from "../mappings/entities";
 import {
     updateDailyIndexStat, updateHalfYearIndexStat,
     updateHourlyIndexStat,
@@ -72,14 +72,15 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
             let vt = vToken.load(asset._vTokens[ai]);
             if (!vt) continue;
 
-            qAsset = vt.assetReserve.plus(vt.deposited);
+            qAsset = qAsset.plus(vt.assetReserve.plus(vt.deposited));
         }
 
-        let qAssetDec = convertTokenToDecimal(qAsset, asset.decimals);
-        assetValue = assetValue.plus(qAssetDec.times(asset.basePrice));
+        //assetValue = assetValue.plus(exponentToBigInt(qAsset.times(asset.basePrice.digits), asset.decimals.minus(index.decimals).plus(asset.basePrice.exp)));
+        assetValue = assetValue.plus(convertTokenToDecimal(qAsset, asset.decimals).times(asset.basePrice));
     }
 
-    index.basePrice = assetValue.div(index.totalSupply.toBigDecimal()).times(exponentToBigDecimal(index.decimals));
+    // index.basePrice = assetValue.div(index.totalSupply.toBigDecimal());
+    index.basePrice = assetValue.times(exponentToBigDecimal(index.decimals)).div(index.totalSupply.toBigDecimal());
     index.marketCap = assetValue;
 
     index.save();
