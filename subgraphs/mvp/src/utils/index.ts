@@ -7,7 +7,6 @@ import {
     updateMonthlyIndexStat, updateThreeMonthIndexStat,
     updateWeeklyIndexStat, updateYearlyIndexStat
 } from "../mappings/phuture/stats";
-import {bigDecimal} from "@phuture/subgraph-helpers";
 
 export function updateCapVToken(asset: Asset): void {
     for (let i = 0; i < asset._vTokens.length; i++) {
@@ -80,8 +79,8 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
         assetValue = assetValue.plus(qAssetDec.times(asset.basePrice));
     }
 
-    index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
     index.basePrice = assetValue.div(index.totalSupply.toBigDecimal()).times(exponentToBigDecimal(index.decimals));
+    index.marketCap = assetValue;
 
     index.save();
 

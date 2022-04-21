@@ -89,7 +89,6 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     transferType = 'Send';
   }
 
-  index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
   index.save();
 
   updateIndexBasePriceByIndex(index, event.block.timestamp);
