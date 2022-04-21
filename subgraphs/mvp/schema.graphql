@@ -107,6 +107,8 @@ type Index @entity {
   assets: [IndexAsset!]! @derivedFrom(field: "index")
   _assets: [ID!]!
 
+  inactiveAssets: [ID!]!
+
   transaction: Transaction!
   indexFactory: IndexFactory!
 
@@ -117,10 +119,9 @@ type Index @entity {
 
   feeBurn: BigInt!
   feeMint: BigInt!
-  feeAUM: BigInt!
 
   "BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1"
-  feeAUMPercent: BigInt!
+  feeAUMPercent: BigDecimal!
 
   "When index was created"
   created: BigInt!
