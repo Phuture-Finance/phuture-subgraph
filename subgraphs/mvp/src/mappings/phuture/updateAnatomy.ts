@@ -9,8 +9,14 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
   let indexAsset = loadOrCreateIndexAsset(address.toHexString(), assetAddr.toHexString());
 
   let assetsAddr = index._assets;
+  let inactiveAssets = index.inactiveAssets;
   let indicesAddr = asset._indexes;
+
   if (weight == 0) {
+    if (inactiveAssets.indexOf(asset.id) == -1) {
+      inactiveAssets.push(asset.id);
+    }
+
     assetsAddr = [];
     for (let i = 0; i < index._assets.length; i++) {
       if (index._assets[i] != asset.id) {
@@ -31,6 +37,13 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
 
     store.remove('IndexAsset', indexAsset.id);
   } else {
+    inactiveAssets = [];
+    for (let i = 0; i < index.inactiveAssets.length; i++) {
+      if (index.inactiveAssets[i] != asset.id) {
+        inactiveAssets.push(index.inactiveAssets[i]);
+      }
+    }
+
     if (assetsAddr.indexOf(asset.id) == -1) {
       assetsAddr.push(asset.id);
 
@@ -42,6 +55,7 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
     indexAsset.save();
   }
 
+  index.inactiveAssets = inactiveAssets;
   index._assets = assetsAddr;
   index.save();
 

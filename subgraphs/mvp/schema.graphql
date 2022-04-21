@@ -97,6 +97,8 @@ type Index @entity {
   assets: [IndexAsset!]! @derivedFrom(field: "index")
   _assets: [ID!]!
 
+  inactiveAssets: [ID!]!
+
   transaction: Transaction!
   indexFactory: IndexFactory!
 
