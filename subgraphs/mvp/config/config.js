@@ -28,8 +28,6 @@ let data = {
 
   FeePoolBlockNumber: impBlocks.RegistryBlockNumber,
   RebalancingCredit: '0xea51c983a2209d16a597d219d472204a9666972c',
-
-  emissionControllerContractAddress: '0xc8b08ada13359b01e6e42d8f48159181a299f42b',
 };
 
 data['swapFactories'] = [

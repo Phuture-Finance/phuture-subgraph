@@ -2,7 +2,7 @@ import { AnswerUpdated } from '../../types/templates/AggregatorInterface/Aggrega
 import { Asset, ChainLinkAgg } from '../../types/schema';
 import { log } from '@graphprotocol/graph-ts';
 import { convertTokenToDecimal } from '../entities';
-import {updateCapVToken, updateIndexBasePriceByAsset} from "../uniswap/pair";
+import { updateCapVToken, updateIndexBasePriceByAsset } from "../../utils";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
     let agg = ChainLinkAgg.load(event.address.toHexString());
@@ -24,3 +24,4 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     updateIndexBasePriceByAsset(asset, event.block.timestamp);
     updateCapVToken(asset);
 }
+

@@ -5,9 +5,9 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@types/*": ["src/types/*"],
-      "@entities/*": ["src/mappings/entities/*"],
-      "@entities": ["src/mappings/entities/index"]
+//      "@types/*": ["src/types/*"],
+//      "@entities/*": ["src/mappings/entities/*"],
+//      "@entities": ["src/mappings/entities/index"]
     }
   }
 }

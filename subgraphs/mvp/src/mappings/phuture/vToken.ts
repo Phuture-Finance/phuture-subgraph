@@ -75,9 +75,9 @@ export function handlerUpdateDeposit(event: UpdateDeposit): void {
   let vt = loadOrCreateVToken(event.address);
 
   if (event.params.depositedAmount.gt(BigInt.zero())) {
-    vt.assetReserve = vt.assetReserve.plus(event.params.depositedAmount.toBigDecimal());
+    vt.assetReserve = vt.assetReserve.plus(event.params.depositedAmount);
   } else {
-    vt.assetReserve = vt.assetReserve.minus(vt.deposited.toBigDecimal());
+    vt.assetReserve = vt.assetReserve.minus(vt.deposited);
   }
 
   vt.deposited = event.params.depositedAmount;
