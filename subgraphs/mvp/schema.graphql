@@ -104,10 +104,11 @@ type Index @entity {
   name: String!
 
   users: [UserIndex!]! @derivedFrom(field: "index")
-  assets: [IndexAsset!]! @derivedFrom(field: "index")
+  assets: [IndexAsset!] @derivedFrom(field: "index")
   _assets: [ID!]!
 
-  inactiveAssets: [ID!]!
+  _inactiveAssets: [ID!]!
+  inactiveAssets: [IndexAsset!] @derivedFrom(field: "inactiveIndex")
 
   transaction: Transaction!
   indexFactory: IndexFactory!
@@ -174,7 +175,8 @@ type vToken @entity {
 
 type IndexAsset @entity {
   id: ID! # Set to `${index.id}-${asset.id}`
-  index: Index!
+  index: Index
+  inactiveIndex: Index
   asset: Asset!
   weight: BigInt!
   shares: BigInt!
