@@ -16,20 +16,6 @@ fs.writeFileSync(subgraphPath, subgraph, 'utf8');
 const constsTemplatePath = path.join(__dirname, '../consts.template.tsx');
 const constsTemplate = fs.readFileSync(constsTemplatePath, 'utf8');
 
-/*
-// Code generation section for aggregator for each specific token.
-subgraphCfg.pairs.forEach((item) => {
-  const chainLinkPath = path.join(__dirname, '../src/mappings/chainlink/aggregators/');
-  const templatePath = path.join(chainLinkPath, 'aggregator.template.tsx');
-  const template = fs.readFileSync(templatePath, 'utf8');
-
-  const mappingPath = path.join(chainLinkPath, `${item.name}.ts`);
-  const mapping = Mustache.render(template, item);
-
-  fs.writeFileSync(mappingPath, mapping, 'utf8');
-});
- */
-
 subgraphCfg.data['ChainLinkAssetMap'] = subgraphCfg.pairs;
 
 const constsPath = path.join(__dirname, '../consts.ts');
