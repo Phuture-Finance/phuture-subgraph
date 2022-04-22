@@ -67,15 +67,17 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
         let asset = Asset.load(index._assets[i]);
         if (!asset) continue;
 
-        let qAsset = BigInt.zero();
-        for (let ai = 0; ai < asset._vTokens.length; ai++) {
-            let vt = vToken.load(asset._vTokens[ai]);
-            if (!vt) continue;
+        let ia = IndexAsset.load(index.id.concat('-').concat(asset.id));
+        if (!ia) continue;
 
-            qAsset = qAsset.plus(vt.assetReserve.plus(vt.deposited));
+        let qAsset = ia.shares;
+        for (let i2 = 0; i2 < asset._vTokens.length; i2++) {
+            let vt = vToken.load(asset._vTokens[i2]);
+            if (vt) {
+                qAsset = qAsset.plus(vt.deposited);
+            }
         }
 
-        //assetValue = assetValue.plus(exponentToBigInt(qAsset.times(asset.basePrice.digits), asset.decimals.minus(index.decimals).plus(asset.basePrice.exp)));
         assetValue = assetValue.plus(convertTokenToDecimal(qAsset, asset.decimals).times(asset.basePrice));
     }
 
