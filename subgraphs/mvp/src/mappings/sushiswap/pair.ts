@@ -1,6 +1,6 @@
 import { Asset, SushiPair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
-import {convertTokenToDecimal, exponentToBigDecimal} from '../entities';
+import { convertTokenToDecimal, exponentToBigDecimal } from '../../utils/calc';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { DAI_ADDRESS, USDC_ADDRESS, WETH_ADDRESS } from '../../../consts';
 

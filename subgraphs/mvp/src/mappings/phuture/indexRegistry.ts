@@ -10,8 +10,9 @@ import {
   AggregatorInterface as AggregatorInterfaceTemplate,
   erc20 as erc20tpl,
 } from '../../types/templates';
-import {convertTokenToDecimal, loadOrCreateAsset, loadOrCreatePair, loadOrCreateSushiPair} from '../entities';
+import { loadOrCreateAsset, loadOrCreatePair, loadOrCreateSushiPair} from '../entities';
 import { updateAssetsBasePrice } from '../uniswap/pair';
+import { convertTokenToDecimal } from '../../utils/calc';
 
 import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';

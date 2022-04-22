@@ -1,6 +1,6 @@
 import { Asset, Index, IndexAsset, vToken } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
-import {convertTokenToDecimal, exponentToBigDecimal, exponentToBigInt} from "../mappings/entities";
+import { convertTokenToDecimal, exponentToBigDecimal } from "../utils/calc";
 import {
     updateDailyIndexStat, updateHalfYearIndexStat,
     updateHourlyIndexStat,

@@ -1,7 +1,7 @@
 import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
 import { Asset, ChainLinkAgg } from '../../types/schema';
 import { log } from '@graphprotocol/graph-ts';
-import { convertTokenToDecimal } from '../entities';
+import { convertTokenToDecimal } from '../../utils/calc';
 import { updateCapVToken, updateIndexBasePriceByAsset } from "../../utils";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {

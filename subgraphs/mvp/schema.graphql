@@ -169,7 +169,7 @@ type vToken @entity {
   capitalization: BigDecimal!
   "depositedQuantity"
   deposited: BigInt!
-  "reserveQuantity"
+  "reserveQuantity - quantity of the asset stored in vToken address"
   assetReserve: BigInt!
 }
 
@@ -195,32 +195,34 @@ type UserIndex @entity {
   index: Index!
 
   balance: BigDecimal!
+  capitalization: BigDecimal!
 }
 
 type UserIndexHistory @entity {
   id: ID!
 
-  timestamp: BigInt!
-
   user: User!
   index: Index!
 
   balance: BigDecimal!
+  capitalization: BigDecimal!
+
+  timestamp: BigInt!
 }
 
 type DailyUserIndexHistory @entity {
   id: ID!
-
-  # timestamp matching the starting of day GMT
-  timestamp: BigInt!
 
   user: User!
   index: Index!
 
   total: BigDecimal!
   number: BigDecimal!
-
   avgBalance: BigDecimal!
+  avgCapitalization: BigDecimal!
+
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
 }
 
 type Transaction @entity {

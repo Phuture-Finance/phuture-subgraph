@@ -1,8 +1,9 @@
 import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
-import { convertTokenToDecimal, loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
+import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
 import { Asset, Index, vToken } from '../../types/schema';
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { convertTokenToDecimal } from '../../utils/calc';
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
   let vt = vToken.load(event.address.toHexString());

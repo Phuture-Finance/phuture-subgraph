@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Index, Transfer, UserIndex } from '../../types/schema';
-import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction, newUserIndexHistory, loadOrCreateDaylyUserIndexHistory } from '../entities';
+import { loadOrCreateAccount, loadOrCreateTransaction, newUserIndexHistory, loadOrCreateDaylyUserIndexHistory } from '../entities';
 import { ONE_BI } from '../../../../helpers';
-import { updateIndexBasePriceByIndex } from "../../utils";
+import { updateIndexBasePriceByIndex } from "../../utils/index";
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -14,6 +14,19 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   loadOrCreateAccount(to);
 
   let transfers = tx.transfers;
+
+  let transferType: string;
+  if (from.equals(Address.zero())) {
+    index.totalSupply = index.totalSupply.plus(value);
+    transferType = 'Mint';
+  } else if (to.equals(Address.zero())) {
+    index.totalSupply = index.totalSupply.minus(value);
+    transferType = 'Burn';
+  } else {
+    transferType = 'Send';
+  }
+
+  updateIndexBasePriceByIndex(index, event.block.timestamp);
 
   // Track index transfers from index to another index or burning.
   if (!from.equals(Address.zero())) {
@@ -27,6 +40,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
+    fromUserIndex.capitalization = fromUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -34,8 +48,9 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
     fromUserIndex.save();
 
-    let fromUserIndexHistory= newUserIndexHistory(tx, fromUserIndex.user, fromUserIndex.index)
+    let fromUserIndexHistory = newUserIndexHistory(tx, fromUserIndex.user, fromUserIndex.index);
     fromUserIndexHistory.balance = fromUserIndex.balance;
+    fromUserIndexHistory.capitalization = fromUserIndex.capitalization;
     fromUserIndexHistory.timestamp = tx.timestamp;
     fromUserIndexHistory.save();
 
@@ -62,11 +77,13 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
+    toUserIndex.capitalization = toUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
 
     toUserIndex.save();
 
     let toUserIndexHistory = newUserIndexHistory(tx, toUserIndex.user, toUserIndex.index)
     toUserIndexHistory.balance = toUserIndex.balance;
+    toUserIndexHistory.capitalization = toUserIndex.capitalization;
     toUserIndexHistory.timestamp = tx.timestamp;
     toUserIndexHistory.save();
     toUserIndexHistory.save();
@@ -78,20 +95,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     toDailyUserIndexHistory.save();
   }
 
-  let transferType: string;
-  if (from.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.plus(value);
-    transferType = 'Mint';
-  } else if (to.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.minus(value);
-    transferType = 'Burn';
-  } else {
-    transferType = 'Send';
-  }
-
   index.save();
-
-  updateIndexBasePriceByIndex(index, event.block.timestamp);
 
   let transfer = new Transfer(
     event.transaction.hash.toHexString().concat('-').concat(BigInt.fromI32(transfers.length).toString()),
