@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.25.1",
+    "matchstick-as": "^0.4.2",
     "mustache": "^3.1.0",
     "rimraf": "^2.6.3"
   },

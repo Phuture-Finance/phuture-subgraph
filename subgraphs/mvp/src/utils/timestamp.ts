@@ -1,9 +1,10 @@
-const SECONDS_IN_DAY = 86400
+import {BigInt} from "@graphprotocol/graph-ts";
 
-export function getStartingDayTimestamp(timestamp: i64): i64 {
-  let dayID = timestamp / SECONDS_IN_DAY;
-  let dayStartTimestamp = dayID * SECONDS_IN_DAY;
+const SECONDS_IN_DAY = BigInt.fromI32(86400)
 
-  return dayStartTimestamp;
+export function getStartingDayTimestamp(timestamp: BigInt): BigInt {
+  let dayID = timestamp.div(SECONDS_IN_DAY);
+
+  return dayID.times(SECONDS_IN_DAY);
 }
 

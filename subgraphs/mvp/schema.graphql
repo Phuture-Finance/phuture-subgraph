@@ -198,15 +198,32 @@ type UserIndex @entity {
   capitalization: BigDecimal!
 }
 
+type DailyCapitalization @entity {
+  id: ID!
+
+  index: Index!
+  capitalization: BigDecimal!
+  timestamp: BigInt!
+  logIndex: BigInt!
+}
+
 type UserIndexHistory @entity {
   id: ID!
 
+  "user account of the specific index holdings"
   user: User!
   index: Index!
 
+  "shares of the index in user account"
   balance: BigDecimal!
+  "USD equivalent of the user index holdings"
   capitalization: BigDecimal!
+  "index total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
 
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+  "timestamp matching the starting of day GMT"
   timestamp: BigInt!
 }
 
@@ -223,6 +240,8 @@ type DailyUserIndexHistory @entity {
 
   "timestamp matching the starting of day GMT"
   timestamp: BigInt!
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
 }
 
 type Transaction @entity {
