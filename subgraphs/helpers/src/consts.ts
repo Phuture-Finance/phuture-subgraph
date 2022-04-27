@@ -1,7 +1,7 @@
 import { BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts/index';
 
 export const ONE_BI = BigInt.fromI32(1);
-export const ONE_BD = BigDecimal.fromString('1');
+export const ONE_BD = new BigDecimal(ONE_BI);
 
 export const IndexManaged = 'managed';
 export const IndexTracked = 'tracked';

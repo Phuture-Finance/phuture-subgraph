@@ -20,7 +20,7 @@ export function exponentToBigInt(tokenAmount: BigInt, decimals: BigInt): BigInt 
 }
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
-    let bd = ONE_BD;
+    let bd = new BigDecimal(BigInt.fromI32(1));
 
     for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
         bd = bd.times(BigDecimal.fromString('10'));

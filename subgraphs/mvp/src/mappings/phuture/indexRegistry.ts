@@ -2,15 +2,20 @@ import { ASSET_ROLE } from '@phuture/subgraph-helpers';
 import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
 import { SetName, SetSymbol } from '../../types/templates/ManagedIndex/IndexRegistry';
 import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';
-import { ChainLinkAgg, Index } from '../../types/schema';
+import { Index } from '../../types/schema';
 import {
   Asset as AssetTemplate,
   UniswapPair as UniswapPairTemplate,
   SushiswapPair as SushiswapPairTemplate,
-  AggregatorInterface as AggregatorInterfaceTemplate,
   erc20 as erc20tpl,
 } from '../../types/templates';
-import { loadOrCreateAsset, loadOrCreatePair, loadOrCreateSushiPair} from '../entities';
+import {
+  loadOrCreateAsset,
+  loadOrCreatePair,
+  loadOrCreateSushiPair,
+  loadOrCreateChainLink,
+  calculateChainLinkPrice
+} from '../entities';
 import { updateAssetsBasePrice } from '../uniswap/pair';
 import { convertTokenToDecimal } from '../../utils/calc';
 
@@ -18,7 +23,7 @@ import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';
 import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory/UniswapFactory';
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address } from '@graphprotocol/graph-ts';
 
 import {
   UNI_FACTORY_ADDRESS,
@@ -27,7 +32,6 @@ import {
   ChainLinkAssetMap
 } from '../../../consts';
 import { updateSushiAssetsBasePrice } from '../sushiswap/pair';
-import { AggregatorInterface } from "../../types/templates/AggregatorInterface/AggregatorInterface";
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -40,21 +44,12 @@ export function handleUpdateAsset(event: UpdateAsset): void {
 
   let chAggAddr = ChainLinkAssetMap.get(asset.id);
   if (chAggAddr) {
-    let agg = ChainLinkAgg.load(chAggAddr);
-    if (!agg) {
-      AggregatorInterfaceTemplate.create(Address.fromString(chAggAddr));
-      let cl = AggregatorInterface.bind(Address.fromString(chAggAddr));
+    let agg = loadOrCreateChainLink(Address.fromString(chAggAddr));
+    agg.asset = asset.id;
+    agg.save();
 
-      agg = new ChainLinkAgg(chAggAddr);
-      agg.answer = cl.latestAnswer();
-      agg.decimals = BigInt.fromI32(cl.decimals());
-      agg.description = cl.description();
-      agg.asset = asset.id;
-      agg.save();
-
-      asset.basePrice = convertTokenToDecimal(agg.answer, agg.decimals);
-      asset.save();
-    }
+    asset.basePrice = calculateChainLinkPrice(agg);
+    asset.save();
   }
 
   for (let i = 0; i < BASE_ASSETS.length; i++) {

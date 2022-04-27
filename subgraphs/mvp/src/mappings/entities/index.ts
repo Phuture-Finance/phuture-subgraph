@@ -6,3 +6,4 @@ export * from './BaseIndex';
 export * from './IndexAsset';
 export * from './vToken';
 export * from './IndexHistory';
+export * from './ChainLink';

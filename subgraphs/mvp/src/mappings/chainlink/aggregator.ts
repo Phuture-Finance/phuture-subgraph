@@ -1,8 +1,8 @@
 import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
 import { Asset, ChainLinkAgg } from '../../types/schema';
 import { log } from '@graphprotocol/graph-ts';
-import { convertTokenToDecimal } from '../../utils/calc';
 import { updateCapVToken, updateIndexBasePriceByAsset } from "../../utils";
+import { calculateChainLinkPrice } from "../entities";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
     let agg = ChainLinkAgg.load(event.address.toHexString());
@@ -18,10 +18,9 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
         return;
     }
 
-    asset.basePrice = convertTokenToDecimal(event.params.current, agg.decimals);
+    asset.basePrice = calculateChainLinkPrice(agg);
     asset.save();
 
     updateIndexBasePriceByAsset(asset, event.block.timestamp);
     updateCapVToken(asset);
 }
-
