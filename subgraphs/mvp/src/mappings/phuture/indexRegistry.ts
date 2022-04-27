@@ -1,4 +1,4 @@
-import { ASSET_ROLE } from '@phuture/subgraph-helpers';
+import { ASSET_ROLE } from '../../../../helpers';
 import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
 import { SetName, SetSymbol } from '../../types/templates/ManagedIndex/IndexRegistry';
 import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';

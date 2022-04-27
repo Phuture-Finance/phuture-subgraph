@@ -1,5 +1,5 @@
 import {BigDecimal, BigInt} from "@graphprotocol/graph-ts/index";
-import {ONE_BD, ONE_BI} from "@phuture/subgraph-helpers";
+import { ONE_BI } from '../../../helpers';
 
 export function convertTokenToBigInt(tokenAmount: BigInt, decimals: BigInt): BigInt {
     let bd = tokenAmount;

@@ -1,10 +1,11 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
-import { IndexManaged, IndexTopN, IndexTracked, ONE_BI } from '@phuture/subgraph-helpers';
+import { IndexManaged, IndexTopN, IndexTracked, ONE_BI } from '../../../../helpers';
 import {
   loadOrCreateAccount,
   loadOrCreateAsset,
   loadOrCreateIndex,
+  loadOrCreateIndexAsset,
   loadOrCreateTransaction,
 } from '../entities';
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
@@ -73,4 +74,29 @@ export function handleIndexCreation(
   stat.save();
 
   return index;
+}
+
+export function handleAssetRemoved(assetRemovedAddr: Address): void {
+  let assetRemoved = loadOrCreateAsset(assetRemovedAddr);
+
+  for (let i = 0; i < assetRemoved._indexes.length; i++) {
+    let index = Index.load(assetRemoved._indexes[i]);
+    if (!index) {
+      continue
+    }
+
+    let indexAsset = loadOrCreateIndexAsset(index.id, assetRemovedAddr.toHexString());
+    indexAsset.index = null;
+    indexAsset.inactiveIndex = index.id;
+    indexAsset.save();
+
+    let inactiveAssets = index._inactiveAssets;
+
+    if (inactiveAssets.includes(assetRemoved.id) == false) {
+      inactiveAssets.push(assetRemoved.id);
+    }
+
+    index._inactiveAssets = inactiveAssets;
+    index.save();
+  }
 }

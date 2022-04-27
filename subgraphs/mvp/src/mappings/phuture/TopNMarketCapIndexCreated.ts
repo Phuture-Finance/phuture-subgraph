@@ -1,4 +1,4 @@
-import { IndexTopN } from '@phuture/subgraph-helpers';
+import { IndexTopN } from '../../../../helpers';
 import { handleIndexCreation } from './baseIndex';
 import { TopNMarketCapIndexCreated, TopNMarketCapIndexFactory } from '../../types/TopNMarketCapIndexFactory/TopNMarketCapIndexFactory';
 import { loadOrCreateIndexFactory } from "../entities";

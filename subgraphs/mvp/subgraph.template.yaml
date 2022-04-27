@@ -536,3 +536,25 @@ templates:
           handler: handleTransfer
       file: ./src/mappings/phuture/erc20.ts
 
+  - kind: ethereum/contract
+    name: BaseIndex
+    network: {{network}}
+    source:
+      abi: BaseIndex
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/phuture/baseIndex.ts
+      entities:
+        - Index
+        - Asset
+        - DailyIndexStat
+      abis:
+        - name: BaseIndex
+          file: ../abis/Phuture/BaseIndex.json
+      eventHandlers:
+        - event: AssetRemoved(address)
+          handler: handleAssetRemoved
+
+

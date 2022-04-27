@@ -1,6 +1,6 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
-import { DYNAMIC_TYPE, STATIC_TYPE } from '@phuture/subgraph-helpers';
+import { DYNAMIC_TYPE, STATIC_TYPE } from '../../../../helpers';
 import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';
 import { VTokenCreated as DynamicVTokenCreated } from '../../types/DynamicVTokenFactory/vTokenFactory';
 import { vToken } from '../../types/templates';
