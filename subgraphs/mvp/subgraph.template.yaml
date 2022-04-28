@@ -31,6 +31,8 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
@@ -304,7 +306,7 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
         - name: AggregatorInterface
-          file: ../abis/Chainlink/AccessControlledOffchainAggregator.json
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           handler: handleAnswerUpdated
@@ -419,6 +421,28 @@ templates:
           handler: handleTopNMarketCapIndexTransfer
 
   - kind: ethereum/contract
+    name: AggregatorInterface
+    network: {{network}}
+    source:
+      abi: AggregatorInterface
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Asset
+        - ChainLinkAgg
+      file: ./src/mappings/chainlink/aggregator.ts
+      abis:
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+      eventHandlers:
+        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
+          handler: handleAnswerUpdated
+
+  - kind: ethereum/contract
     name: SushiswapPair
     network: {{network}}
     source:
@@ -453,7 +477,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/uniswap/uniswapPair.ts
+      file: ./src/mappings/uniswap/pair.ts
       entities:
         - Asset
         - Pair

@@ -1,8 +1,11 @@
 import { Asset, SushiPair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
-import { convertTokenToDecimal } from '../entities';
+import { convertTokenToDecimal, exponentToBigDecimal } from '../../utils/calc';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { BASE_ADDRESS } from '../../../consts';
+import { DAI_ADDRESS, USDC_ADDRESS, WETH_ADDRESS } from '../../../consts';
+
+const USDC_WETH_PAIR = '0x397ff1542f962076d0bfe58ea045ffa2d347aca0';
+const DAI_WETH_PAIR = '0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f';
 
 export function handleSync(event: Sync): void {
     let sp = SushiPair.load(event.address.toHexString());
@@ -20,20 +23,18 @@ export function handleSync(event: Sync): void {
     sp.save();
 }
 
-
 export function updateSushiAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0: Asset, asset1: Asset, ts: BigInt): void {
     let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
     let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
-    if (asset0.id == BASE_ADDRESS) {
+    if ([WETH_ADDRESS].includes(asset0.id)) {
         updateSushiAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve, ts);
     }
 
-    if (asset1.id == BASE_ADDRESS) {
+    if ([WETH_ADDRESS].includes(asset1.id)) {
         updateSushiAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve, ts);
     }
 }
-
 
 function updateSushiAssetBasePrice(
     baseAsset: Asset,
@@ -42,14 +43,11 @@ function updateSushiAssetBasePrice(
     assetReserve: BigDecimal,
     ts: BigInt
 ): void {
-    if (baseAsset.basePriceSushi.equals(BigDecimal.zero())) {
-        baseAsset.basePriceSushi = new BigDecimal(BigInt.fromI32(1));
-        baseAsset.save();
-    }
+    baseAsset.basePriceSushi = getEthPriceInUSD();
+    baseAsset.save();
 
-    asset.basePriceSushi = assetReserve.div(baseAssetReserve);
+    asset.basePriceSushi = baseAssetReserve.div(assetReserve).times(baseAsset.basePriceSushi);
     asset.save();
-
     /*
         p = Q_base / Q_quote
         p_s = Q_stablecoin / Q_base
@@ -58,7 +56,6 @@ function updateSushiAssetBasePrice(
         w_i = q_stablecoin_per_quote / q_stablecoin_per_quote
     */
 }
-
 
 export function handleTransfer(event: Transfer): void {
     let sp = SushiPair.load(event.address.toHexString());
@@ -75,35 +72,29 @@ export function handleTransfer(event: Transfer): void {
     }
 }
 
-/*
 export function getEthPriceInUSD(): BigDecimal {
-    // fetch eth prices for each stable coin
-    let daiPair = SushiPair.load(DAI_WETH_PAIR) // dai is token0
-    let usdcPair = SushiPair.load(USDC_WETH_PAIR) // usdc is token0
-    let usdtPair = SushiPair.load(USDT_WETH_PAIR) // usdt is token1
+    // fetch eth prices for each stablecoin
+    let daiPair = SushiPair.load(DAI_WETH_PAIR); // dai is token0
+    let usdcPair = SushiPair.load(USDC_WETH_PAIR); // usdc is token0
 
-    // all 3 have been created
-    if (daiPair !== null && usdcPair !== null && usdtPair !== null) {
-        let totalLiquidityETH = daiPair.asset1Reserve.plus(usdcPair.asset1Reserve).plus(usdtPair.asset0Reserve)
-        let daiWeight = daiPair.asset1Reserve.div(totalLiquidityETH)
-        let usdcWeight = usdcPair.asset1Reserve.div(totalLiquidityETH)
-        let usdtWeight = usdtPair.asset0Reserve.div(totalLiquidityETH)
-        return daiPair.token0Price
-            .times(daiWeight)
-            .plus(usdcPair.token0Price.times(usdcWeight))
-            .plus(usdtPair.token1Price.times(usdtWeight))
-        // dai and USDC have been created
-    } else if (daiPair !== null && usdcPair !== null) {
-        let totalLiquidityETH = daiPair.asset1Reserve.plus(usdcPair.asset1Reserve)
-        let daiWeight = daiPair.asset1Reserve.div(totalLiquidityETH)
-        let usdcWeight = usdcPair.asset1Reserve.div(totalLiquidityETH)
-        return daiPair.token0Price.times(daiWeight).plus(usdcPair.token0Price.times(usdcWeight))
+    if (daiPair !== null && usdcPair !== null) {
+        // 0 - dai, 1 - weth
+        let daiPrice = daiPair.asset0Reserve.div(daiPair.asset1Reserve);
+        // 0 - usdc, 1 - weth
+        let asset0Reserve = usdcPair.asset0Reserve.div(exponentToBigDecimal(BigInt.fromU32(6)));
+        let asset1Reserve = usdcPair.asset1Reserve.div(exponentToBigDecimal(BigInt.fromU32(18)));
+        let usdcPrice = asset0Reserve.div(asset1Reserve);
+
+        let totalLiquidityETH = daiPair.asset1Reserve.plus(usdcPair.asset1Reserve);
+        let daiWeight = daiPair.asset1Reserve.div(totalLiquidityETH);
+        let usdcWeight = usdcPair.asset1Reserve.div(totalLiquidityETH);
+
+        return daiPrice.times(daiWeight).plus(usdcPrice.times(usdcWeight));
+
         // USDC is the only pair so far
     } else if (usdcPair !== null) {
-        return usdcPair.token0Price
+        return usdcPair.asset1Reserve.div(usdcPair.asset0Reserve);
     } else {
-        return BigDecimal.zero()
+        return BigDecimal.zero();
     }
 }
-
-*/

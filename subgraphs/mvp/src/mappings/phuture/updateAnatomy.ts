@@ -1,7 +1,7 @@
 import { Address, store } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
 import { loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
-import { updateIndexBasePriceByIndex } from '../uniswap/uniswapPair';
+import { updateIndexBasePriceByIndex } from '../../utils';
 
 export function updateAnatomy(address: Address, assetAddr: Address, weight: i32, ts: BigInt): void {
   let index = loadOrCreateIndex(address);
@@ -9,7 +9,7 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
   let indexAsset = loadOrCreateIndexAsset(address.toHexString(), assetAddr.toHexString());
 
   let assetsAddr = index._assets;
-  let inactiveAssets = index.inactiveAssets;
+  let inactiveAssets = index._inactiveAssets;
   let indicesAddr = asset._indexes;
 
   if (weight == 0) {
@@ -35,12 +35,15 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
     asset._indexes = indicesAddr;
     asset.save();
 
-    store.remove('IndexAsset', indexAsset.id);
+    indexAsset.index = null;
+    indexAsset.inactiveIndex = index.id;
+    indexAsset.save();
+    //store.remove('IndexAsset', indexAsset.id);
   } else {
     inactiveAssets = [];
-    for (let i = 0; i < index.inactiveAssets.length; i++) {
-      if (index.inactiveAssets[i] != asset.id) {
-        inactiveAssets.push(index.inactiveAssets[i]);
+    for (let i = 0; i < index._inactiveAssets.length; i++) {
+      if (index._inactiveAssets[i] != asset.id) {
+        inactiveAssets.push(index._inactiveAssets[i]);
       }
     }
 
@@ -52,10 +55,12 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
       asset.save();
     }
     indexAsset.weight = BigInt.fromI32(weight as i32);
+    indexAsset.index = index.id;
+    indexAsset.inactiveIndex = null;
     indexAsset.save();
   }
 
-  index.inactiveAssets = inactiveAssets;
+  index._inactiveAssets = inactiveAssets;
   index._assets = assetsAddr;
   index.save();
 

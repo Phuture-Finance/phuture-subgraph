@@ -23,20 +23,20 @@ test("inactive assets logic", () => {
   asset3.save();
 
   updateAnatomy(Address.fromString(indexID), Address.fromString(assetID1), 0, BigInt.fromI32(0));
-  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1]");
+  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "_inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1]");
 
   updateAnatomy(Address.fromString(indexID), Address.fromString(assetID2), 0, BigInt.fromI32(0));
 
-  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef2]");
+  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "_inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef2]");
 
   updateAnatomy(Address.fromString(indexID), Address.fromString(assetID3), 0, BigInt.fromI32(0));
 
-  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef2, 0xa16081f360e3847006db660bae1c6d1babcbeef3]");
+  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "_inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef2, 0xa16081f360e3847006db660bae1c6d1babcbeef3]");
 
   // test with a non zero weight
   updateAnatomy(Address.fromString(indexID), Address.fromString(assetID2), 1, BigInt.fromI32(0));
 
-  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef3]");
+  assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1ba1c0ffee", "_inactiveAssets", "[0xa16081f360e3847006db660bae1c6d1babcbeef1, 0xa16081f360e3847006db660bae1c6d1babcbeef3]");
 
   logStore();
 

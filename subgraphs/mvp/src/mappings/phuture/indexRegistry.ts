@@ -9,17 +9,29 @@ import {
   SushiswapPair as SushiswapPairTemplate,
   erc20 as erc20tpl,
 } from '../../types/templates';
-import { loadOrCreateAsset, loadOrCreatePair, loadOrCreateSushiPair } from '../entities';
-import { updateAssetsBasePrice } from '../uniswap/uniswapPair';
+import {
+  loadOrCreateAsset,
+  loadOrCreatePair,
+  loadOrCreateSushiPair,
+  loadOrCreateChainLink,
+  calculateChainLinkPrice
+} from '../entities';
+import { updateAssetsBasePrice } from '../uniswap/pair';
+import { convertTokenToDecimal } from '../../utils/calc';
 
 import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';
 import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory/UniswapFactory';
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
-import { Address, log } from '@graphprotocol/graph-ts';
+import { Address } from '@graphprotocol/graph-ts';
 
-import { UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS, BASE_ASSETS } from '../../../consts';
-import { updateSushiAssetsBasePrice } from "../sushiswap/pair";
+import {
+  UNI_FACTORY_ADDRESS,
+  SUSHI_FACTORY_ADDRESS,
+  BASE_ASSETS,
+  ChainLinkAssetMap
+} from '../../../consts';
+import { updateSushiAssetsBasePrice } from '../sushiswap/pair';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -30,13 +42,22 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.marketCap = event.params.marketCap;
   asset.save();
 
+  let chAggAddr = ChainLinkAssetMap.get(asset.id);
+  if (chAggAddr) {
+    let agg = loadOrCreateChainLink(Address.fromString(chAggAddr));
+    agg.asset = asset.id;
+    agg.save();
+
+    asset.basePrice = calculateChainLinkPrice(agg);
+    asset.save();
+  }
+
   for (let i = 0; i < BASE_ASSETS.length; i++) {
     let baseAddr = Address.fromString(BASE_ASSETS[i]);
 
     if (event.params.asset.equals(baseAddr)) continue;
 
-    let assetBase = loadOrCreateAsset(baseAddr);
-
+    // Uniswap factory
     let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
     let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
 
@@ -56,7 +77,10 @@ export function handleUpdateAsset(event: UpdateAsset): void {
       p.asset1Reserve = reserve.value1.toBigDecimal();
       p.save();
 
-      updateAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+       updateAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
     }
 
     // SushiSwap factory
@@ -64,8 +88,6 @@ export function handleUpdateAsset(event: UpdateAsset): void {
     let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
 
     if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
-      log.warning("SUSHI ADDR!: {}", [sushiPairAddr.value.toHexString()]);
-
       SushiswapPairTemplate.create(sushiPairAddr.value);
 
       let pair = SushiswapPair.bind(sushiPairAddr.value);
@@ -80,7 +102,10 @@ export function handleUpdateAsset(event: UpdateAsset): void {
       sp.asset1Reserve = reserve.value1.toBigDecimal();
       sp.save();
 
-      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, assetBase, asset, event.block.timestamp);
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
     }
   }
 }

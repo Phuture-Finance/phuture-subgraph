@@ -1,6 +1,5 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { Asset } from '../../types/schema';
-import { ONE_BD, ONE_BI } from '../../../../helpers';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
@@ -91,22 +90,4 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   }
 
   return BigInt.fromI32(decimalValue);
-}
-
-export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
-  let bd = ONE_BD;
-
-  for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
-    bd = bd.times(BigDecimal.fromString('10'));
-  }
-
-  return bd;
-}
-
-export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: BigInt): BigDecimal {
-  if (exchangeDecimals == BigInt.zero()) {
-    return tokenAmount.toBigDecimal();
-  }
-
-  return tokenAmount.toBigDecimal().div(exponentToBigDecimal(exchangeDecimals));
 }

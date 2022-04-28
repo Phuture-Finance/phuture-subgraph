@@ -1,8 +1,15 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Index, Transfer, UserIndex } from '../../types/schema';
-import { EMISSION_CONTROLLER_ADDRESS } from '../../../consts';
-import { convertTokenToDecimal, loadOrCreateAccount, loadOrCreateTransaction, newUserIndexHistory, loadOrCreateDaylyUserIndexHistory } from '../entities';
+import {
+  loadOrCreateAccount,
+  loadOrCreateTransaction,
+  newUserIndexHistory,
+  loadOrCreateDaylyUserIndexHistory,
+  newDailyCapitalization
+} from '../entities';
 import { ONE_BI } from '../../../../helpers';
+import { updateIndexBasePriceByIndex } from "../../utils";
+import { convertTokenToDecimal } from "../../utils/calc";
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -15,7 +22,25 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
   let transfers = tx.transfers;
 
-  if (!from.equals(Address.zero()) && from.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
+  let transferType: string;
+  if (from.equals(Address.zero())) {
+    index.totalSupply = index.totalSupply.plus(value);
+    transferType = 'Mint';
+  } else if (to.equals(Address.zero())) {
+    index.totalSupply = index.totalSupply.minus(value);
+    transferType = 'Burn';
+  } else {
+    transferType = 'Send';
+  }
+
+  updateIndexBasePriceByIndex(index, tx.timestamp);
+
+  let dailyCap = newDailyCapitalization(index.id, tx.timestamp);
+  dailyCap.capitalization = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.marketCap);
+  dailyCap.save();
+
+  // Track index transfers from index to another index or burning.
+  if (!from.equals(Address.zero())) {
     let fromUserIndexId = from.toHexString().concat('-').concat(event.address.toHexString());
     let fromUserIndex = UserIndex.load(fromUserIndexId);
     if (!fromUserIndex) {
@@ -26,6 +51,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
+    fromUserIndex.capitalization = fromUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -33,20 +59,23 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
     fromUserIndex.save();
 
-    let fromUserIndexHistory= newUserIndexHistory(tx, fromUserIndex.user, fromUserIndex.index)
-    fromUserIndexHistory.balance = fromUserIndex.balance;
-    fromUserIndexHistory.timestamp = tx.timestamp;
-    fromUserIndexHistory.save();
+    let fromUIH = newUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp, event.logIndex);
+    fromUIH.balance = fromUserIndex.balance;
+    fromUIH.capitalization = fromUserIndex.capitalization;
+    fromUIH.timestamp = event.block.timestamp;
+    fromUIH.logIndex = event.logIndex;
+    fromUIH.totalSupply = index.totalSupply;
+    fromUIH.save();
 
-    let fromDailyUserIndexHistory =  loadOrCreateDaylyUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp.toI64());
-
-    fromDailyUserIndexHistory.total = fromDailyUserIndexHistory.total.plus(fromUserIndexHistory.balance);
-    fromDailyUserIndexHistory.number = fromDailyUserIndexHistory.number.plus(new BigDecimal(BigInt.fromI32(1)));
-    fromDailyUserIndexHistory.avgBalance = fromDailyUserIndexHistory.total.div(fromDailyUserIndexHistory.number);
-    fromDailyUserIndexHistory.save();
+    let fromDailyUIH =  loadOrCreateDaylyUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp);
+    fromDailyUIH.total = fromDailyUIH.total.plus(fromUIH.balance);
+    fromDailyUIH.number = fromDailyUIH.number.plus(new BigDecimal(BigInt.fromI32(1)));
+    fromDailyUIH.avgBalance = fromDailyUIH.total.div(fromDailyUIH.number);
+    fromDailyUIH.save();
   }
 
-  if (!to.equals(Address.zero()) && to.toHexString() != EMISSION_CONTROLLER_ADDRESS) {
+  // Track index transfers to index from another index or minting.
+  if (!to.equals(Address.zero())) {
     let toUserIndexId = to.toHexString().concat('-').concat(event.address.toHexString());
     let toUserIndex = UserIndex.load(toUserIndexId);
     if (!toUserIndex) {
@@ -61,39 +90,25 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
+    toUserIndex.capitalization = toUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
 
     toUserIndex.save();
 
-    let toUserIndexHistory= newUserIndexHistory(tx, toUserIndex.user, toUserIndex.index)
-      toUserIndexHistory.balance = toUserIndex.balance;
-      toUserIndexHistory.timestamp = tx.timestamp;
-      toUserIndexHistory.save();
+    let toUIH = newUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp, event.logIndex)
+    toUIH.balance = toUserIndex.balance;
+    toUIH.capitalization = toUserIndex.capitalization;
+    toUIH.timestamp = tx.timestamp;
+    toUIH.logIndex = event.logIndex;
+    toUIH.totalSupply = index.totalSupply;
+    toUIH.save();
 
-    toUserIndexHistory.save();
-
-    let toDailyUserIndexHistory =  loadOrCreateDaylyUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp.toI64());
-
-
-    toDailyUserIndexHistory.total = toDailyUserIndexHistory.total.plus(toUserIndexHistory.balance);
-    toDailyUserIndexHistory.number = toDailyUserIndexHistory.number.plus(new BigDecimal(BigInt.fromI32(1)));
-    toDailyUserIndexHistory.avgBalance = toDailyUserIndexHistory.total.div(toDailyUserIndexHistory.number);
-    toDailyUserIndexHistory.save();
+    let toDailyUIH =  loadOrCreateDaylyUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp);
+    toDailyUIH.total = toDailyUIH.total.plus(toUIH.balance);
+    toDailyUIH.number = toDailyUIH.number.plus(new BigDecimal(BigInt.fromI32(1)));
+    toDailyUIH.avgBalance = toDailyUIH.total.div(toDailyUIH.number);
+    toDailyUIH.save();
   }
 
-  let transferType: string;
-  if (from.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.plus(value);
-
-    transferType = 'Mint';
-  } else if (to.equals(Address.zero())) {
-    index.totalSupply = index.totalSupply.minus(value);
-
-    transferType = 'Burn';
-  } else {
-    transferType = 'Send';
-  }
-
-  index.marketCap = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.basePrice);
   index.save();
 
   let transfer = new Transfer(
@@ -111,4 +126,3 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   tx.transfers = transfers.concat([transfer.id]);
   tx.save();
 }
-// 1d 5d 1m 3m 6m 1y
