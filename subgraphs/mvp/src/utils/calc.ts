@@ -1,7 +1,7 @@
 import {BigDecimal, BigInt} from "@graphprotocol/graph-ts/index";
 import {ONE_BD, ONE_BI} from "@phuture/subgraph-helpers";
 
-export function exponentToBigInt(tokenAmount: BigInt, decimals: BigInt): BigInt {
+export function convertTokenToBigInt(tokenAmount: BigInt, decimals: BigInt): BigInt {
     let bd = tokenAmount;
     let ten = BigInt.fromI32(10);
     let dc = decimals.toI32();
