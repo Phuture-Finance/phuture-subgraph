@@ -1,6 +1,5 @@
 import { handleSetAUMFeeInBP } from "../src/mappings/phuture/feePool"
 import { ethereum, Address } from "@graphprotocol/graph-ts"
-import { logStore } from "matchstick-as/assembly/store";
 import { assert, clearStore, test } from "matchstick-as/assembly/index";
 import { Index } from '../src/types/schema';
 import { newMockEvent } from "matchstick-as/assembly/index"
@@ -8,7 +7,7 @@ import { SetAUMScaledPerSecondsRate } from '../src/types/FeePool/FeePool';
 import { BigInt } from '@graphprotocol/graph-ts/index';
 
 test("fee AUM test", () => {
- let scaledPerSecondRateEvent = changetype<SetAUMScaledPerSecondsRate>(newMockEvent())
+  let scaledPerSecondRateEvent = changetype<SetAUMScaledPerSecondsRate>(newMockEvent())
 
 // parameters push from the newMockEvent must be pushed in this order:
 /*
@@ -48,8 +47,6 @@ test("fee AUM test", () => {
 
   // New transaction with the same timestamp
   handleSetAUMFeeInBP(scaledPerSecondRateEvent)
-
-  logStore();
 
   assert.fieldEquals("Index", "0xa16081f360e3847006db660bae1c6d1b2e17ec2a", "feeAUMPercent", "0.1000000000010031953533967622319537");
   clearStore()

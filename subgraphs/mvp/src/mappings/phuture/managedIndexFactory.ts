@@ -1,4 +1,4 @@
-import { IndexManaged } from '@phuture/subgraph-helpers';
+import { IndexManaged } from '../../../../helpers';
 import { handleIndexCreation } from './baseIndex';
 import { ManagedIndexCreated, ManagedIndexFactory } from '../../types/Index/ManagedIndexFactory';
 import { loadOrCreateIndexFactory } from "../entities";

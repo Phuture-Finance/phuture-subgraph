@@ -1,4 +1,4 @@
-import { Address, store } from '@graphprotocol/graph-ts';
+import { Address } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
 import { loadOrCreateAsset, loadOrCreateIndex, loadOrCreateIndexAsset } from '../entities';
 import { updateIndexBasePriceByIndex } from '../../utils';

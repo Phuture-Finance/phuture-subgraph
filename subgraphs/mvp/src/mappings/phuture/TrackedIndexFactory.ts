@@ -1,4 +1,4 @@
-import { IndexTracked } from '@phuture/subgraph-helpers';
+import { IndexTracked } from '../../../../helpers';
 import { handleIndexCreation } from './baseIndex';
 import { TrackedIndexCreated, TrackedIndexFactory } from '../../types/TrackedIndexFactory/TrackedIndexFactory';
 import { loadOrCreateIndexFactory } from "../entities";
