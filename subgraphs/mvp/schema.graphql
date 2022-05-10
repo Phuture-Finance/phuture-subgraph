@@ -172,6 +172,8 @@ type vToken @entity {
   deposited: BigInt!
   "reserveQuantity - quantity of the asset stored in vToken address"
   assetReserve: BigInt!
+  "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
+  totalAmount: BigInt!
 }
 
 type IndexAsset @entity {
