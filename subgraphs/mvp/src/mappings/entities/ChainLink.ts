@@ -3,7 +3,7 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { ChainLinkAssetMap, WETH_ADDRESS } from "../../../consts";
 import { AggregatorInterface as AggregatorInterfaceTemplate } from "../../types/templates";
 import { AggregatorInterface } from "../../types/templates/AggregatorInterface/AggregatorInterface";
-import {convertTokenToDecimal } from "../../utils/calc";
+import { convertTokenToDecimal } from "../../utils/calc";
 
 export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   let id = addr.toHexString();
@@ -28,6 +28,7 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   return agg as ChainLinkAgg;
 }
 
+// calculateChainLinkPrice returns the price from the aggregator or from the chain of aggregators.
 export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
   let price = convertTokenToDecimal(agg.answer, agg.decimals);
 
@@ -37,4 +38,10 @@ export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
   }
 
   return price;
+}
+
+export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
+  let agg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(WETH_ADDRESS)));
+
+  return usdPrice.div(convertTokenToDecimal(agg.answer, agg.decimals));
 }

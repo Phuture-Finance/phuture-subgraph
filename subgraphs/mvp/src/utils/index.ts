@@ -2,11 +2,12 @@ import { Asset, Index, IndexAsset, vToken } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
 import { convertTokenToDecimal, exponentToBigDecimal } from "../utils/calc";
 import {
-    updateDailyIndexStat, updateHalfYearIndexStat,
+    updateDailyIndexStat,
     updateHourlyIndexStat,
-    updateMonthlyIndexStat, updateThreeMonthIndexStat,
+    updateMonthlyIndexStat,
     updateWeeklyIndexStat, updateYearlyIndexStat
 } from "../mappings/phuture/stats";
+import { convertUSDToETH } from "../mappings/entities";
 
 export function updateCapVToken(asset: Asset): void {
     for (let i = 0; i < asset._vTokens.length; i++) {
@@ -42,8 +43,6 @@ export function updateOldIndexBasePriceByIndex(index: Index, ts: BigInt): void {
     updateDailyIndexStat(index, ts);
     updateWeeklyIndexStat(index, ts);
     updateMonthlyIndexStat(index, ts);
-    updateThreeMonthIndexStat(index, ts);
-    updateHalfYearIndexStat(index, ts);
     updateYearlyIndexStat(index, ts);
 }
 
@@ -83,15 +82,13 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
 
     // index.basePrice = assetValue.div(index.totalSupply.toBigDecimal());
     index.basePrice = assetValue.times(exponentToBigDecimal(index.decimals)).div(index.totalSupply.toBigDecimal());
+    index.basePriceETH = convertUSDToETH(index.basePrice);
     index.marketCap = assetValue;
 
     index.save();
 
-    updateHourlyIndexStat(index, ts);
     updateDailyIndexStat(index, ts);
     updateWeeklyIndexStat(index, ts);
     updateMonthlyIndexStat(index, ts);
-    updateThreeMonthIndexStat(index, ts);
-    updateHalfYearIndexStat(index, ts);
     updateYearlyIndexStat(index, ts);
 }

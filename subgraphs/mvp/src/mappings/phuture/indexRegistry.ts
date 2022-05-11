@@ -17,7 +17,6 @@ import {
   calculateChainLinkPrice
 } from '../entities';
 import { updateAssetsBasePrice } from '../uniswap/pair';
-import { convertTokenToDecimal } from '../../utils/calc';
 
 import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';

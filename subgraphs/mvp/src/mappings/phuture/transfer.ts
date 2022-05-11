@@ -5,7 +5,7 @@ import {
   loadOrCreateTransaction,
   newUserIndexHistory,
   loadOrCreateDaylyUserIndexHistory,
-  newDailyCapitalization
+  newDailyCapitalization, newUserCapitalization
 } from '../entities';
 import { ONE_BI } from '../../../../helpers';
 import { updateIndexBasePriceByIndex } from "../../utils";
@@ -35,8 +35,12 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
   updateIndexBasePriceByIndex(index, tx.timestamp);
 
+  let userCap = newUserCapitalization(index.id, tx.timestamp, event.logIndex);
+  userCap.capitalization = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.marketCap);
+  userCap.save();
+
   let dailyCap = newDailyCapitalization(index.id, tx.timestamp);
-  dailyCap.capitalization = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.marketCap);
+  dailyCap.capitalization = userCap.capitalization;
   dailyCap.save();
 
   // Track index transfers from index to another index or burning.
@@ -67,10 +71,13 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     fromUIH.totalSupply = index.totalSupply;
     fromUIH.save();
 
-    let fromDailyUIH =  loadOrCreateDaylyUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp);
+    let fromDailyUIH = loadOrCreateDaylyUserIndexHistory(fromUserIndex.user, fromUserIndex.index, tx.timestamp);
     fromDailyUIH.total = fromDailyUIH.total.plus(fromUIH.balance);
+    fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(fromUIH.capitalization);
     fromDailyUIH.number = fromDailyUIH.number.plus(new BigDecimal(BigInt.fromI32(1)));
     fromDailyUIH.avgBalance = fromDailyUIH.total.div(fromDailyUIH.number);
+    fromDailyUIH.avgCapitalization = fromDailyUIH.totalCap.div(fromDailyUIH.number);
+    fromDailyUIH.totalSupply = index.totalSupply;
     fromDailyUIH.save();
   }
 
@@ -102,10 +109,13 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     toUIH.totalSupply = index.totalSupply;
     toUIH.save();
 
-    let toDailyUIH =  loadOrCreateDaylyUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp);
+    let toDailyUIH = loadOrCreateDaylyUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp);
     toDailyUIH.total = toDailyUIH.total.plus(toUIH.balance);
+    toDailyUIH.totalCap = toDailyUIH.totalCap.plus(toUIH.capitalization);
     toDailyUIH.number = toDailyUIH.number.plus(new BigDecimal(BigInt.fromI32(1)));
     toDailyUIH.avgBalance = toDailyUIH.total.div(toDailyUIH.number);
+    toDailyUIH.avgCapitalization = toDailyUIH.totalCap.div(toDailyUIH.number);
+    toDailyUIH.totalSupply = index.totalSupply;
     toDailyUIH.save();
   }
 

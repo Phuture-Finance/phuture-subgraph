@@ -4,11 +4,11 @@ import {
   Asset,
   DailyAssetStat,
   DailyIndexStat,
-  DailyStat, HalfYearIndexStat,
+  DailyStat,
   HourlyIndexStat,
   Index,
   MonthlyIndexStat,
-  Stat, ThreeMonthIndexStat,
+  Stat,
   WeeklyIndexStat,
   YearlyIndexStat,
 } from '../../types/schema';
@@ -89,6 +89,7 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePriceETH = index.basePriceETH;
   indexStat.baseVolume = index.baseVolume; // index.baseVolume;
 
   indexStat.save();
@@ -111,6 +112,7 @@ export function updateWeeklyIndexStat(index: Index, ts: BigInt): WeeklyIndexStat
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePriceETH = index.basePriceETH;
   indexStat.baseVolume = index.baseVolume; // index.baseVolume;
 
   indexStat.save();
@@ -133,55 +135,12 @@ export function updateMonthlyIndexStat(index: Index, ts: BigInt): MonthlyIndexSt
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePriceETH = index.basePriceETH;
   indexStat.baseVolume = index.baseVolume; // index.baseVolume;
 
   indexStat.save();
 
   return indexStat as MonthlyIndexStat;
-}
-
-export function updateThreeMonthIndexStat(index: Index, ts: BigInt): ThreeMonthIndexStat {
-  let timestamp = ts.toI32();
-  let ID = timestamp / (86400 * 30);
-  let startTimestamp = ID * 86400 * 30 * 3;
-
-  let indexStat = ThreeMonthIndexStat.load(index.id.concat('-').concat(ID.toString()));
-  if (!indexStat) {
-    indexStat = new ThreeMonthIndexStat(index.id.concat('-').concat(ID.toString()));
-    indexStat.date = startTimestamp;
-    indexStat.index = index.id;
-  }
-
-  indexStat.marketCap = index.marketCap;
-  indexStat.uniqueHolders = index.uniqueHolders;
-  indexStat.basePrice = index.basePrice; // index.basePrice;
-  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
-
-  indexStat.save();
-
-  return indexStat as ThreeMonthIndexStat;
-}
-
-export function updateHalfYearIndexStat(index: Index, ts: BigInt): HalfYearIndexStat {
-  let timestamp = ts.toI32();
-  let ID = timestamp / (86400 * 30);
-  let startTimestamp = ID * 86400 * 30 * 6;
-
-  let indexStat = HalfYearIndexStat.load(index.id.concat('-').concat(ID.toString()));
-  if (!indexStat) {
-    indexStat = new HalfYearIndexStat(index.id.concat('-').concat(ID.toString()));
-    indexStat.date = startTimestamp;
-    indexStat.index = index.id;
-  }
-
-  indexStat.marketCap = index.marketCap;
-  indexStat.uniqueHolders = index.uniqueHolders;
-  indexStat.basePrice = index.basePrice; // index.basePrice;
-  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
-
-  indexStat.save();
-
-  return indexStat as HalfYearIndexStat;
 }
 
 export function updateYearlyIndexStat(index: Index, ts: BigInt): YearlyIndexStat {
@@ -199,6 +158,7 @@ export function updateYearlyIndexStat(index: Index, ts: BigInt): YearlyIndexStat
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePriceETH = index.basePriceETH;
   indexStat.baseVolume = index.baseVolume; // index.baseVolume;
 
   indexStat.save();
