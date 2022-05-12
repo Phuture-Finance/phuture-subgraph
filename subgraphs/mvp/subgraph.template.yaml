@@ -101,6 +101,7 @@ dataSources:
           handler: handleStaticVTokenCreated
       file: ./src/mappings/phuture/vTokenFactory.ts
 
+  {{#ChainlinkPriceOracle}}
   - kind: ethereum/contract
     name: ChainlinkPriceOracle
     network: {{network}}
@@ -129,7 +130,7 @@ dataSources:
         - event: AssetAdded(address,address[])
           handler: handleAssetAdded
       file: ./src/mappings/phuture/chainlink.ts
-
+  {{/ChainlinkPriceOracle}}
   # TODO: add new entity for CreditUpdate event, @entity Credit 1:1 to id(from address), index, governor, amount, dept
 
   - kind: ethereum/contract

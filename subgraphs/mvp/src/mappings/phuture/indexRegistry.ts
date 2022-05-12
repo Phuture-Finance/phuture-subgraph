@@ -110,7 +110,7 @@ export function handleUpdateAsset(event: UpdateAsset): void {
 }
 
 export function handleSetName(event: SetName): void {
-  let index = Index.load(event.address.toHexString());
+  let index = Index.load(event.params.index.toHexString());
   if (!index) return;
 
   index.name = event.params.name;
@@ -119,7 +119,7 @@ export function handleSetName(event: SetName): void {
 }
 
 export function handleSetSymbol(event: SetSymbol): void {
-  let index = Index.load(event.address.toHexString());
+  let index = Index.load(event.params.index.toHexString());
   if (!index) return;
   index.symbol = event.params.name;
 
