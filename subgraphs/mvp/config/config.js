@@ -35,12 +35,12 @@ data['swapFactories'] = [
   {
     "name": "SushiswapFactory",
     "factoryAddress": data.SushiV2Factory,
-    "startBlock": data.SushiV2FactoryBlockNumber
+    "startBlock": data.RegistryBlockNumber
   },
   {
     'name': 'UniswapFactory',
     'factoryAddress': data.UniswapV2Factory,
-    'startBlock': data.UniswapV2FactoryBlockNumber,
+    'startBlock': data.RegistryBlockNumber,
   },
 ];
 

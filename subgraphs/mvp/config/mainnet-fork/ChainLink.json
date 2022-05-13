@@ -68,5 +68,10 @@
     "name": "OHM / ETH / USD",
     "address": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
     "aggregatorAddress": "0x7009033C0d6702fd2dfAD3478d2AE4e3b6aCB966"
+  },
+  {
+    "name": "RGT / ETH / USD",
+    "address": "0xd291e7a03283640fdc51b121ac401383a46cc623",
+    "aggregatorAddress": "0x1Ee7399b07E626A42D8D87Dc4A2a0C2D952C1BBB"
   }
 ]
