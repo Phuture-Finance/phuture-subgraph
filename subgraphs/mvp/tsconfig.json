@@ -3,9 +3,9 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@types/*": ["src/types/*"],
+      "types/*": ["types/*"],
     }
   }
 }

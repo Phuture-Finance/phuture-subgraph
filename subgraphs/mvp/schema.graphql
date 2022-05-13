@@ -116,7 +116,11 @@ type Index @entity {
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
+  "deprecated"
   baseVolume: BigDecimal!
 
   feeBurn: BigInt!
@@ -199,6 +203,15 @@ type UserIndex @entity {
   capitalization: BigDecimal!
 }
 
+type UserCapitalization @entity {
+  id: ID!
+
+  index: Index!
+  capitalization: BigDecimal!
+  timestamp: BigInt!
+  logIndex: BigInt!
+}
+
 type DailyCapitalization @entity {
   id: ID!
 
@@ -235,10 +248,13 @@ type DailyUserIndexHistory @entity {
   index: Index!
 
   total: BigDecimal!
+  totalCap: BigDecimal!
   number: BigDecimal!
   avgBalance: BigDecimal!
   avgCapitalization: BigDecimal!
 
+  "index total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
   "timestamp matching the starting of day GMT"
   timestamp: BigInt!
   "holds orders of transfers in transaction"
@@ -320,7 +336,10 @@ type DailyIndexStat @entity {
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   baseVolume: BigDecimal!
 }
 
@@ -329,7 +348,10 @@ type WeeklyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
@@ -340,29 +362,10 @@ type MonthlyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
-  marketCap: BigDecimal!
-  baseVolume: BigDecimal!
-  uniqueHolders: BigInt!
-}
-
-type ThreeMonthIndexStat @entity {
-  id: ID!
-  date: Int!
-  index: Index!
-
-  basePrice: BigDecimal!
-  marketCap: BigDecimal!
-  baseVolume: BigDecimal!
-  uniqueHolders: BigInt!
-}
-
-type HalfYearIndexStat @entity {
-  id: ID!
-  date: Int!
-  index: Index!
-
-  basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
@@ -373,7 +376,10 @@ type YearlyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!

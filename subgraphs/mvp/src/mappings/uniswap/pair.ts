@@ -86,7 +86,10 @@ export function getEthPriceInUSD(): BigDecimal {
 
     // USDC is the only pair so far
   } else if (usdcPair !== null) {
-    return usdcPair.asset1Reserve.div(usdcPair.asset0Reserve);
+    let asset0Reserve = usdcPair.asset0Reserve.div(exponentToBigDecimal(BigInt.fromU32(6)));
+    let asset1Reserve = usdcPair.asset1Reserve.div(exponentToBigDecimal(BigInt.fromU32(18)));
+
+    return asset0Reserve.div(asset1Reserve);
   } else {
     return BigDecimal.zero();
   }

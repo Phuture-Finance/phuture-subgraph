@@ -25,6 +25,7 @@ let data = {
 
   SushiswapV2Router: "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
   SushiswapV2RouterBlockNumber: impBlocks.RegistryBlockNumber,
+  UniswapV2FactoryBlockNumber: impBlocks.RegistryBlockNumber,
 
   FeePoolBlockNumber: impBlocks.RegistryBlockNumber,
   RebalancingCredit: '0xea51c983a2209d16a597d219d472204a9666972c',
@@ -34,12 +35,12 @@ data['swapFactories'] = [
   {
     "name": "SushiswapFactory",
     "factoryAddress": data.SushiV2Factory,
-    "startBlock": data.SushiV2FactoryBlockNumber
+    "startBlock": data.RegistryBlockNumber
   },
   {
     'name': 'UniswapFactory',
     'factoryAddress': data.UniswapV2Factory,
-    'startBlock': data.UniswapV2FactoryBlockNumber,
+    'startBlock': data.RegistryBlockNumber,
   },
 ];
 
