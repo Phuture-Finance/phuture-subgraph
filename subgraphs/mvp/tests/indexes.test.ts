@@ -50,14 +50,13 @@ test("Register base assets participated in indexes", () => {
 
         // ChainLink Aggregator contract calls.
         createMockedFunction(chAggAddr, 'latestAnswer', 'latestAnswer():(int256)')
-            // .withArgs([
-            //     ethereum.Value.fromUnsignedBigInt(BigInt.fromString('5000'))
-            // ])
             .returns([ethereum.Value.fromSignedBigInt(BigInt.fromI32(500000000))]);
         createMockedFunction(chAggAddr, 'decimals', 'decimals():(uint8)')
             .returns([ethereum.Value.fromI32(8)]);
         createMockedFunction(chAggAddr, 'description', 'description():(string)')
             .returns([ethereum.Value.fromString(asset.symbol.concat(' / USD'))]);
+        createMockedFunction(chAggAddr, 'aggregator', 'aggregator():(address)')
+            .returns([ethereum.Value.fromAddress(chAggAddr)]);
 
         // Asset contract calls.
         createMockedFunction(asset.address, 'symbol', 'symbol():(string)')

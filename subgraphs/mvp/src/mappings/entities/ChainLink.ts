@@ -2,7 +2,7 @@ import { ChainLinkAgg } from '../../types/schema';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { ChainLinkAssetMap, WETH_ADDRESS } from "../../../consts";
 import { AggregatorInterface as AggregatorInterfaceTemplate } from "../../types/templates";
-import { AggregatorInterface } from "../../types/templates/AggregatorInterface/AggregatorInterface";
+import { ChainLink } from "../../types/templates/AggregatorInterface/ChainLink";
 import { convertTokenToDecimal } from "../../utils/calc";
 
 export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
@@ -10,10 +10,18 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
 
   let agg = ChainLinkAgg.load(id);
   if (!agg) {
-    AggregatorInterfaceTemplate.create(addr);
-    let cl = AggregatorInterface.bind(addr);
+    //let cl = AggregatorInterface.bind(addr);
+    let cl = ChainLink.bind(addr)
 
-    agg = new ChainLinkAgg(id);
+    let aggAddr = cl.try_aggregator()
+    if (!aggAddr.reverted) {
+      AggregatorInterfaceTemplate.create(aggAddr.value);
+      agg = new ChainLinkAgg(aggAddr.value.toHexString());
+    } else {
+      AggregatorInterfaceTemplate.create(addr);
+      agg = new ChainLinkAgg(id);
+    }
+
     agg.answer = cl.latestAnswer();
     agg.decimals = BigInt.fromI32(cl.decimals());
     agg.description = cl.description();
