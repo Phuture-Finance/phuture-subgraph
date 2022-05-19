@@ -3,6 +3,8 @@ import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
+import {ChainLinkAssetMap} from "../../../consts";
+import {calculateChainLinkPrice, loadOrCreateChainLink} from "./ChainLink";
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();
@@ -21,6 +23,15 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.vaultBaseReserve = BigDecimal.zero();
     asset.indexCount = BigInt.zero();
     asset._indexes = [];
+
+    let chAggAddr = ChainLinkAssetMap.get(asset.id);
+    if (chAggAddr) {
+      let agg = loadOrCreateChainLink(Address.fromString(chAggAddr));
+      agg.asset = asset.id;
+      agg.save();
+
+      asset.basePrice = calculateChainLinkPrice(agg);
+    }
 
     asset.save();
   }
