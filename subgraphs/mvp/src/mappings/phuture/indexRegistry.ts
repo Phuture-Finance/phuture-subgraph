@@ -41,16 +41,6 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.marketCap = event.params.marketCap;
   asset.save();
 
-  let chAggAddr = ChainLinkAssetMap.get(asset.id);
-  if (chAggAddr) {
-    let agg = loadOrCreateChainLink(Address.fromString(chAggAddr));
-    agg.asset = asset.id;
-    agg.save();
-
-    asset.basePrice = calculateChainLinkPrice(agg);
-    asset.save();
-  }
-
   for (let i = 0; i < BASE_ASSETS.length; i++) {
     let baseAddr = Address.fromString(BASE_ASSETS[i]);
 
