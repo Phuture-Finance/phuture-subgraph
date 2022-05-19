@@ -21,3 +21,7 @@ cdcreate:
 .PHONY: cddeploy
 cddeploy:
 	./graph deploy -g http://localhost:8020 -i http://localhost:5001 phuture/mvp -l v0.0.1
+
+.PHONY: subgraphdeploy
+subgraphdeploy:
+	graph deploy -g http://localhost:8020 -i https://api.thegraph.com/ipfs/ phuture/mvp -l v0.0.1

@@ -12,6 +12,19 @@ on:
     branches:
       - develop
 
+env:
+  AWS_REGION: eu-west-2
+  ECR_REPOSITORY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com/graph-node
+  ECS_SERVICE: arn:aws:ecs:eu-west-2:350549900615:service/prod-cluster/prod-service-graph
+  ECS_CLUSTER: arn:aws:ecs:eu-west-2:350549900615:cluster/prod-cluster
+  ECS_TASK_DEFINITION: ./repoPath/.aws/task-definition.json
+  CONTAINER_NAME: prod-graph-node
+  IMAGE_TAG: latest
+
+permissions:
+  id-token: write
+  contents: read   # This is required for actions/checkout@v2
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -29,7 +42,7 @@ jobs:
           node-version: "16.x"
 
       - name: Build1
-        run: cd ./repoPath/subgraphs/mvp && npm install --force && npm run codegen
+        run: cd ./repoPath/subgraphs/mvp && npm install --force && CONFIG_PATH=./mainnet/ npm run codegen
 
       - name: Build2
         run: cd ./repoPath && cp -r node_modules/matchstick-as/ subgraphs/mvp/node_modules/
@@ -37,13 +50,32 @@ jobs:
       - name: Build3
         run: cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
 
-      - name: Test
-        run: cd ./repoPath/subgraphs/mvp && ./graph test
+          #      - name: Test
+          #        run: cd ./repoPath/subgraphs/mvp && ./graph test
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::350549900615:role/deploy
+          role-session-name: OIDCSession
+
+      - name: Login to AWS ECR (OpenID connect is used)
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push the deploy image to Amazon ECR
+        env:
+          ECR_REGISTRY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com
+          ECR_REPOSITORY: subgraph-deploy
+          IMAGE_TAG: latest
+        run: |
+          docker build -f ./repoPath/Dockerfile.deploy -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   cd:
     runs-on: ubuntu-latest
     needs: ci
-    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,33 +84,96 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           path: './repoPath/'
 
-      - name: Use Node.js
-        uses: actions/setup-node@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          node-version: "16.x"
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::350549900615:role/deploy
+          role-session-name: OIDCSession
 
-      - name: Build1
-        run: cd ./repoPath/subgraphs/mvp && npm install --force && npm run codegen
+      - name: ECS task definition with first container
+        id: graph-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: prod-graph-node
+          image: graphprotocol/graph-node:v0.25.0
+  
+      - name: ECS task definition with second container
+        id: deploy-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.graph-container.outputs.task-definition }}
+          container-name: prod-subgraph-deploy
+          image: 350549900615.dkr.ecr.eu-west-2.amazonaws.com/subgraph-deploy:latest
+  
+      - name: Deploy to Amazon ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.deploy-container.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE  }}
+          cluster: ${{ env.ECS_CLUSTER }}
 
-      - name: Build2
-        run: cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
 
-      - run: sudo mkdir -p /opt/certs
 
-      - run: echo "$CLIENT_CRT" | sudo base64 --decode > /opt/certs/client-crt.pem
-        env:
-          CLIENT_CRT: ${{ secrets.CLIENT_CRT }}
-      - run: echo "$CLIENT_KEY" | sudo base64 --decode > /opt/certs/client-key.pem
-        env:
-          CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
+#      - name: Fill in the new image ID in the Amazon ECS task definition
+#        id: task-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1
+#        with:
+#          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#          container-name: ${{ env.CONTAINER_NAME }}
+#          image: ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+#
+#      - name: Deploy Amazon ECS task definition
+#        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#        with:
+#          task-definition: ${{ steps.task-def.outputs.task-definition }}
+#          service: ${{ env.ECS_SERVICE }}
+#          cluster: ${{ env.ECS_CLUSTER }}
+#          wait-for-service-stability: true
 
-      - run: sudo cp ./repoPath/deploy/deploy.conf /etc/nginx/conf.d
 
-      - name: Run nginx
-        run: sudo systemctl start nginx
 
-      - name: Create
-        run: cd ./repoPath/subgraphs/mvp && make cdcreate
 
-      - name: Deploy
-        run: cd ./repoPath/subgraphs/mvp && make cddeploy
+#  cd:
+#    runs-on: ubuntu-latest
+#    needs: ci
+#    if: github.ref == 'refs/heads/develop'
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          repository: ${{ github.event.pull_request.head.repo.full_name }}
+#          ref: ${{ github.event.pull_request.head.ref }}
+#          path: './repoPath/'
+#
+#      - name: Use Node.js
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: "16.x"
+#
+#      - name: Build1
+#        run: cd ./repoPath/subgraphs/mvp && npm install --force && npm run codegen
+#
+#      - name: Build2
+#        run: cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
+#
+#      - run: sudo mkdir -p /opt/certs
+#
+#      - run: echo "$CLIENT_CRT" | sudo base64 --decode > /opt/certs/client-crt.pem
+#        env:
+#          CLIENT_CRT: ${{ secrets.CLIENT_CRT }}
+#      - run: echo "$CLIENT_KEY" | sudo base64 --decode > /opt/certs/client-key.pem
+#        env:
+#          CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
+#
+#      - run: sudo cp ./repoPath/deploy/deploy.conf /etc/nginx/conf.d
+#
+#      - name: Run nginx
+#        run: sudo systemctl start nginx
+#
+#      - name: Create
+#        run: cd ./repoPath/subgraphs/mvp && make cdcreate
+#
+#      - name: Deploy
+#        run: cd ./repoPath/subgraphs/mvp && make cddeploy
