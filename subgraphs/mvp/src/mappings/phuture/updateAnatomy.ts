@@ -17,13 +17,6 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
       inactiveAssets.push(asset.id);
     }
 
-    assetsAddr = [];
-    for (let i = 0; i < index._assets.length; i++) {
-      if (index._assets[i] != asset.id) {
-        assetsAddr.push(index._assets[i]);
-      }
-    }
-
     indicesAddr = [];
     for (let i = 0; i < asset._indexes.length; i++) {
       if (asset._indexes[i] != index.id) {
@@ -38,7 +31,6 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
     indexAsset.index = null;
     indexAsset.inactiveIndex = index.id;
     indexAsset.save();
-    //store.remove('IndexAsset', indexAsset.id);
   } else {
     inactiveAssets = [];
     for (let i = 0; i < index._inactiveAssets.length; i++) {
@@ -47,7 +39,7 @@ export function updateAnatomy(address: Address, assetAddr: Address, weight: i32,
       }
     }
 
-    if (assetsAddr.indexOf(asset.id) == -1) {
+    if (!assetsAddr.includes(asset.id)) {
       assetsAddr.push(asset.id);
 
       asset._indexes = asset._indexes.concat([index.id]);
