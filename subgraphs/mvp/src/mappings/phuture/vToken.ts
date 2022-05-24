@@ -12,7 +12,10 @@ export function handlerVTokenTransfer(event: VTokenTransfer): void {
   if (event.params.from.equals(Address.zero())) {
     updateVToken(vt, event, true);
   }
-  if (event.params.to.equals(Address.zero())) {
+
+  // In mint process we always have mint from zero address and to zero addres
+  // and we should ignore the burning in such case.
+  if (!event.params.from.equals(Address.zero()) && event.params.to.equals(Address.zero())) {
     updateVToken(vt, event, false);
   }
 
