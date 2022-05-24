@@ -15,56 +15,6 @@
     "aggregatorAddress": "0xaed0c38402a5d19df6e4c03f4e2dced6e29c1ee9"
   },
   {
-    "name": "YFI / USD",
-    "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
-    "aggregatorAddress": "0xa027702dbb89fbd58938e4324ac03b58d812b0e1"
-  },
-  {
-    "name": "UNI / USD",
-    "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-    "aggregatorAddress": "0x553303d460ee0afb37edff9be42922d8ff63220e"
-  },
-  {
-    "name": "WBTC / USD",
-    "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-    "aggregatorAddress": "0xf4030086522a5beea4988f8ca5b36dbc97bee88c"
-  },
-  {
-    "name": "LINK / USD",
-    "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
-    "aggregatorAddress": "0x2c1d072e956affc0d435cb7ac38ef18d24d9127c"
-  },
-  {
-    "name": "SUSHI / USD",
-    "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
-    "aggregatorAddress": "0x7213536a36094cD8a768a5E45203Ec286Cba2d74"
-  },
-  {
-    "name": "AAVE / USD",
-    "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
-    "aggregatorAddress": "0x547a514d5e3769680ce22b2361c10ea13619e8a9"
-  },
-  {
-    "name": "MKR / USD",
-    "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
-    "aggregatorAddress": "0x908EDc7E1974Ecab1cA7164424BC4Cac287D83Ad"
-  },
-  {
-    "name": "COMP / USD",
-    "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
-    "aggregatorAddress": "0xdbd020caef83efd542f4de03e3cf0c28a4428bd5"
-  },
-  {
-    "name": "SNX / USD",
-    "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
-    "aggregatorAddress": "0xdc3ea94cd0ac27d9a86c180091e7f78c683d3699"
-  },
-  {
-    "name": "CRV / USD",
-    "address": "0xd533a949740bb3306d119cc777fa900ba034cd52",
-    "aggregatorAddress": "0xb4c4a493AB6356497713A78FFA6c60FB53517c63"
-  },
-  {
     "name": "OHM / ETH / USD",
     "address": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
     "aggregatorAddress": "0x7009033C0d6702fd2dfAD3478d2AE4e3b6aCB966"
