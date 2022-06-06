@@ -1,0 +1,27 @@
+[
+  {
+    "name": "USDC / USD",
+    "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "aggregatorAddress": "0x8fffffd4afb6115b954bd326cbe7b4ba576818f6"
+  },
+  {
+    "name": "WETH / USD",
+    "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "aggregatorAddress": "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419"
+  },
+  {
+    "name": "DAI / USD",
+    "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "aggregatorAddress": "0xaed0c38402a5d19df6e4c03f4e2dced6e29c1ee9"
+  },
+  {
+    "name": "OHM / ETH / USD",
+    "address": "0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5",
+    "aggregatorAddress": "0x7009033C0d6702fd2dfAD3478d2AE4e3b6aCB966"
+  },
+  {
+    "name": "RGT / ETH / USD",
+    "address": "0xd291e7a03283640fdc51b121ac401383a46cc623",
+    "aggregatorAddress": "0x1Ee7399b07E626A42D8D87Dc4A2a0C2D952C1BBB"
+  }
+]

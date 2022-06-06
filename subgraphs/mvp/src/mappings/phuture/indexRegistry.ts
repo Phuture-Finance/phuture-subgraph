@@ -1,13 +1,36 @@
-import { ASSET_ROLE } from '@phuture/subgraph-helpers';
+import { ASSET_ROLE } from '../../../../helpers';
 import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
-import { Transfer } from '../../types/templates/Asset/Asset';
-import { SetName, SetSymbol } from '../../types/templates/StaticIndex/IndexRegistry';
+import { SetName, SetSymbol } from '../../types/templates/ManagedIndex/IndexRegistry';
 import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';
-import { Asset, Index } from '../../types/schema';
-import { Asset as AssetTemplate } from '../../types/templates';
-import { VAULT_ADDRESS } from '../../../consts';
-import { updateDailyAssetStat, updateStat } from './stats';
-import { convertTokenToDecimal, loadOrCreateAsset } from '../entities';
+import { Index } from '../../types/schema';
+import {
+  Asset as AssetTemplate,
+  UniswapPair as UniswapPairTemplate,
+  SushiswapPair as SushiswapPairTemplate,
+  erc20 as erc20tpl,
+} from '../../types/templates';
+import {
+  loadOrCreateAsset,
+  loadOrCreatePair,
+  loadOrCreateSushiPair,
+  loadOrCreateChainLink,
+  calculateChainLinkPrice
+} from '../entities';
+import { updateAssetsBasePrice } from '../uniswap/pair';
+
+import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
+import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';
+import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory/UniswapFactory';
+import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
+import { Address } from '@graphprotocol/graph-ts';
+
+import {
+  UNI_FACTORY_ADDRESS,
+  SUSHI_FACTORY_ADDRESS,
+  BASE_ASSETS,
+  ChainLinkAssetMap
+} from '../../../consts';
+import { updateSushiAssetsBasePrice } from '../sushiswap/pair';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -15,33 +38,69 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   if (!asset.isWhitelisted) {
     AssetTemplate.create(event.params.asset);
   }
-
-  asset.save();
-}
-
-export function handleTransfer(event: Transfer): void {
-  if (event.params.to.toHexString() != VAULT_ADDRESS) return;
-
-  let asset = Asset.load(event.address.toHexString());
-  if (!asset) return;
-
-  asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.value, asset.decimals));
-  asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
-
+  asset.marketCap = event.params.marketCap;
   asset.save();
 
-  let stat = updateStat(event);
-  stat.totalValueLocked = stat.totalValueLocked.plus(
-    convertTokenToDecimal(event.params.value, asset.decimals).times(asset.basePrice),
-  );
+  for (let i = 0; i < BASE_ASSETS.length; i++) {
+    let baseAddr = Address.fromString(BASE_ASSETS[i]);
 
-  stat.save();
+    if (event.params.asset.equals(baseAddr)) continue;
 
-  updateDailyAssetStat(event);
+    // Uniswap factory
+    let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
+    let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
+
+    if (!pairAddr.reverted && !Address.zero().equals(pairAddr.value)) {
+      // Track the address of this pair.
+      UniswapPairTemplate.create(pairAddr.value);
+
+      let pair = UniswapPair.bind(pairAddr.value);
+      let reserve = pair.getReserves();
+      let token0 = pair.token0();
+      let token1 = pair.token1();
+
+      let p = loadOrCreatePair(pairAddr.value, token0.toHexString(), token1.toHexString());
+      p.asset0 = token0.toHexString();
+      p.asset1 = token1.toHexString();
+      p.asset0Reserve = reserve.value0.toBigDecimal();
+      p.asset1Reserve = reserve.value1.toBigDecimal();
+      p.save();
+
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+       updateAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
+    }
+
+    // SushiSwap factory
+    let sushi = SushiswapFactory.bind(Address.fromString(SUSHI_FACTORY_ADDRESS));
+    let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
+
+    if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
+      SushiswapPairTemplate.create(sushiPairAddr.value);
+
+      let pair = SushiswapPair.bind(sushiPairAddr.value);
+      let reserve = pair.getReserves();
+      let token0 = pair.token0();
+      let token1 = pair.token1();
+
+      let sp = loadOrCreateSushiPair(sushiPairAddr.value, token0.toHexString(), token1.toHexString());
+      sp.asset0 = token0.toHexString();
+      sp.asset1 = token1.toHexString();
+      sp.asset0Reserve = reserve.value0.toBigDecimal();
+      sp.asset1Reserve = reserve.value1.toBigDecimal();
+      sp.save();
+
+      let asset0 = loadOrCreateAsset(token0);
+      let asset1 = loadOrCreateAsset(token1);
+
+      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
+    }
+  }
 }
 
 export function handleSetName(event: SetName): void {
-  let index = Index.load(event.address.toHexString());
+  let index = Index.load(event.params.index.toHexString());
   if (!index) return;
 
   index.name = event.params.name;
@@ -50,7 +109,7 @@ export function handleSetName(event: SetName): void {
 }
 
 export function handleSetSymbol(event: SetSymbol): void {
-  let index = Index.load(event.address.toHexString());
+  let index = Index.load(event.params.index.toHexString());
   if (!index) return;
   index.symbol = event.params.name;
 
@@ -61,9 +120,10 @@ export function handleRoleGranted(event: RoleGranted): void {
   if (!event.params.role.equals(ASSET_ROLE)) return;
 
   let asset = loadOrCreateAsset(event.params.account);
-
   asset.isWhitelisted = true;
   asset.save();
+
+  erc20tpl.create(event.params.account);
 }
 
 export function handleRoleRevoked(event: RoleRevoked): void {

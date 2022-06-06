@@ -6,19 +6,16 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_PASSWORD: letmein
+    volumes:
+      - pdata:/var/lib/postgresql/data
 
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:
       - '5001:5001'
 
-  ganache:
-    image: trufflesuite/ganache-cli:v6.9.1
-    ports:
-      - '8545:8545'
-
   graph-node:
-    image: graphprotocol/graph-node:v0.19.0
+    image: graphprotocol/graph-node:v0.25.0
     depends_on:
       - ipfs
       - postgres
@@ -34,5 +31,39 @@ services:
       postgres_pass: letmein
       postgres_db: postgres
       ipfs: 'ipfs:5001'
-      ethereum: 'development:http://ganache:8545'
+      ethereum: 'mainnet:https://chain.phf.pragma-dev.space'
+      ELASTICSEARCH_URL: http://elastic:9200
       GRAPH_LOG: debug
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+    restart: always
+    container_name: elastic
+    environment:
+      - node.name=elastic
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - '9200'
+      - '9300'
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.16.3
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elastic:9200
+      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+
+volumes:
+  data01:
+    driver: local
+  pdata:
+    driver: local

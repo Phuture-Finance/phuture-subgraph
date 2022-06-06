@@ -1,0 +1,19 @@
+FROM ubuntu:latest as build
+
+RUN apt-get update && apt-get install -y make curl git telnet vim
+
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get update && apt-get install -y nodejs
+
+RUN npm install -g @graphprotocol/graph-cli
+
+WORKDIR /app
+
+COPY . /app
+
+RUN ls /app
+RUN ls /bin/sh
+#RUN ls /app/deploy
+RUN ls /app/repoPath/deploy/deploy.sh
+
+ENTRYPOINT ["/bin/sh", "/app/repoPath/deploy/deploy.sh"]

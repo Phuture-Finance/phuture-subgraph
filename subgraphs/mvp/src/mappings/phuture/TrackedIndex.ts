@@ -7,5 +7,5 @@ export function handleTrackedIndexTransfer(event: TrackedIndexTransferEvent): vo
 }
 
 export function handleUpdateAnatomy(event: UpdateAnatomy): void {
-  updateAnatomy(event.address, event.params.assets, event.params.weights);
+  updateAnatomy(event.address, event.params.asset, event.params.weight, event.block.timestamp);
 }

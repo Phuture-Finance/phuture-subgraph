@@ -1,10 +1,19 @@
 import { PlaceOrder, CompleteOrder, UpdateOrder } from '../../types/Orderer/Orderer';
-import { loadOrCreateOrder, loadOrCreateOrderDetails } from '../entities/Orderer';
+import { loadOrCreateOrderDetails, loadOrCreateLastOrderIndex } from '../entities/Orderer';
+import { Order } from '../../types/schema';
 
 export function handlerPlaceOrder(event: PlaceOrder): void {
-  let order = loadOrCreateOrder(event.params.creator);
+  // let order = loadOrCreateOrder(event.params.creator);
+
+  let order = new Order(event.params.id.toString());
   order.order_id = event.params.id;
+  order.index = event.params.creator.toHexString();
   order.save();
+
+  let lastOrderIndex = loadOrCreateLastOrderIndex(event.params.creator);
+  lastOrderIndex.index = event.params.creator.toHexString();
+  lastOrderIndex.order = event.params.id.toString();
+  lastOrderIndex.save();
 }
 
 export function handlerUpdateOrder(event: UpdateOrder): void {

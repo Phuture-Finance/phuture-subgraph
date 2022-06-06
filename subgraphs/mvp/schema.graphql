@@ -15,6 +15,8 @@ type Asset @entity {
   _indexes: [ID!]!
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
 
+  basePriceSushi: BigDecimal!
+  basePriceUni: BigDecimal!
   basePrice: BigDecimal!
   marketCap: BigInt!
 
@@ -36,6 +38,16 @@ type Swap @entity {
   pairs: [Pair!]! @derivedFrom(field: "swap")
 }
 
+type ChainLinkAgg @entity {
+  id: ID!
+  asset: Asset!
+  decimals: BigInt!
+  description: String!
+  answer: BigInt!
+  updatedAt: BigInt!
+  nextAgg: ChainLinkAgg
+}
+
 type Pair @entity {
   id: ID!
 
@@ -50,10 +62,39 @@ type Pair @entity {
   asset1Reserve: BigDecimal!
 }
 
+type SushiPair @entity {
+  id: ID!
+
+  swap: Swap!
+
+  asset0: Asset!
+  asset1: Asset!
+
+  totalSupply: BigInt!
+
+  asset0Reserve: BigDecimal!
+  asset1Reserve: BigDecimal!
+}
+
+type DEX @entity {
+  id: ID!
+  router: String!
+  type: String!
+}
+
+type IndexFactory @entity {
+  "Address (hash) of the factory"
+  id: ID!
+  type: String!
+
+  vTokenFactory: String!
+
+  indices: [Index!]! @derivedFrom(field: "indexFactory")
+}
+
 type Index @entity {
   "Address (hash)"
   id: ID!
-
   type: String!
 
   # used for other stats like marketcap
@@ -64,30 +105,40 @@ type Index @entity {
   name: String!
 
   users: [UserIndex!]! @derivedFrom(field: "index")
-  assets: [IndexAsset!]! @derivedFrom(field: "index")
+  assets: [IndexAsset!] @derivedFrom(field: "index")
   _assets: [ID!]!
 
+  _inactiveAssets: [ID!]!
+  inactiveAssets: [IndexAsset!] @derivedFrom(field: "inactiveIndex")
+
   transaction: Transaction!
+  indexFactory: IndexFactory!
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
+  "deprecated"
   baseVolume: BigDecimal!
 
   feeBurn: BigInt!
   feeMint: BigInt!
-  feeAUM: BigInt!
+
+  "BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1"
+  feeAUMPercent: BigDecimal!
+
+  "When index was created"
+  created: BigInt!
+  "Index Creation Category"
+  sector: BigInt!
 
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
   weeklyStats: [WeeklyIndexStat!]! @derivedFrom(field: "index")
   monthlyStats: [MonthlyIndexStat!]! @derivedFrom(field: "index")
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
-}
-
-enum OrderSideType {
-  Buy
-  Sell
 }
 
 type Order @entity {
@@ -103,7 +154,13 @@ type OrderDetailsInfo @entity {
   order: Order!
   asset: Asset!
   shares: BigInt!
-  side: OrderSideType!
+  side: String!
+}
+
+type LastOrderIndex @entity {
+  id: ID!
+  index: Index!
+  order: Order!
 }
 
 type vToken @entity {
@@ -111,17 +168,25 @@ type vToken @entity {
   id: ID!
   asset: Asset!
   tokenType: String!
-  deposited: BigInt
+  factory: String!
+  platformTotalSupply: BigInt!
+  platformTotalSupplyDec: BigDecimal!
+  capitalization: BigDecimal!
+  "depositedQuantity"
+  deposited: BigInt!
+  "reserveQuantity - quantity of the asset stored in vToken address"
+  assetReserve: BigInt!
+  "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
+  totalAmount: BigInt!
 }
 
 type IndexAsset @entity {
   id: ID! # Set to `${index.id}-${asset.id}`
-  index: Index!
+  index: Index
+  inactiveIndex: Index
   asset: Asset!
   weight: BigInt!
-
-  basePrice: BigDecimal!
-  marketCap: BigDecimal!
+  shares: BigInt!
 }
 
 type User @entity {
@@ -137,6 +202,65 @@ type UserIndex @entity {
   index: Index!
 
   balance: BigDecimal!
+  capitalization: BigDecimal!
+}
+
+type UserCapitalization @entity {
+  id: ID!
+
+  index: Index!
+  capitalization: BigDecimal!
+  timestamp: BigInt!
+  logIndex: BigInt!
+}
+
+type DailyCapitalization @entity {
+  id: ID!
+
+  index: Index!
+  capitalization: BigDecimal!
+  timestamp: BigInt!
+  logIndex: BigInt!
+}
+
+type UserIndexHistory @entity {
+  id: ID!
+
+  "user account of the specific index holdings"
+  user: User!
+  index: Index!
+
+  "shares of the index in user account"
+  balance: BigDecimal!
+  "USD equivalent of the user index holdings"
+  capitalization: BigDecimal!
+  "index total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+}
+
+type DailyUserIndexHistory @entity {
+  id: ID!
+
+  user: User!
+  index: Index!
+
+  total: BigDecimal!
+  totalCap: BigDecimal!
+  number: BigDecimal!
+  avgBalance: BigDecimal!
+  avgCapitalization: BigDecimal!
+
+  "index total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
 }
 
 type Transaction @entity {
@@ -214,7 +338,10 @@ type DailyIndexStat @entity {
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   baseVolume: BigDecimal!
 }
 
@@ -223,7 +350,10 @@ type WeeklyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
@@ -234,7 +364,10 @@ type MonthlyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
@@ -245,7 +378,10 @@ type YearlyIndexStat @entity {
   date: Int!
   index: Index!
 
+  "price of the index in USD"
   basePrice: BigDecimal!
+  "price of the index in ETH"
+  basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
