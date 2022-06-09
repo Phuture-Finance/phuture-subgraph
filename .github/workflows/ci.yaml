@@ -57,7 +57,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::350549900615:role/deploy
+          role-to-assume: arn:aws:iam::350549900615:role/ecr
           role-session-name: OIDCSession
 
       - name: Login to AWS ECR (OpenID connect is used)
