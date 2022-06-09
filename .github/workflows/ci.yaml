@@ -1,15 +1,15 @@
 name: CI
 
-  #on:
-  #  push:
-  #    tags:
-  #      - v*.*.*
 on:
-  pull_request:
-    types:
-      - opened
-    branches:
-      - 'develop'
+  push:
+    tags:
+      - v*.*.*
+#on:
+#  pull_request:
+#    types:
+#      - opened
+#    branches:
+#      - 'develop'
 
 
 env:
