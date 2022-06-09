@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - v*.*.*
+
 
 env:
   AWS_REGION: eu-west-2
@@ -61,7 +62,7 @@ jobs:
         env:
           ECR_REGISTRY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com
           ECR_REPOSITORY: subgraph-deploy
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${GITHUB_REF#refs/tags/}
         run: |
           docker build -f ./repoPath/Dockerfile.deploy -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
