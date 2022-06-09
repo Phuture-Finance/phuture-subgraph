@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - v*.*.*
 
 env:
   AWS_REGION: eu-west-2
@@ -29,6 +29,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           path: './repoPath/'
 
+      - name: Set env
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -50,7 +53,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::350549900615:role/deploy
+          role-to-assume: arn:aws:iam::350549900615:role/ecr
           role-session-name: OIDCSession
 
       - name: Login to AWS ECR (OpenID connect is used)
@@ -61,7 +64,7 @@ jobs:
         env:
           ECR_REGISTRY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com
           ECR_REPOSITORY: subgraph-deploy
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ env.TAG_VERSION }}
         run: |
           docker build -f ./repoPath/Dockerfile.deploy -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
