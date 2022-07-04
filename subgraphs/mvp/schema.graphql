@@ -30,6 +30,8 @@ type Asset @entity {
   pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
 
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
+
+  oracle: UniV3PriceOracle
 }
 
 type Swap @entity {
@@ -385,4 +387,124 @@ type YearlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+}
+
+# stores UniswapV3PriceOracle addresses
+type UniV3PriceOracle @entity {
+  id: ID!
+
+  priceOracle: String!
+
+  asset0: Asset!
+  asset1: Asset!
+}
+
+type UniV3PathPriceOracle @entity {
+  id: ID!
+
+  pathPriceOracle: String!
+
+  asset0: Asset!
+  asset1: Asset!
+}
+
+# stores for USD calculations
+type UniV3Bundle @entity {
+  id: ID!
+  # price of ETH in usd
+  ethPriceUSD: BigDecimal!
+}
+
+type UniV3Token @entity {
+  # token address
+  id: ID!
+  # token symbol
+  symbol: String!
+  # token name
+  name: String!
+  # token decimals
+  decimals: BigInt!
+  # token total supply
+  totalSupply: BigInt!
+  # volume in token units
+  volume: BigDecimal!
+  # volume in derived USD
+  volumeUSD: BigDecimal!
+  # volume in USD even on pools with less reliable USD values
+  untrackedVolumeUSD: BigDecimal!
+  # fees in USD
+  feesUSD: BigDecimal!
+  # transactions across all pools that include this token
+  txCount: BigInt!
+  # number of pools containing this token
+  poolCount: BigInt!
+  # liquidity across all pools in token units
+  totalValueLocked: BigDecimal!
+  # liquidity across all pools in derived USD
+  totalValueLockedUSD: BigDecimal!
+  # TVL derived in USD untracked
+  totalValueLockedUSDUntracked: BigDecimal!
+  # derived price in ETH
+  derivedETH: BigDecimal!
+}
+
+type UniV3Pool @entity {
+  # pool address
+  id: ID!
+  # creation
+  createdAtTimestamp: BigInt!
+  # block pool was created at
+  createdAtBlockNumber: BigInt!
+  # token0
+  token0: UniV3Token!
+  # token1
+  token1: UniV3Token!
+  # fee amount
+  feeTier: BigInt!
+  # in range liquidity
+  liquidity: BigInt!
+  # current price tracker
+  sqrtPrice: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal0X128: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal1X128: BigInt!
+  # token0 per token1
+  token0Price: BigDecimal!
+  # token1 per token0
+  token1Price: BigDecimal!
+  # current tick
+  tick: BigInt
+  # current observation index
+  observationIndex: BigInt!
+  # all time token0 swapped
+  volumeToken0: BigDecimal!
+  # all time token1 swapped
+  volumeToken1: BigDecimal!
+  # all time USD swapped
+  volumeUSD: BigDecimal!
+  # all time USD swapped, unfiltered for unreliable USD pools
+  untrackedVolumeUSD: BigDecimal!
+  # fees in USD
+  feesUSD: BigDecimal!
+  # all time number of transactions
+  txCount: BigInt!
+  # all time fees collected token0
+  collectedFeesToken0: BigDecimal!
+  # all time fees collected token1
+  collectedFeesToken1: BigDecimal!
+  # all time fees collected derived USD
+  collectedFeesUSD: BigDecimal!
+  # total token 0 across all ticks
+  totalValueLockedToken0: BigDecimal!
+  # total token 1 across all ticks
+  totalValueLockedToken1: BigDecimal!
+  # tvl derived ETH
+  totalValueLockedETH: BigDecimal!
+  # tvl USD
+  totalValueLockedUSD: BigDecimal!
+  # TVL derived in USD untracked
+  totalValueLockedUSDUntracked: BigDecimal!
+  # Fields used to help derived relationship
+  liquidityProviderCount: BigInt! # used to detect new exchanges
 }
