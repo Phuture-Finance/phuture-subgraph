@@ -36,3 +36,11 @@ export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: Big
 
     return tokenAmount.toBigDecimal().div(exponentToBigDecimal(exchangeDecimals));
 }
+
+export function convertDecimals(tokenAmount: BigDecimal, exchangeDecimals: BigInt): BigDecimal {
+    if (exchangeDecimals == BigInt.zero()) {
+        return tokenAmount;
+    }
+
+    return tokenAmount.div(exponentToBigDecimal(exchangeDecimals));
+}

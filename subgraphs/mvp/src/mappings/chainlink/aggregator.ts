@@ -2,6 +2,7 @@ import { AnswerUpdated } from '../../types/templates/AggregatorInterface/Aggrega
 import { Asset, ChainLinkAgg } from '../../types/schema';
 import { log } from '@graphprotocol/graph-ts';
 import { calculateChainLinkPrice } from "../entities";
+import {updateIndexBasePriceByAsset} from "../../utils";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
     let agg = ChainLinkAgg.load(event.address.toHexString());
@@ -19,4 +20,6 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
     asset.basePrice = calculateChainLinkPrice(agg);
     asset.save();
+
+    updateIndexBasePriceByAsset(asset, event.block.timestamp);
 }

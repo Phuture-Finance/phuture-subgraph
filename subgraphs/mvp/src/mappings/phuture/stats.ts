@@ -3,6 +3,7 @@ import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
   Asset,
   DailyAssetStat,
+  DailyCapitalization,
   DailyIndexStat,
   DailyStat,
   HourlyIndexStat,
@@ -13,6 +14,8 @@ import {
   YearlyIndexStat,
 } from '../../types/schema';
 import { FACTORY_ADDRESS } from '../../../consts';
+import { convertTokenToDecimal } from "../../utils/calc";
+import { getStartingDayTimestamp } from "../../utils/timestamp";
 
 export function updateDailyStat(ts: BigInt): DailyStat {
   let timestamp = ts.toI32();
@@ -72,6 +75,24 @@ export function updateHourlyIndexStat(index: Index, ts: BigInt): HourlyIndexStat
   indexStat.save();
 
   return indexStat as HourlyIndexStat;
+}
+
+export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapitalization {
+  let id = index.id.concat("-").concat(getStartingDayTimestamp(ts).toString());
+  let dailyCap = DailyCapitalization.load(id);
+
+  if (!dailyCap) {
+    dailyCap = new DailyCapitalization(id);
+    dailyCap.index = index.id;
+    dailyCap.timestamp = ts;
+  }
+
+  dailyCap.basePrice = index.basePrice;
+  dailyCap.totalSupply = index.totalSupply;
+  dailyCap.capitalization = index.basePrice.times(convertTokenToDecimal(index.totalSupply, index.decimals));
+  dailyCap.save();
+
+  return dailyCap;
 }
 
 export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {

@@ -2,6 +2,7 @@ import { Asset, Index, IndexAsset, vToken } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
 import { convertTokenToDecimal, exponentToBigDecimal } from "../utils/calc";
 import {
+    updateDailyCapitalisation,
     updateDailyIndexStat,
     updateHourlyIndexStat,
     updateMonthlyIndexStat,
@@ -69,15 +70,15 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
         let ia = IndexAsset.load(index.id.concat('-').concat(asset.id));
         if (!ia) continue;
 
-        let qAsset = ia.shares;
+        let reserve = BigInt.fromI32(0);
         for (let i2 = 0; i2 < asset._vTokens.length; i2++) {
             let vt = vToken.load(asset._vTokens[i2]);
             if (vt) {
-                qAsset = qAsset.plus(vt.deposited);
+                reserve = ia.shares.times(vt.totalAmount).div(vt.platformTotalSupply)
             }
         }
 
-        assetValue = assetValue.plus(convertTokenToDecimal(qAsset, asset.decimals).times(asset.basePrice));
+        assetValue = assetValue.plus(convertTokenToDecimal(reserve, asset.decimals).times(asset.basePrice));
     }
 
     // index.basePrice = assetValue.div(index.totalSupply.toBigDecimal());
@@ -86,6 +87,8 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
     index.marketCap = assetValue;
 
     index.save();
+
+    updateDailyCapitalisation(index, ts);
 
     updateDailyIndexStat(index, ts);
     updateWeeklyIndexStat(index, ts);
