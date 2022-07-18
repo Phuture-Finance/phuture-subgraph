@@ -218,10 +218,17 @@ type UserCapitalization @entity {
 
 type DailyCapitalization @entity {
   id: ID!
-
+  "index referred to daily capitalisation metrics"
   index: Index!
+  "capitalisation for the specific day"
   capitalization: BigDecimal!
+  "price of the index in the day"
+  basePrice: BigDecimal!
+  "total supply of the index in specific"
+  totalSupply: BigInt!
+  "raw timestamp of the specific day"
   timestamp: BigInt!
+  "log index value taken from event which triggered storing the metric"
   logIndex: BigInt!
 }
 
