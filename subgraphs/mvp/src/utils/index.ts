@@ -2,6 +2,7 @@ import { Asset, Index, IndexAsset, vToken } from "../types/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts/index";
 import { convertTokenToDecimal, exponentToBigDecimal } from "../utils/calc";
 import {
+    updateDailyCapitalisation,
     updateDailyIndexStat,
     updateHourlyIndexStat,
     updateMonthlyIndexStat,
@@ -86,6 +87,8 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
     index.marketCap = assetValue;
 
     index.save();
+
+    updateDailyCapitalisation(index, ts);
 
     updateDailyIndexStat(index, ts);
     updateWeeklyIndexStat(index, ts);

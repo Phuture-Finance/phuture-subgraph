@@ -9,7 +9,7 @@ import {
 } from '../entities';
 import { ONE_BI } from '../../../../helpers';
 import { updateIndexBasePriceByIndex } from "../../utils";
-import { convertTokenToDecimal } from "../../utils/calc";
+import { convertDecimals, convertTokenToDecimal } from "../../utils/calc";
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -35,14 +35,6 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
   updateIndexBasePriceByIndex(index, tx.timestamp);
 
-  let userCap = newUserCapitalization(index.id, tx.timestamp, event.logIndex);
-  userCap.capitalization = convertTokenToDecimal(index.totalSupply, index.decimals).times(index.marketCap);
-  userCap.save();
-
-  let dailyCap = newDailyCapitalization(index.id, tx.timestamp);
-  dailyCap.capitalization = userCap.capitalization;
-  dailyCap.save();
-
   // Track index transfers from index to another index or burning.
   if (!from.equals(Address.zero())) {
     let fromUserIndexId = from.toHexString().concat('-').concat(event.address.toHexString());
@@ -55,7 +47,10 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     }
 
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
-    fromUserIndex.capitalization = fromUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
+    // balance * (marketCap / totalSupply)
+    fromUserIndex.capitalization = convertDecimals(fromUserIndex.balance, index.decimals).times(
+        index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals))
+    );
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -98,6 +93,10 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
     toUserIndex.capitalization = toUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
+    // balance * (marketCap / totalSupply)
+    toUserIndex.capitalization = convertDecimals(toUserIndex.balance, index.decimals).times(
+        index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals))
+    );
 
     toUserIndex.save();
 
