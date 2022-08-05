@@ -1,0 +1,58 @@
+type Asset @entity {
+  "Address (hash)"
+  id: ID!
+
+  isWhitelisted: Boolean!
+  totalSupply: BigInt!
+
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+}
+
+type Index @entity {
+  "Address (hash)"
+  id: ID!
+  type: String!
+
+  totalSupply: BigInt!
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+}
+
+type Transfer @entity {
+  "Address (hash)"
+  id: ID!
+  from: String!
+  to: String!
+  value: BigInt!
+  timestamp: BigInt!
+}
+
+type FrpVault @entity {
+  "Address (hash)"
+  id: ID!
+  totalSupply: BigInt!
+  totalAssets: BigInt!
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+  price: BigDecimal!
+
+  apr: BigDecimal!
+
+  mint: [FCash!]!
+  redeem: [FCash!]!
+}
+
+type FCash @entity {
+  id: ID!
+  position: String!
+  assetAmount: BigInt!
+  amount: BigInt!
+  maturity: BigInt!
+  vault: FrpVault!
+  timestamp: BigInt!
+  isRedeem: Boolean!
+}

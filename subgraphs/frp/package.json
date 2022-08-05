@@ -1,0 +1,23 @@
+{
+  "name": "@phuture/frp-subgraph",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "precodegen": "rimraf src/types src/mappings/chainlink/aggregators/*.ts && node config/index.js",
+    "codegen": "graph codegen --output-dir src/types/",
+    "build": "graph build",
+    "create:local": "graph create phuture/ia --node http://0.0.0.0:8020",
+    "deploy:local": "graph deploy phuture/ia --ipfs http://0.0.0.0:5001 --node http://0.0.0.0:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.25.1",
+    "matchstick-as": "^0.4.2",
+    "mustache": "^3.1.0",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.25.1",
+    "@graphprotocol/graph-ts": "^0.25.0",
+    "matchstick-as": "^0.4.2"
+  }
+}
