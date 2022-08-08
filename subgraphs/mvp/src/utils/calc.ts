@@ -1,5 +1,4 @@
 import {BigDecimal, BigInt} from "@graphprotocol/graph-ts/index";
-import { ONE_BI } from '../../../helpers';
 
 export function convertTokenToBigInt(tokenAmount: BigInt, decimals: BigInt): BigInt {
     let bd = tokenAmount;
@@ -22,7 +21,7 @@ export function convertTokenToBigInt(tokenAmount: BigInt, decimals: BigInt): Big
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
     let bd = new BigDecimal(BigInt.fromI32(1));
 
-    for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
+    for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(BigInt.fromI32(1))) {
         bd = bd.times(BigDecimal.fromString('10'));
     }
 

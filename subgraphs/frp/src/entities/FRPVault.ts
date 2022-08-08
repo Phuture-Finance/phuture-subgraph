@@ -1,6 +1,7 @@
 import {FRPVault} from '../types/FRPVault/FRPVault';
 import {FrpVault} from "../types/schema";
 import {Address, BigInt} from "@graphprotocol/graph-ts";
+import {convertTokenToDecimal} from "@phuture/mvp-subgraph/src/utils/calc";
 
 export function loadOrCreateFrpVault(addr: Address): FrpVault {
     let id = addr.toHexString();
@@ -34,6 +35,10 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
         let name = frp.try_name()
         if (!name.reverted) {
             fVault.name = name.value;
+        }
+
+        if (fVault.totalSupply && fVault.decimals) {
+            fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
         }
 
         fVault.mint = [];

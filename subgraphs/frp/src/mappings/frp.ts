@@ -8,7 +8,7 @@ import {
     Withdraw as WithdrawEvent
 } from '../types/FRPVault/FRPVault';
 import {FCash, Transfer} from '../types/schema';
-import {BigDecimal, BigInt, log} from "@graphprotocol/graph-ts";
+import {BigDecimal, BigInt} from "@graphprotocol/graph-ts";
 import {convertTokenToDecimal} from "../../../mvp/src/utils/calc";
 import {loadOrCreateFrpVault} from "../entities/FRPVault";
 
@@ -30,22 +30,22 @@ export function handleTransfer(event: TransferEvent): void {
 
     let trFrom = Transfer.load(event.params.from.toHexString());
     if (!trFrom) {
-        trFrom = new Transfer(event.params.from.toHexString())
+        trFrom = new Transfer(event.transaction.hash.toHexString());
         trFrom.to = event.params.to.toHexString();
         trFrom.from = event.params.from.toHexString();
         trFrom.value = event.params.value;
         trFrom.timestamp = event.block.timestamp;
-        trFrom.save()
+        trFrom.save();
     }
 
-    let trTo = Transfer.load(event.params.to.toHexString());
+    let trTo = Transfer.load(event.transaction.hash.toHexString());
     if (!trTo) {
-        trTo = new Transfer(event.params.to.toHexString())
+        trTo = new Transfer(event.params.to.toHexString());
         trTo.to = event.params.to.toHexString();
         trTo.from = event.params.from.toHexString();
         trTo.value = event.params.value;
         trTo.timestamp = event.block.timestamp;
-        trTo.save()
+        trTo.save();
     }
 }
 
