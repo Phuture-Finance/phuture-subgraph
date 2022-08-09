@@ -15,9 +15,7 @@ import {
   loadOrCreateSushiPair
 } from '../entities';
 
-import { UniswapFactory } from '../../types/UniswapFactory/UniswapFactory';
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';
-import { UniswapFactory as SushiswapFactory } from '../../types/SushiswapFactory/UniswapFactory';
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
 import { UniswapV3PriceOracle } from "../../types/IndexRegistry/UniswapV3PriceOracle";
 import {Address, BigDecimal, BigInt, log} from '@graphprotocol/graph-ts';
@@ -41,62 +39,62 @@ export function handleUpdateAsset(event: UpdateAsset): void {
   asset.marketCap = event.params.marketCap;
   asset.save();
 
-  for (let i = 0; i < BASE_ASSETS.length; i++) {
-    let baseAddr = Address.fromString(BASE_ASSETS[i]);
-
-    if (event.params.asset.equals(baseAddr)) continue;
-
-    // Uniswap factory
-    let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
-    let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
-
-    if (!pairAddr.reverted && !Address.zero().equals(pairAddr.value)) {
-      // Track the address of this pair.
-      UniswapPairTemplate.create(pairAddr.value);
-
-      let pair = UniswapPair.bind(pairAddr.value);
-      let reserve = pair.getReserves();
-      let token0 = pair.token0();
-      let token1 = pair.token1();
-
-      let p = loadOrCreatePair(pairAddr.value, token0.toHexString(), token1.toHexString());
-      p.asset0 = token0.toHexString();
-      p.asset1 = token1.toHexString();
-      p.asset0Reserve = reserve.value0.toBigDecimal();
-      p.asset1Reserve = reserve.value1.toBigDecimal();
-      p.save();
-
-      let asset0 = loadOrCreateAsset(token0);
-      let asset1 = loadOrCreateAsset(token1);
-
-       updateAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
-    }
-
-    // SushiSwap factory
-    let sushi = SushiswapFactory.bind(Address.fromString(SUSHI_FACTORY_ADDRESS));
-    let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
-
-    if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
-      SushiswapPairTemplate.create(sushiPairAddr.value);
-
-      let pair = SushiswapPair.bind(sushiPairAddr.value);
-      let reserve = pair.getReserves();
-      let token0 = pair.token0();
-      let token1 = pair.token1();
-
-      let sp = loadOrCreateSushiPair(sushiPairAddr.value, token0.toHexString(), token1.toHexString());
-      sp.asset0 = token0.toHexString();
-      sp.asset1 = token1.toHexString();
-      sp.asset0Reserve = reserve.value0.toBigDecimal();
-      sp.asset1Reserve = reserve.value1.toBigDecimal();
-      sp.save();
-
-      let asset0 = loadOrCreateAsset(token0);
-      let asset1 = loadOrCreateAsset(token1);
-
-      updateSushiAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
-    }
-  }
+  // for (let i = 0; i < BASE_ASSETS.length; i++) {
+  //   let baseAddr = Address.fromString(BASE_ASSETS[i]);
+  //
+  //   if (event.params.asset.equals(baseAddr)) continue;
+  //
+  //   // Uniswap factory
+  //   let uni = UniswapFactory.bind(Address.fromString(UNI_FACTORY_ADDRESS));
+  //   let pairAddr = uni.try_getPair(baseAddr, event.params.asset);
+  //
+  //   if (!pairAddr.reverted && !Address.zero().equals(pairAddr.value)) {
+  //     // Track the address of this pair.
+  //     UniswapPairTemplate.create(pairAddr.value);
+  //
+  //     let pair = UniswapPair.bind(pairAddr.value);
+  //     let reserve = pair.getReserves();
+  //     let token0 = pair.token0();
+  //     let token1 = pair.token1();
+  //
+  //     let p = loadOrCreatePair(pairAddr.value, token0.toHexString(), token1.toHexString());
+  //     p.asset0 = token0.toHexString();
+  //     p.asset1 = token1.toHexString();
+  //     p.asset0Reserve = reserve.value0.toBigDecimal();
+  //     p.asset1Reserve = reserve.value1.toBigDecimal();
+  //     p.save();
+  //
+  //     let asset0 = loadOrCreateAsset(token0);
+  //     let asset1 = loadOrCreateAsset(token1);
+  //
+  //      updateAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
+  //   }
+  //
+  //   // SushiSwap factory
+  //   let sushi = SushiswapFactory.bind(Address.fromString(SUSHI_FACTORY_ADDRESS));
+  //   let sushiPairAddr = sushi.try_getPair(baseAddr, event.params.asset);
+  //
+  //   if (!sushiPairAddr.reverted && !Address.zero().equals(sushiPairAddr.value)) {
+  //     SushiswapPairTemplate.create(sushiPairAddr.value);
+  //
+  //     let pair = SushiswapPair.bind(sushiPairAddr.value);
+  //     let reserve = pair.getReserves();
+  //     let token0 = pair.token0();
+  //     let token1 = pair.token1();
+  //
+  //     let sp = loadOrCreateSushiPair(sushiPairAddr.value, token0.toHexString(), token1.toHexString());
+  //     sp.asset0 = token0.toHexString();
+  //     sp.asset1 = token1.toHexString();
+  //     sp.asset0Reserve = reserve.value0.toBigDecimal();
+  //     sp.asset1Reserve = reserve.value1.toBigDecimal();
+  //     sp.save();
+  //
+  //     let asset0 = loadOrCreateAsset(token0);
+  //     let asset1 = loadOrCreateAsset(token1);
+  //
+  //     updateSushiAssetsBasePrice(reserve.value0, reserve.value1, asset0, asset1, event.block.timestamp);
+  //   }
+  // }
 }
 
 export function handleSetName(event: SetName): void {
