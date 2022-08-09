@@ -31,19 +31,6 @@ let data = {
   RebalancingCredit: '0xea51c983a2209d16a597d219d472204a9666972c',
 };
 
-data['swapFactories'] = [
-  {
-    "name": "SushiswapFactory",
-    "factoryAddress": data.SushiV2Factory,
-    "startBlock": data.RegistryBlockNumber
-  },
-  {
-    'name': 'UniswapFactory',
-    'factoryAddress': data.UniswapV2Factory,
-    'startBlock': data.RegistryBlockNumber,
-  },
-];
-
 data['network'] = 'mainnet';
 
 module.exports = {
