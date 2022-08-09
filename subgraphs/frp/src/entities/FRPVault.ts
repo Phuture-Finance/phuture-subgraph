@@ -1,5 +1,5 @@
 import {FRPVault} from '../types/FRPVault/FRPVault';
-import {FrpVault} from "../types/schema";
+import {FrpVault} from '../types/schema';
 import {Address, BigInt} from "@graphprotocol/graph-ts";
 import {convertTokenToDecimal} from "@phuture/mvp-subgraph/src/utils/calc";
 
@@ -17,10 +17,10 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
             fVault.totalAssets = totalAssets.value;
         }
 
-        let totalSupply = frp.try_totalSupply();
-        if (!totalSupply.reverted) {
-            fVault.totalSupply = totalSupply.value;
-        }
+        // let totalSupply = frp.try_totalSupply();
+        // if (!totalSupply.reverted) {
+        //     fVault.totalSupply = totalSupply.value;
+        // }
 
         let symbol = frp.try_symbol();
         if (!symbol.reverted) {
@@ -37,9 +37,9 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
             fVault.name = name.value;
         }
 
-        if (fVault.totalSupply && fVault.decimals) {
-            fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
-        }
+        // if (fVault.totalSupply && !fVault.totalSupply.isZero() && fVault.decimals) {
+        //     fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
+        // }
 
         fVault.mint = [];
         fVault.redeem = [];

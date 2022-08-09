@@ -10,26 +10,6 @@ type Asset @entity {
   name: String!
 }
 
-type Index @entity {
-  "Address (hash)"
-  id: ID!
-  type: String!
-
-  totalSupply: BigInt!
-  decimals: BigInt!
-  symbol: String!
-  name: String!
-}
-
-type Transfer @entity {
-  "Address (hash)"
-  id: ID!
-  from: String!
-  to: String!
-  value: BigInt!
-  timestamp: BigInt!
-}
-
 type FrpVault @entity {
   "Address (hash)"
   id: ID!
@@ -44,6 +24,9 @@ type FrpVault @entity {
 
   mint: [FCash!]!
   redeem: [FCash!]!
+
+  uniqueHolders: BigInt!
+  marketCap: BigInt!
 }
 
 type FCash @entity {
@@ -55,4 +38,50 @@ type FCash @entity {
   vault: FrpVault!
   timestamp: BigInt!
   isRedeem: Boolean!
+}
+
+type User @entity {
+  id: ID!
+
+  indexes: [UserFrp!]! @derivedFrom(field: "user")
+}
+
+type UserFrp @entity {
+  id: ID!
+
+  user: User!
+  frp: FrpVault!
+
+  balance: BigDecimal!
+  capitalization: BigDecimal!
+}
+
+enum FrpTransferType {
+  Send
+  Mint
+  Burn
+}
+
+type FrpTransfer @entity {
+  id: ID!
+  frp: FrpVault!
+  transaction: FrpTransaction!
+  type: FrpTransferType!
+
+  from: User
+  to: User
+  value: BigInt!
+
+  timestamp: BigInt!
+}
+
+type FrpTransaction @entity {
+  id: ID! # txn hash
+
+  blockNumber: BigInt!
+  timestamp: BigInt!
+
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
 }

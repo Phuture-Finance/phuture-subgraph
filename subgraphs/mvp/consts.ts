@@ -1,6 +1,6 @@
 import {TypedMap} from "@graphprotocol/graph-ts/index";
 
-export const FACTORY_ADDRESS = '0xc79EeFad206Da3F637e802C8799bfe763f70E702';
+export const FACTORY_ADDRESS = '0xb4e85a5BFCd5f247D4BDa1491F57921473dDcE2e';
 
 export const UNI_FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
 export const UNI_ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
@@ -19,3 +19,4 @@ ChainLinkAssetMap.set('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', '0x8fffffd4a
 ChainLinkAssetMap.set('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419');
 ChainLinkAssetMap.set('0x6b175474e89094c44da98b954eedeac495271d0f', '0xaed0c38402a5d19df6e4c03f4e2dced6e29c1ee9');
 ChainLinkAssetMap.set('0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5', '0x7009033C0d6702fd2dfAD3478d2AE4e3b6aCB966');
+ChainLinkAssetMap.set('0xd291e7a03283640fdc51b121ac401383a46cc623', '0x1Ee7399b07E626A42D8D87Dc4A2a0C2D952C1BBB');

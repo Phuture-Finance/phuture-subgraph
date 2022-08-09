@@ -7,10 +7,11 @@ import {
     Deposit as DepositEvent,
     Withdraw as WithdrawEvent
 } from '../types/FRPVault/FRPVault';
-import {FCash, Transfer} from '../types/schema';
-import {BigDecimal, BigInt} from "@graphprotocol/graph-ts";
-import {convertTokenToDecimal} from "../../../mvp/src/utils/calc";
+import {FCash, FrpTransfer, UserFrp} from '../types/schema';
+import {Address, BigDecimal, BigInt} from "@graphprotocol/graph-ts";
+import {convertDecimals, convertTokenToDecimal} from "../../../mvp/src/utils/calc";
 import {loadOrCreateFrpVault} from "../entities/FRPVault";
+import {loadOrCreateAccount} from "../entities/Account";
 
 const fCashDec = 8;
 const usdcDec = 6;
@@ -22,31 +23,96 @@ const oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
 export function handleTransfer(event: TransferEvent): void {
     let fVault = loadOrCreateFrpVault(event.address);
 
-    if (fVault.totalSupply && fVault.decimals) {
+    if (!fVault.totalSupply.isZero() && fVault.decimals) {
         fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
     }
 
-    fVault.save();
+    loadOrCreateAccount(event.params.from);
+    loadOrCreateAccount(event.params.to);
 
-    let trFrom = Transfer.load(event.params.from.toHexString());
+    let transferType: string;
+    if (event.params.from.equals(Address.zero())) {
+        fVault.totalSupply = fVault.totalSupply.plus(event.params.value);
+        transferType = 'Mint';
+    } else if (event.params.to.equals(Address.zero())) {
+        fVault.totalSupply = fVault.totalSupply.minus(event.params.value);
+        transferType = 'Burn';
+    } else {
+        transferType = 'Send';
+    }
+
+
+    if (!event.params.from.equals(Address.zero())) {
+        let fromUserId = event.params.from.toHexString().concat('-').concat(event.address.toHexString());
+        let fromUser = UserFrp.load(fromUserId);
+        if (!fromUser) {
+            fromUser = new UserFrp(fromUserId);
+            fromUser.frp = event.address.toHexString();
+            fromUser.user = event.params.from.toHexString();
+            fromUser.balance = BigDecimal.zero();
+        }
+
+        fromUser.balance = fromUser.balance.minus(event.params.value.toBigDecimal());
+        if (!fVault.totalSupply.isZero()) {
+            fromUser.capitalization = convertDecimals(fromUser.balance, fVault.decimals).times(
+                fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals))
+            );
+        }
+
+        if (fromUser.balance == BigDecimal.zero()) {
+            fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
+        }
+
+        fromUser.save();
+    }
+
+    if (!event.params.to.equals(Address.zero())) {
+        let toUserId = event.params.to.toHexString().concat('-').concat(event.address.toHexString());
+        let toUser = UserFrp.load(toUserId);
+        if (!toUser) {
+            toUser = new UserFrp(toUserId);
+            toUser.frp = event.address.toHexString();
+            toUser.user = event.params.from.toHexString();
+            toUser.balance = BigDecimal.zero();
+        }
+
+        toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
+        if (!fVault.totalSupply.isZero()) {
+            toUser.capitalization = convertDecimals(toUser.balance, fVault.decimals).times(
+                fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals))
+            );
+        }
+
+        if (toUser.balance == BigDecimal.zero()) {
+            fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
+        }
+
+        toUser.save();
+    }
+
+    let trFrom = FrpTransfer.load(event.params.from.toHexString());
     if (!trFrom) {
-        trFrom = new Transfer(event.transaction.hash.toHexString());
+        trFrom = new FrpTransfer(event.transaction.hash.toHexString());
         trFrom.to = event.params.to.toHexString();
         trFrom.from = event.params.from.toHexString();
         trFrom.value = event.params.value;
         trFrom.timestamp = event.block.timestamp;
+        trFrom.type = transferType;
         trFrom.save();
     }
 
-    let trTo = Transfer.load(event.transaction.hash.toHexString());
+    let trTo = FrpTransfer.load(event.transaction.hash.toHexString());
     if (!trTo) {
-        trTo = new Transfer(event.params.to.toHexString());
+        trTo = new FrpTransfer(event.params.to.toHexString());
         trTo.to = event.params.to.toHexString();
         trTo.from = event.params.from.toHexString();
         trTo.value = event.params.value;
         trTo.timestamp = event.block.timestamp;
+        trTo.type = transferType;
         trTo.save();
     }
+
+    fVault.save();
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
