@@ -10,5 +10,6 @@
   "ZeroXMock": "0x93472c0e03215f9c33da240eb16703c8244eaa8c",
 
   "SushiV2Factory":"0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
-  "UniswapV2Factory":"0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+  "UniswapV2Factory":"0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+  "BaseNetworkAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 }

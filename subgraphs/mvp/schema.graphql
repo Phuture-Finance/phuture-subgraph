@@ -40,8 +40,14 @@ type Swap @entity {
   pairs: [Pair!]! @derivedFrom(field: "swap")
 }
 
+type ChainLink @entity {
+  id: ID!
+  aggregator: ChainLinkAgg!
+}
+
 type ChainLinkAgg @entity {
   id: ID!
+  chainLink: ChainLink!
   asset: Asset!
   decimals: BigInt!
   description: String!

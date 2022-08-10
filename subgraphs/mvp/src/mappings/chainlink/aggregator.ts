@@ -14,7 +14,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
     let asset = Asset.load(agg.asset);
     if (!asset) {
-        log.error('can not find the asset', [agg.asset])
+        log.error('can not find the asset yet: {}', [agg.asset])
         return;
     }
 

@@ -73,7 +73,7 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
         let reserve = BigInt.fromI32(0);
         for (let i2 = 0; i2 < asset._vTokens.length; i2++) {
             let vt = vToken.load(asset._vTokens[i2]);
-            if (vt) {
+            if (vt && !vt.platformTotalSupply.isZero()) {
                 reserve = ia.shares.times(vt.totalAmount).div(vt.platformTotalSupply)
             }
         }

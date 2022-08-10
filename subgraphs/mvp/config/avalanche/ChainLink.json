@@ -1,2 +1,7 @@
 [
+  {
+    "name": "WAVAX / USD",
+    "address": "0x972AC962021eBb20A41d5dA54d5F398230384901",
+    "aggregatorAddress": "0x0A77230d17318075983913bC2145DB16C7366156"
+  }
 ]
