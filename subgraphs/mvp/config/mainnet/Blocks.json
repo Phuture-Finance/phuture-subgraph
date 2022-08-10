@@ -1,6 +1,7 @@
 {
   "UniswapV2FactoryBlockNumber": 14832000,
   "ChainlinkPriceOracleBlockNumber": 14832000,
+  "ChainlinkPriceOracleV2BlockNumber": 15307180,
   "DynamicVTokenFactoryBlockNumber": 0,
   "ManagedIndexFactoryBlockNumber": 14832000,
   "ManagedVTokenFactoryBlockNumber": 14832000,

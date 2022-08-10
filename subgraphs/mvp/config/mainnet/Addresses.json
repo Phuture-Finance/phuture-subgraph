@@ -1,6 +1,6 @@
 {
   "Base": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-  "ChainlinkPriceOracle": "0x1aFc60fFf505B191C56044C02cF57e3a7997871B",
+  "ChainlinkPriceOracle": "0x0EbdB1Af4a40f51Eb94eEdE7E94b843333D6CFE1",
   "DynamicVTokenFactory": "",
   "FeePool": "0x68ecC6BBA5f538cD7Ba6011b3A52513A282036Ab",
   "ManagedIndexFactory": "0xb4e85a5BFCd5f247D4BDa1491F57921473dDcE2e",
@@ -11,5 +11,5 @@
   "TopNMarketCapCategories": "",
   "TopNMarketCapIndexFactory": "",
   "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-  "WETH": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+  "BaseNetworkAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 }

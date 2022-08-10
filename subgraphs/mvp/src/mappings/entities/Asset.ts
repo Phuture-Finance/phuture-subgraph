@@ -33,12 +33,6 @@ export function loadOrCreateAsset(address: Address): Asset {
       asset.basePrice = calculateChainLinkPrice(agg);
     }
 
-    // if (asset.symbol == 'USDC') {
-    //   asset.basePrice = BigDecimal.fromString("1");
-    // } else if (asset.symbol == 'RGT') {
-    //   asset.basePrice = BigDecimal.fromString("7.8926291765330527995");
-    // }
-
     asset.save();
   }
 

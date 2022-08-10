@@ -7,10 +7,12 @@ const impAddr = require(defaultPath + 'Addresses.json');
 const impBlocks = require(defaultPath + 'Blocks.json');
 const impBaseAssets = require(defaultPath + 'BaseAssets.json');
 const pairs = require(defaultPath + 'ChainLink.json');
+const network = require(defaultPath + 'Network.json');
 
 let data = {
   ...impAddr,
   ...impBlocks,
+  ...network,
 
   BaseAssets: JSON.stringify(impBaseAssets),
 
@@ -30,21 +32,6 @@ let data = {
   FeePoolBlockNumber: impBlocks.RegistryBlockNumber,
   RebalancingCredit: '0xea51c983a2209d16a597d219d472204a9666972c',
 };
-
-data['swapFactories'] = [
-  {
-    "name": "SushiswapFactory",
-    "factoryAddress": data.SushiV2Factory,
-    "startBlock": data.RegistryBlockNumber
-  },
-  {
-    'name': 'UniswapFactory',
-    'factoryAddress': data.UniswapV2Factory,
-    'startBlock': data.RegistryBlockNumber,
-  },
-];
-
-data['network'] = 'mainnet';
 
 module.exports = {
   data,

@@ -528,7 +528,7 @@ templates:
 
   - kind: ethereum/contract
     name: Pool
-    network: mainnet
+    network: {{network}}
     source:
       abi: Pool
     mapping:
