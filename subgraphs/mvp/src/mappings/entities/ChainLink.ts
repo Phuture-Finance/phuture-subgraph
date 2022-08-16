@@ -23,7 +23,7 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   }
 
   let agg = ChainLinkAgg.load(chl.aggregator);
-  if (!agg) {
+  if (!agg && chl.aggregator) {
     agg = new ChainLinkAgg(chl.aggregator);
     agg.chainLink = id;
 
@@ -66,6 +66,10 @@ export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
 
 export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
   let agg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
+  if (!agg.asset) {
+    agg.asset = BNA_ADDRESS;
+    agg.save()
+  }
 
   return usdPrice.div(convertTokenToDecimal(agg.answer, agg.decimals));
 }
