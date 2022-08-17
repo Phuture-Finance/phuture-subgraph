@@ -4,28 +4,14 @@ import { ChainLinkAssetMap, BNA_ADDRESS } from "../../../consts";
 import { AggregatorInterface as AggregatorInterfaceTemplate } from "../../types/templates";
 import { ChainLink as ChainLinkAggTemplate } from "../../types/templates/AggregatorInterface/ChainLink";
 import { convertTokenToDecimal } from "../../utils/calc";
+import { AggregatorInterface } from "../../types/ChainlinkPriceOracle/AggregatorInterface";
 
-export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
-  let id = addr.toHexString();
-  let cl = ChainLinkAggTemplate.bind(addr);
+export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
+  let cl = AggregatorInterface.bind(addr);
 
-  let chl = ChainLink.load(id);
-  if (!chl) {
-    chl = new ChainLink(id);
-
-    let aggAddr = cl.try_aggregator()
-    if (!aggAddr.reverted) {
-      AggregatorInterfaceTemplate.create(aggAddr.value);
-
-      chl.aggregator = aggAddr.value.toHexString();
-    }
-    chl.save();
-  }
-
-  let agg = ChainLinkAgg.load(chl.aggregator);
-  if (!agg && chl.aggregator) {
-    agg = new ChainLinkAgg(chl.aggregator);
-    agg.chainLink = id;
+  let agg = ChainLinkAgg.load(addr.toHexString());
+  if (!agg) {
+    agg = new ChainLinkAgg(addr.toHexString());
 
     let answer = cl.try_latestAnswer();
     if (!answer.reverted) {
@@ -43,11 +29,33 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
     }
 
     if (agg.description.substring(agg.description.length - 3, agg.description.length) == "ETH") {
-      agg.nextAgg = ChainLinkAssetMap.mustGet(BNA_ADDRESS);
+      let nextAgg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
+      agg.nextAgg = nextAgg.id;
     }
-
-    agg.save();
   }
+
+  return agg as ChainLinkAgg;
+}
+
+export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
+  let id = addr.toHexString();
+  let cl = ChainLinkAggTemplate.bind(addr);
+
+  let chl = ChainLink.load(id);
+  if (!chl) {
+    chl = new ChainLink(id);
+
+    let aggAddr = cl.try_aggregator()
+    if (!aggAddr.reverted) {
+      AggregatorInterfaceTemplate.create(aggAddr.value);
+      chl.aggregator = aggAddr.value.toHexString();
+    }
+    chl.save();
+  }
+
+  let agg = loadOrCreateChainLinkAgg(Address.fromString(chl.aggregator));
+  agg.chainLink = id;
+  agg.save();
 
   return agg as ChainLinkAgg;
 }
@@ -57,7 +65,7 @@ export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
   let price = convertTokenToDecimal(agg.answer, agg.decimals);
 
   if (agg.nextAgg) {
-    let nextAgg = loadOrCreateChainLink(Address.fromString(agg.nextAgg as string));
+    let nextAgg = loadOrCreateChainLinkAgg(Address.fromString(agg.nextAgg as string));
     return price.times(calculateChainLinkPrice(nextAgg));
   }
 
