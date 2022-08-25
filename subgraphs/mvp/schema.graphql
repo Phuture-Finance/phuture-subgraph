@@ -521,3 +521,21 @@ type UniV3Pool @entity {
   # Fields used to help derived relationship
   liquidityProviderCount: BigInt! # used to detect new exchanges
 }
+
+type OrderComplete @entity {
+  id: ID!
+  timestamp: BigInt!
+  index: Index!
+  order: Order!
+
+  sellToken: Asset!
+  sellAmount: BigInt!
+  sellTokenPrice: BigDecimal!
+
+  buyToken: Asset!
+  buyAmount: BigInt!
+  buyTokenPrice: BigDecimal!
+
+  transactionFee: BigInt!
+  transactionGas: BigInt!
+}
