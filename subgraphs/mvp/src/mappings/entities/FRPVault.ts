@@ -1,5 +1,5 @@
-import {FRPVault} from '../types/FRPVault/FRPVault';
-import {FrpVault} from '../types/schema';
+import {FRPVault} from '../../types/FRPVault/FRPVault';
+import {FrpVault} from '../../types/schema';
 import {Address, BigInt} from "@graphprotocol/graph-ts";
 
 export function loadOrCreateFrpVault(addr: Address): FrpVault {

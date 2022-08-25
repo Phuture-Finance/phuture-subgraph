@@ -1,4 +1,4 @@
-import {wfCashBase} from '../types/FRPVault/wfCashBase';
+import {wfCashBase} from '../../types/FRPVault/wfCashBase';
 
 import {
     FCashMinted as FCashMintedEvent,
@@ -6,10 +6,10 @@ import {
     Transfer as TransferEvent,
     Deposit as DepositEvent,
     Withdraw as WithdrawEvent, FRPVault
-} from '../types/FRPVault/FRPVault';
-import {FCash, FrpTransfer, UserFrp} from '../types/schema';
+} from '../../types/FRPVault/FRPVault';
+import {FCash, FrpTransfer, UserVault} from '../../types/schema';
 import {Address, BigDecimal, BigInt} from "@graphprotocol/graph-ts";
-import {convertDecimals, convertTokenToDecimal} from "../../../mvp/src/utils/calc";
+import {convertDecimals, convertTokenToDecimal} from "../../../src/utils/calc";
 import {loadOrCreateFrpVault} from "../entities/FRPVault";
 import {loadOrCreateAccount} from "../entities/Account";
 
@@ -46,9 +46,9 @@ export function handleTransfer(event: TransferEvent): void {
 
     if (!event.params.from.equals(Address.zero())) {
         let fromUserId = event.params.from.toHexString().concat('-').concat(event.address.toHexString());
-        let fromUser = UserFrp.load(fromUserId);
+        let fromUser = UserVault.load(fromUserId);
         if (!fromUser) {
-            fromUser = new UserFrp(fromUserId);
+            fromUser = new UserVault(fromUserId);
             fromUser.frp = event.address.toHexString();
             fromUser.user = event.params.from.toHexString();
             fromUser.balance = BigDecimal.zero();
@@ -70,9 +70,9 @@ export function handleTransfer(event: TransferEvent): void {
 
     if (!event.params.to.equals(Address.zero())) {
         let toUserId = event.params.to.toHexString().concat('-').concat(event.address.toHexString());
-        let toUser = UserFrp.load(toUserId);
+        let toUser = UserVault.load(toUserId);
         if (!toUser) {
-            toUser = new UserFrp(toUserId);
+            toUser = new UserVault(toUserId);
             toUser.frp = event.address.toHexString();
             toUser.user = event.params.from.toHexString();
             toUser.balance = BigDecimal.zero();
