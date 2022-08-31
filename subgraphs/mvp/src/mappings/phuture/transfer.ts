@@ -5,7 +5,6 @@ import {
   loadOrCreateTransaction,
   newUserIndexHistory,
   loadOrCreateDaylyUserIndexHistory,
-  newDailyCapitalization, newUserCapitalization
 } from '../entities';
 import { ONE_BI } from '../../../../helpers';
 import { updateIndexBasePriceByIndex } from "../../utils";
@@ -100,7 +99,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
     toUserIndex.save();
 
-    let toUIH = newUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp, event.logIndex)
+    let toUIH = newUserIndexHistory(toUserIndex.user, toUserIndex.index, tx.timestamp, event.logIndex);
     toUIH.balance = toUserIndex.balance;
     toUIH.capitalization = toUserIndex.capitalization;
     toUIH.timestamp = tx.timestamp;

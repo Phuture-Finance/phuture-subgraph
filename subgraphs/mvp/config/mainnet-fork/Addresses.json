@@ -1,14 +1,18 @@
 {
-  "Base":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-  "ChainlinkPriceOracle":"0x18b9306737eaf6e8fc8e737f488a1ae077b18053",
-  "FeePool":"0x58f132fbb86e21545a4bace3c19f1c05d86d7a22",
-  "ManagedIndexFactory":"0xd0ff91311967d8279fdcd0d3fa8c49e07b5f2380",
-  "ManagedVTokenFactory":"0xa48096237053a0b74e15ced6fa33f7c96a5acf50",
-  "Orderer":"0xddd96662ea11da6f289a5d00da41ec5f3b67d2b4",
-  "Registry":"0xecc0a6dbc0bb4d51e4f84a315a9e5b0438cad4f0",
   "SushiV2Factory":"0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
   "UniswapV2Factory":"0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-  "WETH":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "BaseNetworkAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
 
-  "FrpVault":"0xA410D1f3fEAF300842142Cd7AA1709D84944DCb7"
+
+  "Base":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "ChainlinkPriceOracle":"0x5a33c3341aedf4c5f9bbcedf52d619d12f76f7fb",
+  "FeePool":"0xcc5f3be6e695bd0239dfd0efc8e9ffc6e969d29e",
+  "ManagedIndexFactory":"0x7997a4c8b8e97d289989431b996ab1c6a9975ad9",
+  "ManagedVTokenFactory":"0x3870a14c5057f596e385ea21537792fe4ff4c1be",
+  "Orderer":"0xe5a5a5b78f165c875ee2264a8743570176ea39d9",
+  "Registry":"0xadc8f433ea2371be71d986d9b131892122969ca6",
+  "WETH":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  "ZeroXMock":"0x65a7d8d33e148d5bf9fe11fd1425d31a4bf3d9e1",
+
+  "FrpVault":"0x36372ca6a6b65B924ab1f88165F563189B638a6b"
 }

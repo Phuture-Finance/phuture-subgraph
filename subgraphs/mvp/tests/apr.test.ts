@@ -6,7 +6,7 @@ import {
     FCashMinted as FCashMintedEvent,
     FCashRedeemed as FCashRedeemedEvent,
 } from '../src/types/FRPVault/FRPVault';
-import {handleFCashMinted, handleFCashRedeemed} from "../src/mappings/frp";
+import {handleFCashMinted, handleFCashRedeemed} from "../src/mappings/frp/frp";
 
 class FCashEvent {
     position: Address

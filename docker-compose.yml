@@ -31,7 +31,7 @@ services:
       postgres_pass: letmein
       postgres_db: postgres
       ipfs: 'ipfs:5001'
-      ethereum: 'mainnet:https://chain.dev.phuture.finance'
+      ethereum: 'mainnet:https://chain.frp.phuture.finance'
       ELASTICSEARCH_URL: http://elastic:9200
       GRAPH_LOG: debug
 

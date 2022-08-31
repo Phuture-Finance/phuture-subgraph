@@ -1,6 +1,6 @@
 import {TypedMap} from "@graphprotocol/graph-ts/index";
 
-export const FACTORY_ADDRESS = '0xd0ff91311967d8279fdcd0d3fa8c49e07b5f2380';
+export const FACTORY_ADDRESS = '0x7997a4c8b8e97d289989431b996ab1c6a9975ad9';
 
 export const UNI_FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
 export const UNI_ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';

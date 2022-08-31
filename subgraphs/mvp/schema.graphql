@@ -440,7 +440,7 @@ type UserVault @entity {
   user: FrpUser!
   frp: FrpVault!
 
-  balance: BigDecimal!
+  balance: BigInt!
   capitalization: BigDecimal!
 }
 
@@ -474,3 +474,67 @@ type FrpTransaction @entity {
   gasPrice: BigInt!
 }
 
+type FrpDailyStat @entity {
+  id: ID!
+
+  date: BigInt!
+  vault: FrpVault!
+
+  marketCap: BigInt!
+  uniqueHolders: BigInt!
+  "price of the vault in USD"
+  price: BigDecimal!
+}
+
+type FrpDailyCapitalization @entity {
+  id: ID!
+  "index referred to daily capitalisation metrics"
+  index: Index!
+  "capitalisation for the specific day"
+  capitalization: BigDecimal!
+  "price of the vault in the day"
+  price: BigDecimal!
+  "total supply of frp vault"
+  totalSupply: BigInt!
+  "raw timestamp of the specific day"
+  timestamp: BigInt!
+  "log index value taken from event which triggered storing the metric"
+  logIndex: BigInt!
+}
+
+type UserFrpHistory @entity {
+  id: ID!
+
+  "user account of the specific vault holdings"
+  user: FrpUser!
+  vault: FrpVault!
+
+  "shares of the vault in user account"
+  balance: BigInt!
+  "USD equivalent of the user vault holdings"
+  capitalization: BigDecimal!
+  "vault total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+}
+
+type DailyUserFrpHistory @entity {
+  id: ID!
+
+  user: FrpUser!
+  vault: FrpVault!
+
+  total: BigDecimal!
+  totalCap: BigDecimal!
+
+  "vault total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+}

@@ -6,6 +6,9 @@ import {
   DailyCapitalization,
   DailyIndexStat,
   DailyStat,
+  FrpDailyCapitalization,
+  FrpDailyStat,
+  FrpVault,
   HourlyIndexStat,
   Index,
   MonthlyIndexStat,
@@ -93,6 +96,43 @@ export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapita
   dailyCap.save();
 
   return dailyCap;
+}
+
+export function updateFrpDailyCapitalisation(vault: FrpVault, ts: BigInt): FrpDailyCapitalization {
+  let id = vault.id.concat("-").concat(getStartingDayTimestamp(ts).toString());
+
+  let dailyCap = FrpDailyCapitalization.load(id);
+  if (!dailyCap) {
+    dailyCap = new FrpDailyCapitalization(id);
+    dailyCap.index = vault.id;
+    dailyCap.timestamp = ts;
+  }
+
+  dailyCap.price = vault.price;
+  dailyCap.totalSupply = vault.totalSupply;
+  dailyCap.capitalization = vault.price.times(convertTokenToDecimal(vault.totalSupply, vault.decimals));
+  dailyCap.save();
+
+  return dailyCap;
+}
+
+export function updateFrpDailyStat(vault: FrpVault, ts: BigInt): FrpDailyStat {
+  let startingDay = getStartingDayTimestamp(ts);
+
+  let stat = FrpDailyStat.load(vault.id.concat("-").concat(startingDay.toString()));
+  if (!stat) {
+    stat = new FrpDailyStat(vault.id.concat('-').concat(startingDay.toString()));
+    stat.date = startingDay;
+    stat.vault = vault.id;
+  }
+
+  stat.marketCap = vault.marketCap;
+  stat.uniqueHolders = vault.uniqueHolders;
+  stat.price = vault.price;
+
+  stat.save();
+
+  return stat as FrpDailyStat;
 }
 
 export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
