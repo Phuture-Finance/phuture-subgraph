@@ -165,45 +165,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
     fVault.save();
 }
 
-export function handleFCashRedeemed(event: FCashRedeemedEvent): void {
-    let fVault = loadOrCreateFrpVault(event.address);
-
-    let id = event.params._fCashPosition.toHexString().concat("-");
-    id = id.concat(event.block.timestamp.toString()).concat("-");
-    id = id.concat(event.logIndex.toString());
-
-    let fc = new FCash(id);
-
-    let wfc = wfCashBase.bind(event.params._fCashPosition);
-    let mt = wfc.try_getMaturity();
-    if (!mt.reverted) {
-        fc.maturity = mt.value;
-    }
-
-    fc.vault = event.address.toHexString();
-    fc.position = event.params._fCashPosition.toHexString();
-    fc.amount = event.params._fCashAmount;
-    fc.assetAmount = event.params._assetAmount;
-    fc.timestamp = event.block.timestamp;
-    fc.isRedeem = true;
-    fc.save();
-
-    let redeem = [] as Array<string>;
-    for (let i = 0; i < fVault.redeem.length; i++) {
-        let oldFc = FCash.load(fVault.redeem[i]);
-        if (oldFc && oldFc.maturity.gt(event.block.timestamp)) {
-            redeem.push(oldFc.id);
-        }
-    }
-    redeem.push(id);
-    fVault.redeem = redeem;
-
-    updateVaultTotals(fVault);
-    updateVaultPrice(fVault, event.block.timestamp);
-
-    fVault.save();
-}
-
 export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
     let threeMonth = [] as Array<FCash>;
     let sixMonth = [] as Array<FCash>;
@@ -259,10 +220,6 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
 
     return arp;
 }
-
-export function handleDeposit(event: DepositEvent): void {}
-
-export function handleWithdraw(event: WithdrawEvent): void {}
 
 function updateVaultTotals(fVault: FrpVault): void {
     let frp = FRPVault.bind(Address.fromString(fVault.id));

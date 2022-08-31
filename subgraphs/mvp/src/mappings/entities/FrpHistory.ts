@@ -5,12 +5,12 @@ import {getStartingDayTimestamp} from '../../utils/timestamp';
 export function newUserFrpHistory(userId: string, vaultId: string, timestamp: BigInt, txLogIndex: BigInt): UserFrpHistory {
   let id = userId.concat("-").concat(vaultId).concat("-").concat(timestamp.toString()).concat("-").concat(txLogIndex.toString());
 
-  let userIndexHistory = new UserFrpHistory(id);
-  userIndexHistory.user = userId;
-  userIndexHistory.vault = vaultId;
-  userIndexHistory.save();
+  let history = new UserFrpHistory(id);
+  history.user = userId;
+  history.vault = vaultId;
+  history.save();
 
-  return userIndexHistory;
+  return history;
 }
 
 export function loadOrCreateDailyUserFrpHistory(userId: string, vaultId: string, timestamp: BigInt): DailyUserFrpHistory  {
