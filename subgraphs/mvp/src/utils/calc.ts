@@ -18,6 +18,16 @@ export function convertTokenToBigInt(tokenAmount: BigInt, decimals: BigInt): Big
     return bd;
 }
 
+export function exponentToBigInt(decimals: BigInt): BigInt {
+    let bd = new BigInt(BigInt.fromI32(1));
+
+    for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
+        bd = bd.times(BigInt.fromString('10'));
+    }
+
+    return bd;
+}
+
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
     let bd = new BigDecimal(BigInt.fromI32(1));
 

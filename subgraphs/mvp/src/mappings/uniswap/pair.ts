@@ -2,7 +2,7 @@ import { Asset, Pair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
 import { convertTokenToDecimal, exponentToBigDecimal } from '../../utils/calc';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { WETH_ADDRESS } from '../../../consts';
+import { BNA_ADDRESS } from '../../../consts';
 
 const USDC_WETH_PAIR = '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc';
 const DAI_WETH_PAIR = '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11';
@@ -27,11 +27,11 @@ export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0
   let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
   let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
-  if ([WETH_ADDRESS].includes(asset0.id)) {
+  if ([BNA_ADDRESS].includes(asset0.id)) {
     updateAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve, ts);
   }
 
-  if ([WETH_ADDRESS].includes(asset1.id)) {
+  if ([BNA_ADDRESS].includes(asset1.id)) {
     updateAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve, ts);
   }
 }

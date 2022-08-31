@@ -2,7 +2,7 @@ import { Asset, SushiPair } from '../../types/schema';
 import { Sync, Transfer } from '../../types/templates/UniswapPair/UniswapPair';
 import { convertTokenToDecimal, exponentToBigDecimal } from '../../utils/calc';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { DAI_ADDRESS, USDC_ADDRESS, WETH_ADDRESS } from '../../../consts';
+import { BNA_ADDRESS } from '../../../consts';
 
 const USDC_WETH_PAIR = '0x397ff1542f962076d0bfe58ea045ffa2d347aca0';
 const DAI_WETH_PAIR = '0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f';
@@ -27,11 +27,11 @@ export function updateSushiAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, a
     let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
     let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
-    if ([WETH_ADDRESS].includes(asset0.id)) {
+    if ([BNA_ADDRESS].includes(asset0.id)) {
         updateSushiAssetBasePrice(asset0, asset1, asset0Reserve, asset1Reserve, ts);
     }
 
-    if ([WETH_ADDRESS].includes(asset1.id)) {
+    if ([BNA_ADDRESS].includes(asset1.id)) {
         updateSushiAssetBasePrice(asset1, asset0, asset1Reserve, asset0Reserve, ts);
     }
 }
