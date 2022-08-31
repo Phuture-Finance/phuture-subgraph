@@ -159,7 +159,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
     mint.push(id);
     fVault.mint = mint;
 
-    fVault.apr = calculateAPR(fVault.mint.concat(fVault.redeem), event.block.timestamp);
     updateVaultTotals(fVault);
     updateVaultPrice(fVault, event.block.timestamp);
 
@@ -199,7 +198,6 @@ export function handleFCashRedeemed(event: FCashRedeemedEvent): void {
     redeem.push(id);
     fVault.redeem = redeem;
 
-    fVault.apr = calculateAPR(fVault.mint.concat(fVault.redeem), event.block.timestamp);
     updateVaultTotals(fVault);
     updateVaultPrice(fVault, event.block.timestamp);
 
