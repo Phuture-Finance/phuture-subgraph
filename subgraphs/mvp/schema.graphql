@@ -423,6 +423,8 @@ type FrpVault @entity {
 
   uniqueHolders: BigInt!
   marketCap: BigInt!
+
+  dailyStats: [FrpDailyStat!]! @derivedFrom(field: "vault")
 }
 
 type FCash @entity {

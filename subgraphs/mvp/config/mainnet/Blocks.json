@@ -7,5 +7,6 @@
   "OrdererBlockNumber": 15301257,
   "RegistryBlockNumber": 14832000,
   "SushiV2FactoryBlockNumber": 14832000,
-  "TopNMarketCapIndexFactoryBlockNumber": 0
+  "TopNMarketCapIndexFactoryBlockNumber": 0,
+  "FrpVaultBlockNumber": 15525672
 }
