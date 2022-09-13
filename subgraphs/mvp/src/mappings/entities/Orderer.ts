@@ -10,17 +10,17 @@ export function loadOrCreateLastOrderIndex(id: Address): LastOrderIndex {
   return orderLink as LastOrderIndex;
 }
 
-export function loadOrCreateOrder(id: Address): Order {
-  let order = Order.load(id.toHexString());
+export function loadOrCreateOrder(id: string): Order {
+  let order = Order.load(id);
   if (!order) {
-    order = new Order(id.toHexString());
+    order = new Order(id);
   }
 
   return order as Order;
 }
 
-export function loadOrCreateOrderDetails(order_id: BigInt, asset: Address): OrderDetailsInfo {
-  let id = order_id.toString().concat('-').concat(asset.toHexString());
+export function loadOrCreateOrderDetails(orderId: BigInt, asset: Address): OrderDetailsInfo {
+  let id = orderId.toString().concat('-').concat(asset.toHexString());
 
   let orderDetails = OrderDetailsInfo.load(id);
   if (!orderDetails) {

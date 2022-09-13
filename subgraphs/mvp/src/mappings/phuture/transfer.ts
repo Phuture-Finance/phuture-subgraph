@@ -120,7 +120,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
   index.save();
 
   let transfer = new Transfer(
-    event.transaction.hash.toHexString().concat('-').concat(BigInt.fromI32(transfers.length).toString()),
+    event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString()),
   );
 
   transfer.index = event.address.toHexString();
