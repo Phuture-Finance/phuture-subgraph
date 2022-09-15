@@ -108,9 +108,9 @@ export function updateFrpDailyCapitalisation(vault: FrpVault, ts: BigInt): FrpDa
     dailyCap.timestamp = ts;
   }
 
-  dailyCap.price = vault.price;
+  dailyCap.basePrice = vault.basePrice;
   dailyCap.totalSupply = vault.totalSupply;
-  dailyCap.capitalization = vault.price.times(convertTokenToDecimal(vault.totalSupply, vault.decimals));
+  dailyCap.capitalization = vault.basePrice.times(convertTokenToDecimal(vault.totalSupply, vault.decimals));
   dailyCap.save();
 
   return dailyCap;
@@ -128,7 +128,8 @@ export function updateFrpDailyStat(vault: FrpVault, ts: BigInt): FrpDailyStat {
 
   stat.marketCap = vault.marketCap;
   stat.uniqueHolders = vault.uniqueHolders;
-  stat.price = vault.price;
+  stat.basePrice = vault.basePrice;
+  stat.basePriceETH = vault.basePriceETH;
 
   stat.save();
 

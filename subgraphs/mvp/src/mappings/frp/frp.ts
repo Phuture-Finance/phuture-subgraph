@@ -15,6 +15,7 @@ import {
     updateFrpDailyStat
 } from "../phuture/stats";
 import {loadOrCreateDailyUserFrpHistory, newUserFrpHistory} from "../entities/FrpHistory";
+import {convertUSDToETH} from "../entities";
 
 const fCashDec = 8;
 const usdcDec = 6;
@@ -122,8 +123,6 @@ export function handleTransfer(event: TransferEvent): void {
     updateVaultPrice(fVault, event.block.timestamp);
 }
 
-// make contract call totalAssets
-// update price
 export function handleFCashMinted(event: FCashMintedEvent): void {
     let fVault = loadOrCreateFrpVault(event.address);
 
@@ -133,11 +132,11 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
 
     let fc = new FCash(id);
 
-    let wfc = wfCashBase.bind(event.params._fCashPosition);
-    let mt = wfc.try_getMaturity();
-    if (!mt.reverted) {
-        fc.maturity = mt.value;
-    }
+    // let wfc = wfCashBase.bind(event.params._fCashPosition);
+    // let mt = wfc.try_getMaturity();
+    // if (!mt.reverted) {
+    //     fc.maturity = mt.value;
+    // }
 
     fc.vault = event.address.toHexString();
     fc.position = event.params._fCashPosition.toHexString();
@@ -147,15 +146,15 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
     fc.isRedeem = false;
     fc.save();
 
-    let mint = [] as Array<string>;
-    for (let i = 0; i < fVault.mint.length; i++) {
-        let oldFc = FCash.load(fVault.mint[i]);
-        if (oldFc && oldFc.maturity.gt(event.block.timestamp)) {
-            mint.push(oldFc.id);
-        }
-    }
-    mint.push(id);
-    fVault.mint = mint;
+    // let mint = [] as Array<string>;
+    // for (let i = 0; i < fVault.mint.length; i++) {
+    //     let oldFc = FCash.load(fVault.mint[i]);
+    //     if (oldFc && oldFc.maturity.gt(event.block.timestamp)) {
+    //         mint.push(oldFc.id);
+    //     }
+    // }
+    // mint.push(id);
+    // fVault.mint = mint;
 
     updateVaultTotals(fVault);
     updateVaultPrice(fVault, event.block.timestamp);
@@ -235,7 +234,8 @@ function updateVaultTotals(fVault: FrpVault): void {
 
 function updateVaultPrice(fVault: FrpVault, ts: BigInt): void {
     if (!fVault.totalSupply.isZero() && fVault.decimals) {
-        fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
+        fVault.basePrice = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
+        fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
     }
 
     updateFrpDailyCapitalisation(fVault, ts);

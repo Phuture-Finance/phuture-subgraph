@@ -414,9 +414,11 @@ type FrpVault @entity {
   decimals: BigInt!
   symbol: String!
   name: String!
-  price: BigDecimal!
 
-  apr: BigDecimal!
+  "price of the vault in USD"
+  basePrice: BigDecimal!
+  "price of the vault in ETH"
+  basePriceETH: BigDecimal!
 
   mint: [FCash!]!
   redeem: [FCash!]!
@@ -493,7 +495,9 @@ type FrpDailyStat @entity {
   marketCap: BigInt!
   uniqueHolders: BigInt!
   "price of the vault in USD"
-  price: BigDecimal!
+  basePrice: BigDecimal!
+  "price of the vault in ETH"
+  basePriceETH: BigDecimal!
 }
 
 type FrpDailyCapitalization @entity {
@@ -503,7 +507,7 @@ type FrpDailyCapitalization @entity {
   "capitalisation for the specific day"
   capitalization: BigDecimal!
   "price of the vault in the day"
-  price: BigDecimal!
+  basePrice: BigDecimal!
   "total supply of frp vault"
   totalSupply: BigInt!
   "raw timestamp of the specific day"
