@@ -1,6 +1,7 @@
 import {FRPVault} from '../../types/FRPVault/FRPVault';
 import {FrpVault} from '../../types/schema';
 import {Address, BigInt} from "@graphprotocol/graph-ts";
+import {feeInBP} from "../../utils/calc";
 
 export function loadOrCreateFrpVault(addr: Address): FrpVault {
     let id = addr.toHexString();
@@ -14,6 +15,21 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
         let totalAssets = frp.try_totalAssets();
         if (!totalAssets.reverted) {
             fVault.totalAssets = totalAssets.value;
+        }
+
+        let bFeeBP = frp.try_BURNING_FEE_IN_BP();
+        if (!bFeeBP.reverted) {
+            fVault.feeBurn = bFeeBP.value;
+        }
+
+        let mFeeBP = frp.try_MINTING_FEE_IN_BP();
+        if (!mFeeBP.reverted) {
+            fVault.feeMint = mFeeBP.value;
+        }
+
+        let aum = frp.try_AUM_SCALED_PER_SECONDS_RATE();
+        if (!aum.reverted) {
+            fVault.feeAUMPercent = feeInBP(aum.value);
         }
 
         // let totalSupply = frp.try_totalSupply();
@@ -35,10 +51,6 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
         if (!name.reverted) {
             fVault.name = name.value;
         }
-
-        // if (fVault.totalSupply && !fVault.totalSupply.isZero() && fVault.decimals) {
-        //     fVault.price = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
-        // }
 
         fVault.mint = [];
         fVault.redeem = [];

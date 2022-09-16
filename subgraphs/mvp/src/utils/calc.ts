@@ -53,3 +53,24 @@ export function convertDecimals(tokenAmount: BigDecimal, exchangeDecimals: BigIn
 
     return tokenAmount.div(exponentToBigDecimal(exchangeDecimals));
 }
+
+export function feeInBP(amount: BigInt): BigDecimal {
+    let scaledPerSecondRate = BigDecimal.fromString(amount.toString());
+    let one = BigDecimal.fromString("1");
+    let two = BigDecimal.fromString("2");
+    let six = BigDecimal.fromString("6");
+    let C = BigDecimal.fromString("1000000000000000000000000000");
+    let N = BigDecimal.fromString(BigInt.fromI32(365 * 24 * 60 * 60).toString());
+    let q = C.div(scaledPerSecondRate);
+
+    //  e = 1 - C / s = 1 - q
+    //  x4 = N * e * (1 - p1 + p2)
+    //  x4 = N * e * (1 - e*(N+1)/2 + e*e*(N+1)*(N+2)/6)
+
+    let e  = BigDecimal.fromString((BigDecimal.fromString("1").minus(q)).toString());
+    let p1 = e.times(N.plus(one)).div(two);
+    let p2 = e.times(e).times(N.plus(one)).times(N.plus(two)).div(six);
+    let x4 = N.times(e).times(one.minus(p1).plus(p2));
+
+    return x4.times(BigDecimal.fromString("100"));
+}

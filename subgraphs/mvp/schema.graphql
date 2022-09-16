@@ -420,6 +420,10 @@ type FrpVault @entity {
   "price of the vault in ETH"
   basePriceETH: BigDecimal!
 
+  feeBurn: BigInt!
+  feeMint: BigInt!
+  feeAUMPercent: BigDecimal!
+
   mint: [FCash!]!
   redeem: [FCash!]!
 
