@@ -14,7 +14,9 @@ let data = {
   ...impBlocks,
   ...network,
 
-  BaseAssets: JSON.stringify(impBaseAssets),
+  BaseAssets: JSON.stringify(impBaseAssets.map(a => {
+    return a.toLowerCase();
+  })),
 
   SushiswapV2Factory: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
   SushiV2FactoryBlockNumber:impBlocks.RegistryBlockNumber,
