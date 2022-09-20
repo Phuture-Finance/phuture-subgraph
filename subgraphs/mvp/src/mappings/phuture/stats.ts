@@ -104,7 +104,7 @@ export function updateFrpDailyCapitalisation(vault: FrpVault, ts: BigInt): FrpDa
   let dailyCap = FrpDailyCapitalization.load(id);
   if (!dailyCap) {
     dailyCap = new FrpDailyCapitalization(id);
-    dailyCap.index = vault.id;
+    dailyCap.vault = vault.id;
     dailyCap.timestamp = ts;
   }
 

@@ -506,8 +506,8 @@ type FrpDailyStat @entity {
 
 type FrpDailyCapitalization @entity {
   id: ID!
-  "index referred to daily capitalisation metrics"
-  index: Index!
+  "vault referred to daily capitalisation metrics"
+  vault: FrpVault!
   "capitalisation for the specific day"
   capitalization: BigDecimal!
   "price of the vault in the day"
