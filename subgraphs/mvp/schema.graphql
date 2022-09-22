@@ -403,10 +403,10 @@ type YearlyIndexStat @entity {
 }
 
 # ----------------------------------------------------------------
-#                               FRP
+#                             Saving Vault
 # ----------------------------------------------------------------
 
-type FrpVault @entity {
+type SVVault @entity {
   "Address (hash)"
   id: ID!
   totalSupply: BigInt!
@@ -430,7 +430,7 @@ type FrpVault @entity {
   uniqueHolders: BigInt!
   marketCap: BigInt!
 
-  dailyStats: [FrpDailyStat!]! @derivedFrom(field: "vault")
+  dailyStats: [SVDailyStat!]! @derivedFrom(field: "vault")
 
   created: BigInt!
 }
@@ -441,12 +441,12 @@ type FCash @entity {
   assetAmount: BigInt!
   amount: BigInt!
   maturity: BigInt!
-  vault: FrpVault!
+  vault: SVVault!
   timestamp: BigInt!
   isRedeem: Boolean!
 }
 
-type FrpUser @entity {
+type SVUser @entity {
   id: ID!
 
   vaults: [UserVault!]! @derivedFrom(field: "user")
@@ -455,33 +455,33 @@ type FrpUser @entity {
 type UserVault @entity {
   id: ID!
 
-  user: FrpUser!
-  frp: FrpVault!
+  user: SVUser!
+  vault: SVVault!
 
   balance: BigInt!
   capitalization: BigDecimal!
 }
 
-enum FrpTransferType {
+enum SVTransferType {
   Send
   Mint
   Burn
 }
 
-type FrpTransfer @entity {
+type SVTransfer @entity {
   id: ID!
-  frp: FrpVault!
-  transaction: FrpTransaction!
-  type: FrpTransferType!
+  vault: SVVault!
+  transaction: SVTransaction!
+  type: SVTransferType!
 
-  from: FrpUser
-  to: FrpUser
+  from: SVUser
+  to: SVUser
   value: BigInt!
 
   timestamp: BigInt!
 }
 
-type FrpTransaction @entity {
+type SVTransaction @entity {
   id: ID! # txn hash
 
   blockNumber: BigInt!
@@ -492,11 +492,11 @@ type FrpTransaction @entity {
   gasPrice: BigInt!
 }
 
-type FrpDailyStat @entity {
+type SVDailyStat @entity {
   id: ID!
 
   date: BigInt!
-  vault: FrpVault!
+  vault: SVVault!
 
   marketCap: BigInt!
   uniqueHolders: BigInt!
@@ -506,15 +506,15 @@ type FrpDailyStat @entity {
   basePriceETH: BigDecimal!
 }
 
-type FrpDailyCapitalization @entity {
+type SVDailyCapitalization @entity {
   id: ID!
   "vault referred to daily capitalisation metrics"
-  vault: FrpVault!
+  vault: SVVault!
   "capitalisation for the specific day"
   capitalization: BigDecimal!
   "price of the vault in the day"
   basePrice: BigDecimal!
-  "total supply of frp vault"
+  "total supply of saving vault"
   totalSupply: BigInt!
   "raw timestamp of the specific day"
   timestamp: BigInt!
@@ -522,12 +522,12 @@ type FrpDailyCapitalization @entity {
   logIndex: BigInt!
 }
 
-type UserFrpHistory @entity {
+type UserSVHistory @entity {
   id: ID!
 
   "user account of the specific vault holdings"
-  user: FrpUser!
-  vault: FrpVault!
+  user: SVUser!
+  vault: SVVault!
 
   "shares of the vault in user account"
   balance: BigInt!
@@ -542,11 +542,11 @@ type UserFrpHistory @entity {
   timestamp: BigInt!
 }
 
-type DailyUserFrpHistory @entity {
+type DailyUserSVHistory @entity {
   id: ID!
 
-  user: FrpUser!
-  vault: FrpVault!
+  user: SVUser!
+  vault: SVVault!
 
   total: BigDecimal!
   totalCap: BigDecimal!

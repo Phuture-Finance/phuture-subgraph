@@ -1,20 +1,18 @@
-import {wfCashBase} from '../../types/FRPVault/wfCashBase';
-
 import {
     FCashMinted as FCashMintedEvent,
     Transfer as TransferEvent,
-    FRPVault
-} from '../../types/FRPVault/FRPVault';
-import {FCash, FrpTransfer, FrpVault, UserVault} from '../../types/schema';
+    Vault
+} from '../../types/SVault/Vault';
+import {FCash, SVTransfer, SVVault, UserVault} from '../../types/schema';
 import {Address, BigDecimal, BigInt, log} from "@graphprotocol/graph-ts";
 import {convertDecimals, convertTokenToDecimal} from "../../../src/utils/calc";
-import {loadOrCreateFrpVault} from "../entities/FRPVault";
-import {loadOrCreateFrpAccount} from "../entities/Account";
+import {loadOrCreateSVVault} from "../entities/SVault";
+import {loadOrCreateSVAccount} from "../entities/Account";
 import {
-    updateFrpDailyCapitalisation,
-    updateFrpDailyStat
+    updateSVDailyCapitalisation,
+    updateSVDailyStat
 } from "../phuture/stats";
-import {loadOrCreateDailyUserFrpHistory, newUserFrpHistory} from "../entities/FrpHistory";
+import {loadOrCreateDailyUserSVHistory, newUserSVHistory} from "../entities/SVHistory";
 import {convertUSDToETH} from "../entities";
 
 const fCashDec = 8;
@@ -26,10 +24,10 @@ const oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
 
 
 export function handleTransfer(event: TransferEvent): void {
-    let fVault = loadOrCreateFrpVault(event.address, event.block.timestamp);
+    let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
-    loadOrCreateFrpAccount(event.params.from);
-    loadOrCreateFrpAccount(event.params.to);
+    loadOrCreateSVAccount(event.params.from);
+    loadOrCreateSVAccount(event.params.to);
 
     let transferType: string;
     if (event.params.from.equals(Address.zero())) {
@@ -47,7 +45,7 @@ export function handleTransfer(event: TransferEvent): void {
         let fromUser = UserVault.load(fromUserId);
         if (!fromUser) {
             fromUser = new UserVault(fromUserId);
-            fromUser.frp = event.address.toHexString();
+            fromUser.vault = event.address.toHexString();
             fromUser.user = event.params.from.toHexString();
             fromUser.balance = BigInt.zero();
         }
@@ -74,7 +72,7 @@ export function handleTransfer(event: TransferEvent): void {
         let toUser = UserVault.load(toUserId);
         if (!toUser) {
             toUser = new UserVault(toUserId);
-            toUser.frp = event.address.toHexString();
+            toUser.vault = event.address.toHexString();
             toUser.user = event.params.to.toHexString();
             toUser.balance = BigInt.zero();
         }
@@ -96,9 +94,9 @@ export function handleTransfer(event: TransferEvent): void {
         toUser.save();
     }
 
-    let trFrom = FrpTransfer.load(event.params.from.toHexString());
+    let trFrom = SVTransfer.load(event.params.from.toHexString());
     if (!trFrom) {
-        trFrom = new FrpTransfer(event.transaction.hash.toHexString());
+        trFrom = new SVTransfer(event.transaction.hash.toHexString());
         trFrom.to = event.params.to.toHexString();
         trFrom.from = event.params.from.toHexString();
         trFrom.value = event.params.value;
@@ -107,9 +105,9 @@ export function handleTransfer(event: TransferEvent): void {
         trFrom.save();
     }
 
-    let trTo = FrpTransfer.load(event.transaction.hash.toHexString());
+    let trTo = SVTransfer.load(event.transaction.hash.toHexString());
     if (!trTo) {
-        trTo = new FrpTransfer(event.params.to.toHexString());
+        trTo = new SVTransfer(event.params.to.toHexString());
         trTo.to = event.params.to.toHexString();
         trTo.from = event.params.from.toHexString();
         trTo.value = event.params.value;
@@ -118,13 +116,14 @@ export function handleTransfer(event: TransferEvent): void {
         trTo.save();
     }
 
-    fVault.save();
-
+    updateVaultTotals(fVault);
     updateVaultPrice(fVault, event.block.timestamp);
+
+    fVault.save();
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
-    let fVault = loadOrCreateFrpVault(event.address, event.block.timestamp);
+    let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
     let id = event.params._fCashPosition.toHexString().concat("-");
     id = id.concat(event.block.timestamp.toString()).concat("-");
@@ -218,32 +217,33 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
     return arp;
 }
 
-function updateVaultTotals(fVault: FrpVault): void {
-    let frp = FRPVault.bind(Address.fromString(fVault.id));
+function updateVaultTotals(fVault: SVVault): void {
+    let vault = Vault.bind(Address.fromString(fVault.id));
 
-    let totalSupply = frp.try_totalSupply();
+    let totalSupply = vault.try_totalSupply();
     if (!totalSupply.reverted) {
         fVault.totalSupply = totalSupply.value;
     }
 
-    let totalAssets = frp.try_totalAssets();
+    let totalAssets = vault.try_totalAssets();
     if (!totalAssets.reverted) {
         fVault.totalAssets = totalAssets.value;
+        fVault.marketCap = totalAssets.value;
     }
 }
 
-function updateVaultPrice(fVault: FrpVault, ts: BigInt): void {
+function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
     if (!fVault.totalSupply.isZero() && fVault.decimals) {
         fVault.basePrice = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
         fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
     }
 
-    updateFrpDailyCapitalisation(fVault, ts);
-    updateFrpDailyStat(fVault, ts);
+    updateSVDailyCapitalisation(fVault, ts);
+    updateSVDailyStat(fVault, ts);
 }
 
-function updateUserHistories(user: string, balance: BigInt, cap: BigDecimal, fVault: FrpVault, ts: BigInt, logIndex: BigInt): void {
-    let userIndexHistory = newUserFrpHistory(user, fVault.id, ts, logIndex);
+function updateUserHistories(user: string, balance: BigInt, cap: BigDecimal, fVault: SVVault, ts: BigInt, logIndex: BigInt): void {
+    let userIndexHistory = newUserSVHistory(user, fVault.id, ts, logIndex);
     userIndexHistory.user = user;
     userIndexHistory.balance = balance;
     userIndexHistory.capitalization = cap;
@@ -252,7 +252,7 @@ function updateUserHistories(user: string, balance: BigInt, cap: BigDecimal, fVa
     userIndexHistory.totalSupply = fVault.totalSupply;
     userIndexHistory.save();
 
-    let fromDailyUIH = loadOrCreateDailyUserFrpHistory(user, fVault.id, ts);
+    let fromDailyUIH = loadOrCreateDailyUserSVHistory(user, fVault.id, ts);
     fromDailyUIH.total = fromDailyUIH.total.plus(userIndexHistory.balance.toBigDecimal());
     fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(userIndexHistory.capitalization);
     fromDailyUIH.totalSupply = fVault.totalSupply;

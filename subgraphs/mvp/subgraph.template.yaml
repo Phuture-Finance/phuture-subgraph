@@ -266,14 +266,14 @@ dataSources:
           handler: handleTrackedIndexCreated
       file: ./src/mappings/phuture/TrackedIndexFactory.ts
 
-  {{#FrpVault}}
+  {{#SVault}}
   - kind: ethereum/contract
-    name: FRPVault
+    name: SVault
     network: {{network}}
     source:
-      abi: FRPVault
-      address: '{{FrpVault}}'
-      startBlock: {{FrpVaultBlockNumber}}
+      abi: Vault
+      address: '{{SVault}}'
+      startBlock: {{SVaultBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -282,10 +282,10 @@ dataSources:
         - Asset
         - Transfer
       abis:
-        - name: FRPVault
-          file: ../abis/Frp/FRPVault.json
+        - name: Vault
+          file: ../abis/SV/Vault.json
         - name: wfCashBase
-          file: ../abis/Frp/wfCashBase.json
+          file: ../abis/SV/wfCashBase.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -297,8 +297,8 @@ dataSources:
           handler: handleTransfer
         - event: FCashMinted(indexed address,uint256,uint256)
           handler: handleFCashMinted
-      file: ./src/mappings/frp/frp.ts
-  {{/FrpVault}}
+      file: ./src/mappings/sv/vault.ts
+  {{/SVault}}
 
 #-------------------------------------------------------------------------------
 #                               Template section
