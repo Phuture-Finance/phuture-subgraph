@@ -3,7 +3,7 @@ import {FrpVault} from '../../types/schema';
 import {Address, BigInt} from "@graphprotocol/graph-ts";
 import {feeInBP} from "../../utils/calc";
 
-export function loadOrCreateFrpVault(addr: Address): FrpVault {
+export function loadOrCreateFrpVault(addr: Address, ts: BigInt): FrpVault {
     let id = addr.toHexString();
 
     let fVault = FrpVault.load(id);
@@ -32,11 +32,6 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
             fVault.feeAUMPercent = feeInBP(aum.value);
         }
 
-        // let totalSupply = frp.try_totalSupply();
-        // if (!totalSupply.reverted) {
-        //     fVault.totalSupply = totalSupply.value;
-        // }
-
         let symbol = frp.try_symbol();
         if (!symbol.reverted) {
             fVault.symbol = symbol.value;
@@ -54,6 +49,8 @@ export function loadOrCreateFrpVault(addr: Address): FrpVault {
 
         fVault.mint = [];
         fVault.redeem = [];
+
+        fVault.created = ts;
     }
 
     fVault.save();

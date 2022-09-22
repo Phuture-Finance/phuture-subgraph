@@ -26,7 +26,7 @@ const oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
 
 
 export function handleTransfer(event: TransferEvent): void {
-    let fVault = loadOrCreateFrpVault(event.address);
+    let fVault = loadOrCreateFrpVault(event.address, event.block.timestamp);
 
     loadOrCreateFrpAccount(event.params.from);
     loadOrCreateFrpAccount(event.params.to);
@@ -124,7 +124,7 @@ export function handleTransfer(event: TransferEvent): void {
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
-    let fVault = loadOrCreateFrpVault(event.address);
+    let fVault = loadOrCreateFrpVault(event.address, event.block.timestamp);
 
     let id = event.params._fCashPosition.toHexString().concat("-");
     id = id.concat(event.block.timestamp.toString()).concat("-");

@@ -431,6 +431,8 @@ type FrpVault @entity {
   marketCap: BigInt!
 
   dailyStats: [FrpDailyStat!]! @derivedFrom(field: "vault")
+
+  created: BigInt!
 }
 
 type FCash @entity {
