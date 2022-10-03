@@ -128,8 +128,13 @@ export function handleRoleGranted(event: RoleGranted): void {
     let tPool = po.try_pool();
     if (!tPool.reverted) {
       let oracle = new UniV3PriceOracle(tPool.value.toHexString());
+
       let asset0 = po.asset0();
       let asset1 = po.asset1();
+      if (BASE_ASSETS.includes(asset0.toHexString().toLowerCase())) {
+        asset0 = po.asset1();
+        asset1 = po.asset0(); // stable coin must be always asset1.
+      }
 
       oracle.asset0 = asset0.toHexString();
       oracle.asset1 = asset1.toHexString();

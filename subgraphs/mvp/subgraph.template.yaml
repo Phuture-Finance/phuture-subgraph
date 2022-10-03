@@ -266,6 +266,40 @@ dataSources:
           handler: handleTrackedIndexCreated
       file: ./src/mappings/phuture/TrackedIndexFactory.ts
 
+  {{#SVault}}
+  - kind: ethereum/contract
+    name: SVault
+    network: {{network}}
+    source:
+      abi: Vault
+      address: '{{SVault}}'
+      startBlock: {{SVaultBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Asset
+        - Transfer
+      abis:
+        - name: Vault
+          file: ../abis/SV/Vault.json
+        - name: wfCashBase
+          file: ../abis/SV/wfCashBase.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: FCashMinted(indexed address,uint256,uint256)
+          handler: handleFCashMinted
+      file: ./src/mappings/sv/vault.ts
+  {{/SVault}}
+
 #-------------------------------------------------------------------------------
 #                               Template section
 #-------------------------------------------------------------------------------

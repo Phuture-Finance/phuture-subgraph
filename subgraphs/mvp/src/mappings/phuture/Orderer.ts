@@ -1,6 +1,6 @@
 import { PlaceOrder, CompleteOrder, UpdateOrder } from '../../types/Orderer/Orderer';
 import { loadOrCreateOrderDetails, loadOrCreateLastOrderIndex } from '../entities/Orderer';
-import { Order } from '../../types/schema';
+import { Asset, Order, OrderComplete } from '../../types/schema';
 
 export function handlerPlaceOrder(event: PlaceOrder): void {
   // let order = loadOrCreateOrder(event.params.creator);
@@ -35,4 +35,28 @@ export function handlerCompleteOrder(event: CompleteOrder): void {
   let sellOrderDetails = loadOrCreateOrderDetails(event.params.id, event.params.sellAsset);
   sellOrderDetails.shares = sellOrderDetails.shares.minus(event.params.soldShares);
   sellOrderDetails.save();
+
+  let order = Order.load(event.params.id.toString());
+  let sellAsset = Asset.load(event.params.sellAsset.toHexString())
+  let buyAsset = Asset.load(event.params.buyAsset.toHexString());
+  if (order && sellAsset && buyAsset) {
+    let ocId = event.transaction.hash.toHexString();
+    let oc = new OrderComplete(ocId);
+    oc.order = event.params.id.toString();
+    oc.index = order.index;
+    oc.timestamp = event.block.timestamp;
+
+    oc.sellToken = event.params.sellAsset.toHexString();
+    oc.sellTokenPrice = sellAsset.basePrice;
+    oc.sellAmount = event.params.soldShares;
+
+    oc.buyToken = event.params.buyAsset.toHexString();
+    oc.buyAmount = event.params.boughtShares;
+    oc.buyTokenPrice = buyAsset.basePrice;
+
+    oc.transactionGas = event.transaction.gasPrice;
+    oc.transactionFee = event.transaction.value
+
+    oc.save();
+  }
 }

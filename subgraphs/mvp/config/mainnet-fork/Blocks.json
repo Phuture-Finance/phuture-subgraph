@@ -1,1 +1,7 @@
-{"ChainlinkPriceOracleBlockNumber":15013111,"ManagedIndexFactoryBlockNumber":15013158,"ManagedVTokenFactoryBlockNumber":15013149,"OrdererBlockNumber":15013137,"RegistryBlockNumber":15013087}
+{"ChainlinkPriceOracleBlockNumber":15127000,
+  "ManagedIndexFactoryBlockNumber":15127000,
+  "ManagedVTokenFactoryBlockNumber":15127000,
+  "OrdererBlockNumber":15127000,
+  "RegistryBlockNumber":15127000,
+  "FrpVaultBlockNumber": 15127000
+}

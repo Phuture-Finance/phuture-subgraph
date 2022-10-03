@@ -6,6 +6,9 @@ import {
   DailyCapitalization,
   DailyIndexStat,
   DailyStat,
+  SVDailyCapitalization,
+  SVDailyStat,
+  SVVault,
   HourlyIndexStat,
   Index,
   MonthlyIndexStat,
@@ -95,15 +98,51 @@ export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapita
   return dailyCap;
 }
 
-export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
-  let timestamp = ts.toI32();
-  let ID = timestamp / 86400;
-  let startTimestamp = ID * 86400;
+export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDailyCapitalization {
+  let id = vault.id.concat("-").concat(getStartingDayTimestamp(ts).toString());
 
-  let indexStat = DailyIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  let dailyCap = SVDailyCapitalization.load(id);
+  if (!dailyCap) {
+    dailyCap = new SVDailyCapitalization(id);
+    dailyCap.vault = vault.id;
+    dailyCap.timestamp = ts;
+  }
+
+  dailyCap.basePrice = vault.basePrice;
+  dailyCap.totalSupply = vault.totalSupply;
+  dailyCap.capitalization = vault.basePrice.times(convertTokenToDecimal(vault.totalSupply, vault.decimals));
+  dailyCap.save();
+
+  return dailyCap;
+}
+
+export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
+  let startingDay = getStartingDayTimestamp(ts);
+
+  let stat = SVDailyStat.load(vault.id.concat("-").concat(startingDay.toString()));
+  if (!stat) {
+    stat = new SVDailyStat(vault.id.concat('-').concat(startingDay.toString()));
+    stat.date = startingDay;
+    stat.vault = vault.id;
+  }
+
+  stat.marketCap = vault.marketCap;
+  stat.uniqueHolders = vault.uniqueHolders;
+  stat.basePrice = vault.basePrice;
+  stat.basePriceETH = vault.basePriceETH;
+
+  stat.save();
+
+  return stat as SVDailyStat;
+}
+
+export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
+  let id = index.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
+
+  let indexStat = DailyIndexStat.load(id);
   if (!indexStat) {
-    indexStat = new DailyIndexStat(index.id.concat('-').concat(ID.toString()));
-    indexStat.date = startTimestamp;
+    indexStat = new DailyIndexStat(id);
+    indexStat.date = ts.toI32();
     indexStat.index = index.id;
   }
 
