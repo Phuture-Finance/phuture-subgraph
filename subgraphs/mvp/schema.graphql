@@ -54,6 +54,8 @@ type ChainLinkAgg @entity {
   answer: BigInt!
   updatedAt: BigInt!
   nextAgg: ChainLinkAgg
+
+  vaults: [SVVault!]!
 }
 
 type Pair @entity {
@@ -428,7 +430,9 @@ type SVVault @entity {
   redeem: [FCash!]!
 
   uniqueHolders: BigInt!
-  marketCap: BigInt!
+  marketCap: BigDecimal!
+
+  apy: BigDecimal!
 
   dailyStats: [SVDailyStat!]! @derivedFrom(field: "vault")
 
@@ -498,7 +502,8 @@ type SVDailyStat @entity {
   date: BigInt!
   vault: SVVault!
 
-  marketCap: BigInt!
+  apy: BigDecimal!
+  marketCap: BigDecimal!
   uniqueHolders: BigInt!
   "price of the vault in USD"
   basePrice: BigDecimal!

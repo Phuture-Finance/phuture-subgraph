@@ -435,12 +435,17 @@ templates:
       entities:
         - Asset
         - ChainLinkAgg
+        - SVVault
       file: ./src/mappings/chainlink/aggregator.ts
       abis:
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
         - name: ChainLink
           file: ../abis/Chainlink/ChainLink.json
+        - name: SVView
+          file: ../abis/SV/View.json
+        - name: Vault
+          file: ../abis/SV/Vault.json
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           handler: handleAnswerUpdated

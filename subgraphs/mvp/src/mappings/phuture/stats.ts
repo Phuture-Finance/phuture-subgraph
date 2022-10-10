@@ -130,6 +130,7 @@ export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
   stat.uniqueHolders = vault.uniqueHolders;
   stat.basePrice = vault.basePrice;
   stat.basePriceETH = vault.basePriceETH;
+  stat.apy = vault.apy;
 
   stat.save();
 

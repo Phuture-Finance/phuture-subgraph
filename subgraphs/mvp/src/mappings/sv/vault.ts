@@ -1,19 +1,14 @@
 import {
     FCashMinted as FCashMintedEvent,
     Transfer as TransferEvent,
-    Vault
 } from '../../types/SVault/Vault';
 import {FCash, SVTransfer, SVVault, UserVault} from '../../types/schema';
-import {Address, BigDecimal, BigInt, log} from "@graphprotocol/graph-ts";
+import {Address, BigDecimal, BigInt} from "@graphprotocol/graph-ts";
 import {convertDecimals, convertTokenToDecimal} from "../../../src/utils/calc";
+import {updateVaultTotals, updateVaultPrice} from "../../../src/utils/vault";
 import {loadOrCreateSVVault} from "../entities/SVault";
 import {loadOrCreateSVAccount} from "../entities/Account";
-import {
-    updateSVDailyCapitalisation,
-    updateSVDailyStat
-} from "../phuture/stats";
 import {loadOrCreateDailyUserSVHistory, newUserSVHistory} from "../entities/SVHistory";
-import {convertUSDToETH} from "../entities";
 
 const fCashDec = 8;
 const usdcDec = 6;
@@ -53,7 +48,7 @@ export function handleTransfer(event: TransferEvent): void {
         fromUser.balance = fromUser.balance.minus(event.params.value);
         if (!fVault.totalSupply.isZero()) {
             fromUser.capitalization = convertDecimals(fromUser.balance.toBigDecimal(), fVault.decimals).times(
-                fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals))
+                fVault.basePrice
             );
         }
 
@@ -84,7 +79,7 @@ export function handleTransfer(event: TransferEvent): void {
         toUser.balance = toUser.balance.plus(event.params.value);
         if (!fVault.totalSupply.isZero()) {
             toUser.capitalization = convertDecimals(toUser.balance.toBigDecimal(), fVault.decimals).times(
-                fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals))
+                fVault.basePrice
             );
         }
 
@@ -131,12 +126,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
 
     let fc = new FCash(id);
 
-    // let wfc = wfCashBase.bind(event.params._fCashPosition);
-    // let mt = wfc.try_getMaturity();
-    // if (!mt.reverted) {
-    //     fc.maturity = mt.value;
-    // }
-
     fc.vault = event.address.toHexString();
     fc.position = event.params._fCashPosition.toHexString();
     fc.amount = event.params._fCashAmount;
@@ -144,16 +133,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
     fc.timestamp = event.block.timestamp;
     fc.isRedeem = false;
     fc.save();
-
-    // let mint = [] as Array<string>;
-    // for (let i = 0; i < fVault.mint.length; i++) {
-    //     let oldFc = FCash.load(fVault.mint[i]);
-    //     if (oldFc && oldFc.maturity.gt(event.block.timestamp)) {
-    //         mint.push(oldFc.id);
-    //     }
-    // }
-    // mint.push(id);
-    // fVault.mint = mint;
 
     updateVaultTotals(fVault);
     updateVaultPrice(fVault, event.block.timestamp);
@@ -215,31 +194,6 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
     }
 
     return arp;
-}
-
-function updateVaultTotals(fVault: SVVault): void {
-    let vault = Vault.bind(Address.fromString(fVault.id));
-
-    let totalSupply = vault.try_totalSupply();
-    if (!totalSupply.reverted) {
-        fVault.totalSupply = totalSupply.value;
-    }
-
-    let totalAssets = vault.try_totalAssets();
-    if (!totalAssets.reverted) {
-        fVault.totalAssets = totalAssets.value;
-        fVault.marketCap = totalAssets.value;
-    }
-}
-
-function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
-    if (!fVault.totalSupply.isZero() && fVault.decimals) {
-        fVault.basePrice = fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
-        fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
-    }
-
-    updateSVDailyCapitalisation(fVault, ts);
-    updateSVDailyStat(fVault, ts);
 }
 
 function updateUserHistories(user: string, balance: BigInt, cap: BigDecimal, fVault: SVVault, ts: BigInt, logIndex: BigInt): void {

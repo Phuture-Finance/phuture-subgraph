@@ -74,8 +74,6 @@ export function pricePathUpdate(a: Address): void {
             let asset0 = loadOrCreateAsset(Address.fromString(pPool.asset0));
             let asset1 = loadOrCreateAsset(Address.fromString(pPool.asset1));
 
-            log.warning("yolo >>> pool.priceOracle: {}, ff: {}", [pPool.pathPriceOracle, uq.value.toString()]);
-
             let exp = exponentToBigDecimal(asset0.decimals).div(exponentToBigDecimal(asset1.decimals));
             asset0.basePrice = new BigDecimal(BigInt.fromString('5192296858534827628530496329220096')).div(new BigDecimal(uq.value)).times(exp);
             asset0.save();

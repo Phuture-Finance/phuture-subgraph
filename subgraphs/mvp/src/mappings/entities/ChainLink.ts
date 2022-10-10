@@ -32,6 +32,8 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
       let nextAgg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
       agg.nextAgg = nextAgg.id;
     }
+
+    agg.vaults = [];
   }
 
   return agg as ChainLinkAgg;

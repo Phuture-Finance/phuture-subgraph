@@ -10,6 +10,8 @@ export const SUSHI_ROUTER_ADDRESS = '{{SushiswapV2Router}}';
 export const USDC_ADDRESS = '{{Base}}';
 export const BNA_ADDRESS = '{{BaseNetworkAsset}}';
 
+export const SV_VIEW = '{{SVView}}';
+
 export const BASE_ASSETS = {{{BaseAssets}}};
 
 export let ChainLinkAssetMap = new TypedMap<string, string>();

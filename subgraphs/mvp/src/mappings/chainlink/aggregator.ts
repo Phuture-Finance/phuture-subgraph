@@ -1,8 +1,9 @@
-import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
-import { Asset, ChainLinkAgg } from '../../types/schema';
-import { log } from '@graphprotocol/graph-ts';
-import { calculateChainLinkPrice } from "../entities";
+import {AnswerUpdated} from '../../types/templates/AggregatorInterface/AggregatorInterface';
+import {Asset, ChainLinkAgg, SVVault} from '../../types/schema';
+import {log} from '@graphprotocol/graph-ts';
+import {calculateChainLinkPrice} from "../entities";
 import {updateIndexBasePriceByAsset} from "../../utils";
+import {updateVaultTotals, updateVaultPrice, updateVaultAPY} from "../../utils/vault";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
     let agg = ChainLinkAgg.load(event.address.toHexString());
@@ -22,4 +23,17 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
     asset.save();
 
     updateIndexBasePriceByAsset(asset, event.block.timestamp);
+
+    if (agg.vaults) {
+        for (let i = 0; i < agg.vaults.length; i++) {
+            let fVault = SVVault.load(agg.vaults[i]);
+            if (fVault) {
+                updateVaultTotals(fVault);
+                updateVaultAPY(fVault);
+                updateVaultPrice(fVault, event.block.timestamp);
+
+                fVault.save();
+            }
+        }
+    }
 }
