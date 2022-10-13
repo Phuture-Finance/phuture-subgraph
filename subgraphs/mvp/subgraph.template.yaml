@@ -523,6 +523,8 @@ templates:
           handler: handlerUpdateDeposit
         - event: VTokenTransfer(indexed address,indexed address,uint256)
           handler: handlerVTokenTransfer
+        - event: SetVaultController(address)
+          handler: handlerSetVaultController
       file: ./src/mappings/phuture/vToken.ts
 
   - kind: ethereum/contract
@@ -539,6 +541,8 @@ templates:
       abis:
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
+        - name: vToken
+          file: ../abis/Phuture/vToken.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer

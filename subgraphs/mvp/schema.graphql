@@ -133,6 +133,8 @@ type Index @entity {
   "deprecated"
   baseVolume: BigDecimal!
 
+  apy: BigDecimal!
+
   feeBurn: BigInt!
   feeMint: BigInt!
 
@@ -188,6 +190,21 @@ type vToken @entity {
   assetReserve: BigInt!
   "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
   totalAmount: BigInt!
+
+  depositedPercentage: BigInt
+  apr: BigDecimal!
+}
+
+type VaultController @entity {
+  id: ID!
+
+  vToken: vToken!
+
+  deposit: BigInt!
+  depositedAt: BigInt!
+
+  withdraw: BigInt!
+  withdrawnAt: BigInt!
 }
 
 type IndexAsset @entity {

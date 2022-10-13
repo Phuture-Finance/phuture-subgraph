@@ -1,9 +1,20 @@
-import { VTokenTransfer, UpdateDeposit } from '../../types/templates/vToken/vToken';
+import {VTokenTransfer, UpdateDeposit, SetVaultController} from '../../types/templates/vToken/vToken';
 import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
-import { Asset, Index, vToken } from '../../types/schema';
+import { Asset, Index, vToken, VaultController } from '../../types/schema';
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 import { convertTokenToDecimal } from '../../utils/calc';
+
+export function handlerSetVaultController(event: SetVaultController): void {
+  let vc = VaultController.load(event.params.vaultController.toHexString());
+  if (!vc) {
+    vc = new VaultController(event.params.vaultController.toHexString());
+    vc.vToken = event.address.toHexString();
+    vc.save();
+  }
+
+  log.debug('handleSetVaultController: {}', [event.params.vaultController.toHexString()]);
+}
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
   let vt = vToken.load(event.address.toHexString());
