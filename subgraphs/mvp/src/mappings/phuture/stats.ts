@@ -15,6 +15,8 @@ import {
   Stat,
   WeeklyIndexStat,
   YearlyIndexStat,
+  VaultController,
+  VaultControllerStat
 } from '../../types/schema';
 import { FACTORY_ADDRESS } from '../../../consts';
 import { convertTokenToDecimal } from "../../utils/calc";
@@ -135,6 +137,26 @@ export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
   stat.save();
 
   return stat as SVDailyStat;
+}
+
+export function updateVaultControllerDailyStat(vc: VaultController, apy: BigDecimal, dp: BigInt, ts: BigInt): VaultControllerStat {
+  let stat = VaultControllerStat.load(vc.id.concat("-").concat(ts.toString()));
+  if (!stat) {
+    stat = new VaultControllerStat(vc.id.concat('-').concat(ts.toString()));
+    stat.date = ts;
+    stat.vaultController = vc.id;
+  }
+
+  stat.apy = apy;
+  stat.depositedPercentage = dp;
+  stat.withdraw = vc.withdraw;
+  stat.withdrawnAt = vc.withdrawnAt;
+  stat.deposit = vc.deposit;
+  stat.depositedAt = vc.depositedAt;
+
+  stat.save();
+
+  return stat;
 }
 
 export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {

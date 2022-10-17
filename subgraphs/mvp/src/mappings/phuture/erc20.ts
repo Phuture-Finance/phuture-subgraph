@@ -2,6 +2,7 @@ import {Transfer} from "../../types/templates/erc20/ERC20";
 import {VaultController, vToken} from "../../types/schema";
 import {Address, BigDecimal, BigInt, log} from "@graphprotocol/graph-ts";
 import {vToken as vTokenContract} from '../../types/templates/vToken/vToken';
+import {updateVaultControllerDailyStat} from "./stats";
 
 export function handleTransfer(event: Transfer): void {
     let fromVT = vToken.load(event.params.from.toHexString());
@@ -36,22 +37,28 @@ export function handleTransfer(event: Transfer): void {
         fromVC.withdrawnAt = event.block.timestamp;
         fromVC.save();
 
-        let ln = BigDecimal.fromString(Math.log(fromVC.withdraw.div(fromVC.deposit).toI32()).toString());
-        let interval = fromVC.withdrawnAt.minus(fromVC.depositedAt).toBigDecimal();
-        if (interval.equals(BigDecimal.zero())) {
-            log.error('inter: {}', [toVT.id]);
-        }
+        let apy = BigDecimal.zero();
+        if (!fromVC.deposit.isZero()) {
+            let dp = fromVC.withdraw.toBigDecimal().div(fromVC.deposit.toBigDecimal()).toString();
+            let ln = BigDecimal.fromString(Math.log(parseFloat(dp)).toString());
+            let interval = fromVC.withdrawnAt.minus(fromVC.depositedAt).toBigDecimal();
 
-        toVT.apr = BigInt.fromU32(86400 * 365).toBigDecimal().div(interval).times(ln);
+            apy = BigInt.fromU32(86400 * 365).toBigDecimal().div(interval).times(ln);
+        } else {
+            log.warning('apy for vtoken: {} is zero', [toVT.id]);
+        }
 
         let vtC = vTokenContract.bind(Address.fromString(toVT.id));
         let dp = vtC.try_currentDepositedPercentageInBP();
         if (!dp.reverted) {
             toVT.depositedPercentage = dp.value;
-            toVT.apr = toVT.apr.times(dp.value.toBigDecimal().div(BigDecimal.fromString('10000')));
         } else {
-            log.error('can not update currentDepositedPercentageInBP: {}', [toVT.id]);
+            log.warning('can not update currentDepositedPercentageInBP: {}', [toVT.id]);
         }
+
+        updateVaultControllerDailyStat(fromVC, apy, toVT.depositedPercentage, event.block.timestamp);
+
+        toVT.apy = apy.times(dp.value.toBigDecimal().div(BigDecimal.fromString('10000')));
 
         toVT.save();
     }

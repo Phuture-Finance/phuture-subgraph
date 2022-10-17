@@ -191,8 +191,8 @@ type vToken @entity {
   "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
   totalAmount: BigInt!
 
-  depositedPercentage: BigInt
-  apr: BigDecimal!
+  depositedPercentage: BigInt!
+  apy: BigDecimal!
 }
 
 type VaultController @entity {
@@ -205,6 +205,25 @@ type VaultController @entity {
 
   withdraw: BigInt!
   withdrawnAt: BigInt!
+
+  stats: [VaultControllerStat!]! @derivedFrom(field: "vaultController")
+}
+
+type VaultControllerStat @entity {
+  id: ID!
+
+  vaultController: VaultController!
+
+  deposit: BigInt!
+  depositedAt: BigInt!
+
+  withdraw: BigInt!
+  withdrawnAt: BigInt!
+
+  depositedPercentage: BigInt
+  apy: BigDecimal!
+
+  date: BigInt!
 }
 
 type IndexAsset @entity {

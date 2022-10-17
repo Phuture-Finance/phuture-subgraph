@@ -9,6 +9,7 @@ export function loadOrCreateVToken(address: Address): vToken {
     vt = new vToken(id);
     vt.deposited = BigInt.zero();
     vt.platformTotalSupply = BigInt.zero();
+    vt.depositedPercentage = BigInt.zero();
   }
 
   return vt as vToken;
