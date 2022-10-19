@@ -1,9 +1,16 @@
-import {VTokenTransfer, UpdateDeposit, SetVaultController} from '../../types/templates/vToken/vToken';
-import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
-import { updateDailyAssetStat, updateStat } from './stats';
+import { Address, BigDecimal, log } from '@graphprotocol/graph-ts';
+import { BigInt } from '@graphprotocol/graph-ts/index';
+
 import { Asset, Index, vToken, VaultController } from '../../types/schema';
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import {
+  VTokenTransfer,
+  UpdateDeposit,
+  SetVaultController,
+} from '../../types/templates/vToken/vToken';
 import { convertTokenToDecimal } from '../../utils/calc';
+import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
+
+import { updateDailyAssetStat, updateStat } from './stats';
 
 export function handlerSetVaultController(event: SetVaultController): void {
   let vc = VaultController.load(event.params.vaultController.toHexString());
@@ -13,7 +20,9 @@ export function handlerSetVaultController(event: SetVaultController): void {
     vc.save();
   }
 
-  log.debug('handleSetVaultController: {}', [event.params.vaultController.toHexString()]);
+  log.debug('handleSetVaultController: {}', [
+    event.params.vaultController.toHexString(),
+  ]);
 }
 
 export function handlerVTokenTransfer(event: VTokenTransfer): void {
@@ -26,14 +35,27 @@ export function handlerVTokenTransfer(event: VTokenTransfer): void {
 
   // In mint process we always have mint from zero address and to zero addres
   // and we should ignore the burning in such case.
-  if (!event.params.from.equals(Address.zero()) && event.params.to.equals(Address.zero())) {
+  if (
+    !event.params.from.equals(Address.zero()) &&
+    event.params.to.equals(Address.zero())
+  ) {
     updateVToken(vt, event, false);
   }
 
-  updateIndexShare(event.params.from, event.params.to, vt.asset, event.params.amount);
+  updateIndexShare(
+    event.params.from,
+    event.params.to,
+    vt.asset,
+    event.params.amount,
+  );
 }
 
-function updateIndexShare(from: Address, to: Address, assetAddr: string, amount: BigInt): void {
+function updateIndexShare(
+  from: Address,
+  to: Address,
+  assetAddr: string,
+  amount: BigInt,
+): void {
   if (!from.equals(Address.zero()) && Index.load(from.toHexString())) {
     let fromIA = loadOrCreateIndexAsset(from.toHexString(), assetAddr);
     fromIA.shares = fromIA.shares.minus(amount);
@@ -65,21 +87,29 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
       convertTokenToDecimal(event.params.amount, asset.decimals),
     );
   }
-  vt.capitalization = asset.basePrice.times(new BigDecimal(vt.platformTotalSupply));
+  vt.capitalization = asset.basePrice.times(
+    new BigDecimal(vt.platformTotalSupply),
+  );
   vt.save();
 
   // Update asset reserve values.
   if (isInc) {
-    asset.vaultReserve = asset.vaultReserve.plus(convertTokenToDecimal(event.params.amount, asset.decimals));
+    asset.vaultReserve = asset.vaultReserve.plus(
+      convertTokenToDecimal(event.params.amount, asset.decimals),
+    );
   } else {
-    asset.vaultReserve = asset.vaultReserve.minus(convertTokenToDecimal(event.params.amount, asset.decimals));
+    asset.vaultReserve = asset.vaultReserve.minus(
+      convertTokenToDecimal(event.params.amount, asset.decimals),
+    );
   }
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
   asset.save();
 
   let stat = updateStat(event.block.timestamp);
   stat.totalValueLocked = stat.totalValueLocked.plus(
-    convertTokenToDecimal(event.params.amount, asset.decimals).times(asset.basePrice),
+    convertTokenToDecimal(event.params.amount, asset.decimals).times(
+      asset.basePrice,
+    ),
   );
   stat.save();
 
@@ -88,7 +118,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
 
 export function handlerUpdateDeposit(event: UpdateDeposit): void {
   let vt = loadOrCreateVToken(event.address);
- 
+
   vt.deposited = event.params.depositedAmount;
   vt.totalAmount = vt.assetReserve.plus(vt.deposited);
 

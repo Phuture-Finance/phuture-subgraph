@@ -6,6 +6,7 @@
     "precodegen": "rimraf src/types src/mappings/chainlink/aggregators/*.ts && node config/index.js",
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
+    "test": "graph test -r",
     "create:local": "graph create phuture/ia --node http://0.0.0.0:8020",
     "deploy:local": "graph deploy phuture/ia --ipfs http://0.0.0.0:5001 --node http://0.0.0.0:8020"
   },
@@ -17,7 +18,7 @@
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.25.1",
-    "@graphprotocol/graph-ts": "^0.25.0",
+    "@graphprotocol/graph-ts": "0.28.1",
     "matchstick-as": "^0.4.2"
   }
 }

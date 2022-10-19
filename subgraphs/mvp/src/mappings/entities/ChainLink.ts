@@ -1,10 +1,11 @@
-import { ChainLink, ChainLinkAgg } from '../../types/schema';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { ChainLinkAssetMap, BNA_ADDRESS } from "../../../consts";
-import { AggregatorInterface as AggregatorInterfaceTemplate } from "../../types/templates";
-import { ChainLink as ChainLinkAggTemplate } from "../../types/templates/AggregatorInterface/ChainLink";
-import { convertTokenToDecimal } from "../../utils/calc";
-import { AggregatorInterface } from "../../types/ChainlinkPriceOracle/AggregatorInterface";
+
+import { ChainLinkAssetMap, BNA_ADDRESS } from '../../../consts';
+import { AggregatorInterface } from '../../types/ChainlinkPriceOracle/AggregatorInterface';
+import { ChainLink, ChainLinkAgg } from '../../types/schema';
+import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
+import { ChainLink as ChainLinkAggTemplate } from '../../types/templates/AggregatorInterface/ChainLink';
+import { convertTokenToDecimal } from '../../utils/calc';
 
 export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
   let cl = AggregatorInterface.bind(addr);
@@ -28,15 +29,22 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
       agg.description = description.value;
     }
 
-    if (agg.description.substring(agg.description.length - 3, agg.description.length) == "ETH") {
-      let nextAgg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
+    if (
+      agg.description.substring(
+        agg.description.length - 3,
+        agg.description.length,
+      ) == 'ETH'
+    ) {
+      let nextAgg = loadOrCreateChainLink(
+        Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
+      );
       agg.nextAgg = nextAgg.id;
     }
 
     agg.vaults = [];
   }
 
-  return agg as ChainLinkAgg;
+  return agg;
 }
 
 export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
@@ -47,11 +55,12 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   if (!chl) {
     chl = new ChainLink(id);
 
-    let aggAddr = cl.try_aggregator()
+    let aggAddr = cl.try_aggregator();
     if (!aggAddr.reverted) {
       AggregatorInterfaceTemplate.create(aggAddr.value);
       chl.aggregator = aggAddr.value.toHexString();
     }
+
     chl.save();
   }
 
@@ -59,15 +68,18 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   agg.chainLink = id;
   agg.save();
 
-  return agg as ChainLinkAgg;
+  return agg;
 }
 
-// calculateChainLinkPrice returns the price from the aggregator or from the chain of aggregators.
+// returns the price from the aggregator or from the chain of aggregators.
 export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
   let price = convertTokenToDecimal(agg.answer, agg.decimals);
 
   if (agg.nextAgg) {
-    let nextAgg = loadOrCreateChainLinkAgg(Address.fromString(agg.nextAgg as string));
+    let nextAgg = loadOrCreateChainLinkAgg(
+      Address.fromString(agg.nextAgg as string),
+    );
+
     return price.times(calculateChainLinkPrice(nextAgg));
   }
 
@@ -75,10 +87,12 @@ export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
 }
 
 export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
-  let agg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
+  let agg = loadOrCreateChainLink(
+    Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
+  );
   if (!agg.asset) {
     agg.asset = BNA_ADDRESS;
-    agg.save()
+    agg.save();
   }
 
   return usdPrice.div(convertTokenToDecimal(agg.answer, agg.decimals));

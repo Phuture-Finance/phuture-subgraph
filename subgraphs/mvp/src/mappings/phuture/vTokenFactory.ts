@@ -1,9 +1,9 @@
-import {Address, BigInt} from '@graphprotocol/graph-ts';
-import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
+import { Address } from '@graphprotocol/graph-ts';
+
 import { STATIC_TYPE } from '../../../../helpers';
 import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';
-
 import { vToken } from '../../types/templates';
+import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
 
 export function handleStaticVTokenCreated(event: ManagedVTokenCreated): void {
   if (event.params.vToken.equals(Address.zero())) return;

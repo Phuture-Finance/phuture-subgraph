@@ -238,34 +238,6 @@ dataSources:
       file: ./src/mappings/uniswap/uniswap.ts
   {{/swapFactories}}
 
-  - kind: ethereum/contract
-    name: TrackedIndexFactory
-    network: {{network}}
-    source:
-      abi: TrackedIndexFactory
-      address: '{{TrackedIndexFactory}}'
-      startBlock: {{TrackedIndexFactoryBlockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Index
-        - IndexAsset
-      abis:
-        - name: TrackedIndexFactory
-          file: ../abis/Phuture/TrackedIndexFactory.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-      eventHandlers:
-        - event: TrackedIndexCreated(address,address[])
-          handler: handleTrackedIndexCreated
-      file: ./src/mappings/phuture/TrackedIndexFactory.ts
-
   {{#SVault}}
   - kind: ethereum/contract
     name: SVault
@@ -359,69 +331,6 @@ templates:
           handler: handleManagedIndexTransfer
         - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
-
-  - kind: ethereum/contract
-    name: TrackedIndex
-    network: {{network}}
-    source:
-      abi: TrackedIndex
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TrackedIndex.ts
-      entities:
-        - Index
-        - Asset
-        - DailyIndexStat
-        - Debug
-      abis:
-        - name: IndexRegistry
-          file: ../abis/Phuture/IndexRegistry.json
-        - name: TrackedIndexFactory
-          file: ../abis/Phuture/TrackedIndexFactory.json
-        - name: TrackedIndex
-          file: ../abis/Phuture/TrackedIndex.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-      eventHandlers:
-        - event: UpdateAnatomy(address,uint8)
-          handler: handleUpdateAnatomy
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTrackedIndexTransfer
-
-  - kind: ethereum/contract
-    name: TopNMarketCapIndex
-    network: {{network}}
-    source:
-      abi: TopNMarketCapIndex
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TopNMarketCapIndex.ts
-      entities:
-        - Index
-        - Asset
-        - DailyIndexStat
-      abis:
-        - name: IndexRegistry
-          file: ../abis/Phuture/IndexRegistry.json
-        - name: TopNMarketCapIndexFactory
-          file: ../abis/Phuture/TopNMarketCapIndexFactory.json
-        - name: TopNMarketCapIndex
-          file: ../abis/Phuture/TopNMarketCapIndex.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-      eventHandlers:
-        - event: UpdateAnatomy(address,uint8)
-          handler: handleUpdateAnatomy
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTopNMarketCapIndexTransfer
 
   - kind: ethereum/contract
     name: AggregatorInterface

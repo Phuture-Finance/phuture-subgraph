@@ -523,7 +523,6 @@ type SVTransfer @entity {
 
 type SVTransaction @entity {
   id: ID! # txn hash
-
   blockNumber: BigInt!
   timestamp: BigInt!
 
@@ -603,7 +602,6 @@ type DailyUserSVHistory @entity {
 # ----------------------------------------------------------------
 #                               UniswapV3
 # ----------------------------------------------------------------
-
 
 # stores UniswapV3PriceOracle addresses
 type UniV3PriceOracle @entity {

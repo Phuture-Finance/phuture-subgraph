@@ -1,0 +1,39 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["precodegen", "codegen", "build", "test"],
+        "accessToken": "YmQ1NDRkYTUtZjg3Yy00YjdjLWJiYTMtNjcwYjZhOWFlNDk0fHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "targetDefaults": {
+    "precodegen": {
+      "dependsOn": ["^precodegen"]
+    },
+    "codegen": {
+      "dependsOn": ["^codegen"],
+      "outputs": [
+        "{projectRoot}/consts.ts",
+        "{projectRoot}/subgraph.yaml",
+        "{projectRoot}/src/types"
+      ]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/build"]
+    },
+    "create:local": {
+      "dependsOn": ["^create:local"]
+    },
+    "deploy:local": {
+      "dependsOn": ["^deploy:local"]
+    },
+    "test": {
+      "dependsOn": ["^test"]
+    }
+  },
+  "defaultBase": "develop",
+  "defaultProject": "mvp"
+}

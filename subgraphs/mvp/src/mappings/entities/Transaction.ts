@@ -8,6 +8,7 @@ export function loadOrCreateTransaction(event: ethereum.Event): Transaction {
   let tx = Transaction.load(id);
   if (!tx) {
     tx = new Transaction(id);
+
     tx.blockNumber = event.block.number;
     tx.timestamp = event.block.timestamp;
     tx.transfers = [];
@@ -18,5 +19,5 @@ export function loadOrCreateTransaction(event: ethereum.Event): Transaction {
     tx.save();
   }
 
-  return tx as Transaction;
+  return tx;
 }

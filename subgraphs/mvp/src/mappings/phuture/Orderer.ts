@@ -1,6 +1,13 @@
-import { PlaceOrder, CompleteOrder, UpdateOrder } from '../../types/Orderer/Orderer';
-import { loadOrCreateOrderDetails, loadOrCreateLastOrderIndex } from '../entities/Orderer';
+import {
+  PlaceOrder,
+  CompleteOrder,
+  UpdateOrder,
+} from '../../types/Orderer/Orderer';
 import { Asset, Order, OrderComplete } from '../../types/schema';
+import {
+  loadOrCreateOrderDetails,
+  loadOrCreateLastOrderIndex,
+} from '../entities/Orderer';
 
 export function handlerPlaceOrder(event: PlaceOrder): void {
   // let order = loadOrCreateOrder(event.params.creator);
@@ -17,7 +24,10 @@ export function handlerPlaceOrder(event: PlaceOrder): void {
 }
 
 export function handlerUpdateOrder(event: UpdateOrder): void {
-  let orderDetails = loadOrCreateOrderDetails(event.params.id, event.params.asset);
+  let orderDetails = loadOrCreateOrderDetails(
+    event.params.id,
+    event.params.asset,
+  );
 
   orderDetails.order = event.params.id.toString();
   orderDetails.asset = event.params.asset.toHexString();
@@ -28,16 +38,26 @@ export function handlerUpdateOrder(event: UpdateOrder): void {
 }
 
 export function handlerCompleteOrder(event: CompleteOrder): void {
-  let buyOrderDetails = loadOrCreateOrderDetails(event.params.id, event.params.buyAsset);
-  buyOrderDetails.shares = buyOrderDetails.shares.minus(event.params.boughtShares);
+  let buyOrderDetails = loadOrCreateOrderDetails(
+    event.params.id,
+    event.params.buyAsset,
+  );
+  buyOrderDetails.shares = buyOrderDetails.shares.minus(
+    event.params.boughtShares,
+  );
   buyOrderDetails.save();
 
-  let sellOrderDetails = loadOrCreateOrderDetails(event.params.id, event.params.sellAsset);
-  sellOrderDetails.shares = sellOrderDetails.shares.minus(event.params.soldShares);
+  let sellOrderDetails = loadOrCreateOrderDetails(
+    event.params.id,
+    event.params.sellAsset,
+  );
+  sellOrderDetails.shares = sellOrderDetails.shares.minus(
+    event.params.soldShares,
+  );
   sellOrderDetails.save();
 
   let order = Order.load(event.params.id.toString());
-  let sellAsset = Asset.load(event.params.sellAsset.toHexString())
+  let sellAsset = Asset.load(event.params.sellAsset.toHexString());
   let buyAsset = Asset.load(event.params.buyAsset.toHexString());
   if (order && sellAsset && buyAsset) {
     let ocId = event.transaction.hash.toHexString();
@@ -55,7 +75,7 @@ export function handlerCompleteOrder(event: CompleteOrder): void {
     oc.buyTokenPrice = buyAsset.basePrice;
 
     oc.transactionGas = event.transaction.gasPrice;
-    oc.transactionFee = event.transaction.value
+    oc.transactionFee = event.transaction.value;
 
     oc.save();
   }

@@ -1,6 +1,19 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
-import { IndexManaged, IndexTopN, IndexTracked, ONE_BI } from '../../../../helpers';
+
+import {
+  IndexManaged,
+  IndexTopN,
+  IndexTracked,
+  ONE_BI,
+} from '../../../../helpers';
+import { IndexAsset, UserIndex, Index } from '../../types/schema';
+import {
+  TrackedIndex,
+  TopNMarketCapIndex,
+  ManagedIndex,
+} from '../../types/templates';
+import { updateIndexBasePriceByIndex } from '../../utils';
 import {
   loadOrCreateAccount,
   loadOrCreateAsset,
@@ -8,10 +21,8 @@ import {
   loadOrCreateIndexAsset,
   loadOrCreateTransaction,
 } from '../entities';
-import { IndexAsset, UserIndex, Index } from '../../types/schema';
-import { TrackedIndex, TopNMarketCapIndex, ManagedIndex } from '../../types/templates';
+
 import { updateStat } from './stats';
-import { updateIndexBasePriceByIndex } from '../../utils';
 
 export function handleIndexCreation(
   type: string,
@@ -51,7 +62,10 @@ export function handleIndexCreation(
 
   loadOrCreateAccount(event.transaction.from);
 
-  let userIndexId = event.transaction.from.toHexString().concat('-').concat(indexAddress.toHexString());
+  let userIndexId = event.transaction.from
+    .toHexString()
+    .concat('-')
+    .concat(indexAddress.toHexString());
   let userIndex = UserIndex.load(userIndexId);
   if (!userIndex) {
     userIndex = new UserIndex(userIndexId);
@@ -82,10 +96,13 @@ export function handleAssetRemoved(assetRemovedAddr: Address): void {
   for (let i = 0; i < assetRemoved._indexes.length; i++) {
     let index = Index.load(assetRemoved._indexes[i]);
     if (!index) {
-      continue
+      continue;
     }
 
-    let indexAsset = loadOrCreateIndexAsset(index.id, assetRemovedAddr.toHexString());
+    let indexAsset = loadOrCreateIndexAsset(
+      index.id,
+      assetRemovedAddr.toHexString(),
+    );
     indexAsset.index = null;
     indexAsset.inactiveIndex = index.id;
     indexAsset.save();

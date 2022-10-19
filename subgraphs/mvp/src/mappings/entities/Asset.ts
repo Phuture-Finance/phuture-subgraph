@@ -1,16 +1,18 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+
+import { ChainLinkAssetMap } from '../../../consts';
 import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
-import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
-import {ChainLinkAssetMap} from "../../../consts";
-import {calculateChainLinkPrice, loadOrCreateChainLink} from "./ChainLink";
+import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
+
+import { calculateChainLinkPrice, loadOrCreateChainLink } from './ChainLink';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();
 
   let asset = Asset.load(id);
-  if (asset == null) {
+  if (!asset) {
     asset = new Asset(id);
     asset.marketCap = BigInt.zero();
     asset.basePrice = BigDecimal.zero();
@@ -40,7 +42,10 @@ export function loadOrCreateAsset(address: Address): Asset {
 }
 
 export function isNullEthValue(value: string): boolean {
-  return value == '0x0000000000000000000000000000000000000000000000000000000000000001';
+  return (
+    value ==
+    '0x0000000000000000000000000000000000000000000000000000000000000001'
+  );
 }
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
@@ -48,10 +53,14 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
   let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress);
 
   let symbolValue = 'UNKNOWN';
+
   let symbolResult = contract.try_symbol();
   if (symbolResult.reverted) {
     let symbolResultBytes = contractSymbolBytes.try_symbol();
-    if (!symbolResultBytes.reverted && !isNullEthValue(symbolResultBytes.value.toHexString())) {
+    if (
+      !symbolResultBytes.reverted &&
+      !isNullEthValue(symbolResultBytes.value.toHexString())
+    ) {
       symbolValue = symbolResultBytes.value.toString();
     }
   } else {
@@ -65,11 +74,15 @@ export function fetchTokenName(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress);
   let contractNameBytes = ERC20NameBytes.bind(tokenAddress);
 
-  let nameValue = 'unknown';
+  let nameValue = 'Unknown';
+
   let nameResult = contract.try_name();
   if (nameResult.reverted) {
     let nameResultBytes = contractNameBytes.try_name();
-    if (!nameResultBytes.reverted && !isNullEthValue(nameResultBytes.value.toHexString())) {
+    if (
+      !nameResultBytes.reverted &&
+      !isNullEthValue(nameResultBytes.value.toHexString())
+    ) {
       nameValue = nameResultBytes.value.toString();
     }
   } else {
@@ -82,7 +95,8 @@ export function fetchTokenName(tokenAddress: Address): string {
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress);
 
-  let totalSupplyValue = BigInt.fromString('0');
+  let totalSupplyValue = BigInt.zero();
+
   let totalSupplyResult = contract.try_totalSupply();
   if (!totalSupplyResult.reverted) {
     totalSupplyValue = totalSupplyResult.value;
@@ -95,6 +109,7 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress);
 
   let decimalValue = 0;
+
   let decimalResult = contract.try_decimals();
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value;
