@@ -77,24 +77,20 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
       let vt = vToken.load(asset._vTokens[i2]);
       if (vt && !vt.platformTotalSupply.isZero()) {
         reserve = ia.shares.times(vt.totalAmount).div(vt.platformTotalSupply);
-      }
 
-      if (
-        vt &&
-        !vt.totalAmount.isZero() &&
-        index.marketCap.notEqual(BigDecimal.zero())
-      ) {
-        let assetQuantityInUSD = convertTokenToDecimal(
-          vt.totalAmount,
-          asset.decimals,
-        ).times(asset.basePrice);
-        index.apy = index.apy.plus(
-          vt.apy
-            .times(assetQuantityInUSD.div(index.marketCap))
-            .times(
-              vt.deposited.toBigDecimal().div(vt.totalAmount.toBigDecimal()),
-            ),
-        );
+        if (index.marketCap.notEqual(BigDecimal.zero())) {
+          let assetQuantityInUSD = convertTokenToDecimal(
+            vt.totalAmount,
+            asset.decimals,
+          ).times(asset.basePrice);
+          index.apy = index.apy.plus(
+            vt.apy
+              .times(assetQuantityInUSD.div(index.marketCap))
+              .times(
+                vt.deposited.toBigDecimal().div(vt.totalAmount.toBigDecimal()),
+              ),
+          );
+        }
       }
     }
 
