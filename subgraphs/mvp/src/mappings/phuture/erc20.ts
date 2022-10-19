@@ -7,7 +7,7 @@ import { SECONDS_IN_YEAR } from '../../utils/timestamp';
 
 import { updateVaultControllerDailyStat } from './stats';
 
-const BP_BD = BigDecimal.fromString('10000')
+const BP_BD = BigDecimal.fromString('10000');
 
 export function handleTransfer(event: Transfer): void {
   let fromVToken = vToken.load(event.params.from.toHexString());
@@ -48,14 +48,12 @@ export function handleTransfer(event: Transfer): void {
     if (fromVaultController.deposit.isZero()) {
       log.warning('apy for vToken: {} is zero', [toVToken.id]);
     } else {
+      let depositRatio = fromVaultController.withdraw
+        .toBigDecimal()
+        .div(fromVaultController.deposit.toBigDecimal());
       let ln = BigDecimal.fromString(
         Math.log(
-          parseFloat(
-            fromVaultController.withdraw
-              .toBigDecimal()
-              .div(fromVaultController.deposit.toBigDecimal())
-              .toString(),
-          ),
+          (depositRatio.digits.toU64() / depositRatio.exp.toU64()) as f64,
         ).toString(),
       );
       let interval = fromVaultController.withdrawnAt
