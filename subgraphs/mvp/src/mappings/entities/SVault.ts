@@ -1,4 +1,4 @@
-import {Vault} from '../../types/SVault/Vault';
+import {Vault} from '../../src/types/SVault/Vault';
 import {SVVault} from '../../types/schema';
 import {Address, BigInt} from "@graphprotocol/graph-ts";
 import {feeInBP} from "../../utils/calc";

@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------
+#                             Index Betting
+# ----------------------------------------------------------------
+
+type IndexBetting @entity {
+  id: ID!
+  totalDeposited: BigInt!
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+  uniqueHolders: BigInt!
+  created: BigInt!
+}
+
+type IndexBettingUser @entity {
+    id: ID!
+    indexBetting: IndexBetting!
+    balance: BigInt!
+}
+
+enum IndexBettingTransferType {
+  Send
+  Mint
+  Burn
+}
+
+type IndexBettingTransfer @entity {
+  id: ID!
+  indexBetting: IndexBetting!
+  transaction: Transaction!
+  type: IndexBettingTransferType!
+
+  from: IndexBettingUser
+  to: IndexBettingUser
+  amount: BigInt!
+
+  timestamp: BigInt!
+}
+
+type Transaction @entity {
+  id: ID! # txn hash
+
+  blockNumber: BigInt!
+  timestamp: BigInt!
+
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+}
