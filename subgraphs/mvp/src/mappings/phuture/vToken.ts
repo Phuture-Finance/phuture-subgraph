@@ -31,7 +31,9 @@ export function handlerSetVaultController(event: SetVaultController): void {
   let vaultControllerAddress = event.params.vaultController.toHexString();
   let vaultController = VaultController.load(vaultControllerAddress);
   if (!vaultController) {
-    vaultController = new VaultController(event.params.vaultController.toHexString());
+    vaultController = new VaultController(
+      event.params.vaultController.toHexString(),
+    );
     vaultController.vToken = event.address.toHexString();
 
     vToken.vaultController = vaultControllerAddress;

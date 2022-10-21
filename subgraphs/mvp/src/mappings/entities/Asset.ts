@@ -28,7 +28,9 @@ export function loadOrCreateAsset(address: Address): Asset {
 
     let aggregatorAddr = ChainLinkAssetMap.get(asset.id);
     if (aggregatorAddr) {
-      let aggregator = loadOrCreateChainLink(Address.fromString(aggregatorAddr));
+      let aggregator = loadOrCreateChainLink(
+        Address.fromString(aggregatorAddr),
+      );
       aggregator.asset = asset.id;
       aggregator.save();
 
