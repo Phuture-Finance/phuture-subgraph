@@ -51,8 +51,11 @@ export function handleTransfer(event: Transfer): void {
       let depositRatio = fromVaultController.withdraw
         .toBigDecimal()
         .div(fromVaultController.deposit.toBigDecimal());
+
       let ln = BigDecimal.fromString(
-        Math.log(parseFloat(depositRatio.toString())).toString(),
+        Math.log(
+          parseFloat(depositRatio.times(BP_BD).toString()) / 10000,
+        ).toString(),
       );
       let interval = fromVaultController.withdrawnAt
         .minus(fromVaultController.depositedAt)
@@ -79,7 +82,7 @@ export function handleTransfer(event: Transfer): void {
       event.block.timestamp,
     );
 
-    toVToken.apy = toVToken.apy.gt(BigDecimal.zero())
+    toVToken.apy = vaultControllerApy.gt(BigDecimal.zero())
       ? vaultControllerApy.times(
           currentDepositedPercentageInBP.value.toBigDecimal().div(BP_BD),
         )

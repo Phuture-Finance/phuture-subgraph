@@ -191,6 +191,8 @@ type vToken @entity {
   "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
   totalAmount: BigInt!
 
+  vaultController: VaultController
+
   depositedPercentage: BigInt!
   apy: BigDecimal!
 }

@@ -18,12 +18,25 @@ import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
 import { updateDailyAssetStat, updateStat } from './stats';
 
 export function handlerSetVaultController(event: SetVaultController): void {
-  let vc = VaultController.load(event.params.vaultController.toHexString());
-  if (!vc) {
-    vc = new VaultController(event.params.vaultController.toHexString());
-    vc.vToken = event.address.toHexString();
+  let vToken = vTokenEntity.load(event.address.toHexString());
+  if (!vToken) return;
 
-    vc.save();
+  if (event.params.vaultController == Address.zero()) {
+    vToken.vaultController = null;
+    vToken.apy = BigDecimal.zero();
+
+    vToken.save();
+  }
+
+  let vaultControllerAddress = event.params.vaultController.toHexString();
+  let vaultController = VaultController.load(vaultControllerAddress);
+  if (!vaultController) {
+    vaultController = new VaultController(event.params.vaultController.toHexString());
+    vaultController.vToken = event.address.toHexString();
+
+    vToken.vaultController = vaultControllerAddress;
+
+    vaultController.save();
   }
 
   log.debug('handleSetVaultController: {}', [

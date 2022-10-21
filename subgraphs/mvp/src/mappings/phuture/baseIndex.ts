@@ -8,11 +8,7 @@ import {
   ONE_BI,
 } from '../../../../helpers';
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
-import {
-  TrackedIndex,
-  TopNMarketCapIndex,
-  ManagedIndex,
-} from '../../types/templates';
+import { ManagedIndex } from '../../types/templates';
 import { updateIndexBasePriceByIndex } from '../../utils';
 import {
   loadOrCreateAccount,
@@ -75,12 +71,8 @@ export function handleIndexCreation(
   }
   userIndex.save();
 
-  if (type == IndexTracked) {
-    TrackedIndex.create(indexAddress);
-  } else if (type == IndexManaged) {
+  if (type == IndexManaged) {
     ManagedIndex.create(indexAddress);
-  } else if (type == IndexTopN) {
-    TopNMarketCapIndex.create(indexAddress);
   }
 
   let stat = updateStat(event.block.timestamp);

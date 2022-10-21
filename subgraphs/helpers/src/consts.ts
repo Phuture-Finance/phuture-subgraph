@@ -5,6 +5,7 @@ export const TEN_BI = BigInt.fromI32(10);
 
 export const ONE_BD = new BigDecimal(ONE_BI);
 export const TWO_BD = BigDecimal.fromString('2');
+export const TEN_BD = new BigDecimal(TEN_BI);
 
 export const IndexManaged = 'managed';
 export const IndexTracked = 'tracked';

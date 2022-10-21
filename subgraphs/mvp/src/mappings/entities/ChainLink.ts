@@ -79,7 +79,7 @@ export function calculateChainLinkPrice(aggregator: ChainLinkAgg): BigDecimal {
 
   if (aggregator.nextAgg) {
     let nextAggregator = loadOrCreateChainLinkAgg(
-      Address.fromString(aggregator.nextAgg),
+      Address.fromString(aggregator.nextAgg as string),
     );
 
     return price.times(calculateChainLinkPrice(nextAggregator));
