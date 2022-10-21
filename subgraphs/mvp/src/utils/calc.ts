@@ -1,11 +1,11 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
-import { ONE_BD, ONE_BI, TEN_BI, TWO_BD } from '../../../helpers';
+import { ONE_BD, ONE_BI, TEN_BD, TEN_BI, TWO_BD } from '../../../helpers';
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   let bd = new BigDecimal(ONE_BI);
   for (let i = BigInt.zero(); i.lt(decimals); i = i.plus(ONE_BI)) {
-    bd = bd.times(BigDecimal.fromString('10'));
+    bd = bd.times(TEN_BD);
   }
 
   return bd;
@@ -55,25 +55,25 @@ export function convertTokenToBigInt(
   tokenAmount: BigInt,
   decimals: BigInt,
 ): BigInt {
-  let bd = tokenAmount;
+  let int = tokenAmount;
   if (decimals.gt(BigInt.zero())) {
     for (let i = 0; i < decimals.toI32(); i++) {
-      bd = bd.times(TEN_BI);
+      int = int.times(TEN_BI);
     }
   } else {
     for (let i = decimals.toI32(); i < 0; i++) {
-      bd = bd.div(TEN_BI);
+      int = int.div(TEN_BI);
     }
   }
 
-  return bd;
+  return int;
 }
 
 export function exponentToBigInt(decimals: BigInt): BigInt {
-  let bd = ONE_BI;
-  for (let i = BigInt.zero(); i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
-    bd = bd.times(BigInt.fromString('10'));
+  let int = ONE_BI;
+  for (let i = BigInt.zero(); i.lt(decimals); i = i.plus(ONE_BI)) {
+    int = int.times(TEN_BI);
   }
 
-  return bd;
+  return int;
 }

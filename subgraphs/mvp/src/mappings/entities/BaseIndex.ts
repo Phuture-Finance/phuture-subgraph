@@ -28,16 +28,16 @@ export function loadOrCreateIndex(address: Address): Index {
 
 export function loadOrCreateIndexFactory(
   address: Address,
-  type: string,
-  vTokenF: Address,
+  indexType: string,
+  vTokenFactory: Address,
 ): IndexFactory {
-  let idxF = IndexFactory.load(address.toHexString());
-  if (!idxF) {
-    idxF = new IndexFactory(address.toHexString());
-    idxF.type = type;
-    idxF.vTokenFactory = vTokenF.toHexString();
-    idxF.save();
+  let indexFactory = IndexFactory.load(address.toHexString());
+  if (!indexFactory) {
+    indexFactory = new IndexFactory(address.toHexString());
+    indexFactory.type = indexType;
+    indexFactory.vTokenFactory = vTokenFactory.toHexString();
+    indexFactory.save();
   }
 
-  return idxF;
+  return indexFactory;
 }

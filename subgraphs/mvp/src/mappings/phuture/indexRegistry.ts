@@ -124,16 +124,21 @@ export function handleRoleGranted(event: RoleGranted): void {
 
     // UNI_V3_ORACLE_ROLE handling.
   } else if (event.params.role.equals(UNI_V3_ORACLE_ROLE)) {
-    let po = UniswapV3PriceOracle.bind(event.params.account);
-    let tPool = po.try_pool();
-    if (!tPool.reverted) {
+    let priceOracleContract = UniswapV3PriceOracle.bind(event.params.account);
+
+    let tPool = priceOracleContract.try_pool();
+    if (tPool.reverted) {
+      log.error('failed get pool on address: {}', [
+        event.params.account.toHexString(),
+      ]);
+    } else {
       let oracle = new UniV3PriceOracle(tPool.value.toHexString());
 
-      let asset0 = po.asset0();
-      let asset1 = po.asset1();
+      let asset0 = priceOracleContract.asset0();
+      let asset1 = priceOracleContract.asset1();
       if (BASE_ASSETS.includes(asset0.toHexString().toLowerCase())) {
-        asset0 = po.asset1();
-        asset1 = po.asset0(); // stable coin must be always asset1.
+        asset0 = priceOracleContract.asset1();
+        asset1 = priceOracleContract.asset0(); // stable coin must be always asset1.
       }
 
       oracle.asset0 = asset0.toHexString();
@@ -143,7 +148,7 @@ export function handleRoleGranted(event: RoleGranted): void {
 
       let a0 = loadOrCreateAsset(asset0);
       let a1 = loadOrCreateAsset(asset1);
-      let dt = po.try_lastAssetPerBaseInUQ(asset0);
+      let dt = priceOracleContract.try_lastAssetPerBaseInUQ(asset0);
       if (!dt.reverted) {
         let exp = exponentToBigDecimal(a0.decimals).div(
           exponentToBigDecimal(a1.decimals),
@@ -158,10 +163,6 @@ export function handleRoleGranted(event: RoleGranted): void {
       a0.save();
 
       PoolTemplate.create(tPool.value);
-    } else {
-      log.error('failed get pool on address: {}', [
-        event.params.account.toHexString(),
-      ]);
     }
 
     // UNI_V3_PATH_ORACLE_ROLE handling.
@@ -169,7 +170,11 @@ export function handleRoleGranted(event: RoleGranted): void {
     let ppo = UniswapPathPriceOracle.bind(event.params.account);
 
     let tAnatomy = ppo.try_anatomy();
-    if (!tAnatomy.reverted) {
+    if (tAnatomy.reverted) {
+      log.error('failed get anatomy on address: {}', [
+        event.params.account.toHexString(),
+      ]);
+    } else {
       let asset0 = tAnatomy.value.value0[tAnatomy.value.value0.length - 1];
       let asset1 = tAnatomy.value.value0[0];
 
@@ -203,10 +208,6 @@ export function handleRoleGranted(event: RoleGranted): void {
         a0.oracle = event.params.account.toHexString();
         a0.save();
       }
-    } else {
-      log.error('failed get anatomy on address: {}', [
-        event.params.account.toHexString(),
-      ]);
     }
   }
 }

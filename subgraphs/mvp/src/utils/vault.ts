@@ -53,6 +53,6 @@ export function updateVaultAPY(fVault: SVVault): void {
   if (!apy.reverted) {
     fVault.apy = apy.value
       .toBigDecimal()
-      .div(BigDecimal.fromString('10000000'));
+      .div(BigDecimal.fromString('10_000_000'));
   }
 }

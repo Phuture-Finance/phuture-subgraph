@@ -39,10 +39,12 @@ export function updateAnatomy(
 
     asset.indexCount = asset.indexCount.minus(BigInt.fromI32(1));
     asset._indexes = indicesAddr;
+
     asset.save();
 
     indexAsset.index = null;
     indexAsset.inactiveIndex = index.id;
+
     indexAsset.save();
   } else {
     inactiveAssets = [];
@@ -59,9 +61,11 @@ export function updateAnatomy(
       asset.indexCount = asset.indexCount.plus(BigInt.fromI32(1));
       asset.save();
     }
+
     indexAsset.weight = BigInt.fromI32(weight as i32);
     indexAsset.index = index.id;
     indexAsset.inactiveIndex = null;
+
     indexAsset.save();
   }
 

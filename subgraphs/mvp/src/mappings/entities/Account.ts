@@ -5,8 +5,8 @@ import { User, SVUser } from '../../types/schema';
 export function loadOrCreateAccount(address: Address): void {
   if (address.equals(Address.zero())) return;
 
-  let user = User.load(address.toHexString());
-  if (!user) {
+  let account = User.load(address.toHexString());
+  if (!account) {
     new User(address.toHexString()).save();
   }
 }
@@ -14,8 +14,8 @@ export function loadOrCreateAccount(address: Address): void {
 export function loadOrCreateSVAccount(address: Address): void {
   if (address.equals(Address.zero())) return;
 
-  let user = SVUser.load(address.toHexString());
-  if (!user) {
+  let account = SVUser.load(address.toHexString());
+  if (!account) {
     new SVUser(address.toHexString()).save();
   }
 }

@@ -37,17 +37,17 @@ export function loadOrCreateDailyUserSVHistory(
     .concat('-')
     .concat(getStartingDayTimestamp(timestamp).toString());
 
-  let dailyVH = DailyUserSVHistory.load(id);
+  let dailySVHistory = DailyUserSVHistory.load(id);
 
-  if (!dailyVH) {
-    dailyVH = new DailyUserSVHistory(id);
+  if (!dailySVHistory) {
+    dailySVHistory = new DailyUserSVHistory(id);
 
-    dailyVH.timestamp = getStartingDayTimestamp(timestamp);
-    dailyVH.user = userId;
-    dailyVH.vault = vaultId;
+    dailySVHistory.timestamp = getStartingDayTimestamp(timestamp);
+    dailySVHistory.user = userId;
+    dailySVHistory.vault = vaultId;
 
-    dailyVH.save();
+    dailySVHistory.save();
   }
 
-  return dailyVH;
+  return dailySVHistory;
 }

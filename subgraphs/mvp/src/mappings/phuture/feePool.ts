@@ -31,17 +31,20 @@ function saveFeeInBP(
     );
     let q = C.div(scaledPerSecondRate);
 
-    //  e = 1 - C / s = 1 - q
-    //  x4 = N * e * (1 - p1 + p2)
-    //  x4 = N * e * (1 - e*(N+1)/2 + e*e*(N+1)*(N+2)/6)
-
+    // e = 1 - C / s = 1 - q
     let e = BigDecimal.fromString(ONE_BD.minus(q).toString());
+
+    // p1 = e*(N+1)/2
     let p1 = e.times(N.plus(ONE_BD)).div(TWO_BD);
+
+    // e*e*(N+1)*(N+2)/6
     let p2 = e
       .times(e)
       .times(N.plus(ONE_BD))
       .times(N.plus(TWO_BD))
       .div(BigDecimal.fromString('6'));
+
+    // x4 = N * e * (1 - p1 + p2)
     let x4 = N.times(e).times(ONE_BD.minus(p1).plus(p2));
 
     index.feeAUMPercent = x4.times(BigDecimal.fromString('100'));

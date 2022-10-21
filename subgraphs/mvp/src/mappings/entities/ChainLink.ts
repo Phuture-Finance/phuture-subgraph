@@ -8,92 +8,96 @@ import { ChainLink as ChainLinkAggTemplate } from '../../types/templates/Aggrega
 import { convertTokenToDecimal } from '../../utils/calc';
 
 export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
-  let cl = AggregatorInterface.bind(addr);
+  let aggregatorContract = AggregatorInterface.bind(addr);
 
-  let agg = ChainLinkAgg.load(addr.toHexString());
-  if (!agg) {
-    agg = new ChainLinkAgg(addr.toHexString());
+  let aggregator = ChainLinkAgg.load(addr.toHexString());
+  if (!aggregator) {
+    aggregator = new ChainLinkAgg(addr.toHexString());
 
-    let answer = cl.try_latestAnswer();
+    let answer = aggregatorContract.try_latestAnswer();
     if (!answer.reverted) {
-      agg.answer = answer.value;
+      aggregator.answer = answer.value;
     }
 
-    let decimals = cl.try_decimals();
+    let decimals = aggregatorContract.try_decimals();
     if (!decimals.reverted) {
-      agg.decimals = BigInt.fromI32(decimals.value);
+      aggregator.decimals = BigInt.fromI32(decimals.value);
     }
 
-    let description = cl.try_description();
+    let description = aggregatorContract.try_description();
     if (!description.reverted) {
-      agg.description = description.value;
+      aggregator.description = description.value;
     }
 
     if (
-      agg.description.substring(
-        agg.description.length - 3,
-        agg.description.length,
+      aggregator.description.substring(
+        aggregator.description.length - 3,
+        aggregator.description.length,
       ) == 'ETH'
     ) {
       let nextAgg = loadOrCreateChainLink(
         Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
       );
-      agg.nextAgg = nextAgg.id;
+      aggregator.nextAgg = nextAgg.id;
     }
 
-    agg.vaults = [];
+    aggregator.vaults = [];
   }
 
-  return agg;
+  return aggregator;
 }
 
 export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   let id = addr.toHexString();
-  let cl = ChainLinkAggTemplate.bind(addr);
+  let aggregatorContract = ChainLinkAggTemplate.bind(addr);
 
-  let chl = ChainLink.load(id);
-  if (!chl) {
-    chl = new ChainLink(id);
+  let chainlink = ChainLink.load(id);
+  if (!chainlink) {
+    chainlink = new ChainLink(id);
 
-    let aggAddr = cl.try_aggregator();
-    if (!aggAddr.reverted) {
-      AggregatorInterfaceTemplate.create(aggAddr.value);
-      chl.aggregator = aggAddr.value.toHexString();
+    let aggregatorAddress = aggregatorContract.try_aggregator();
+    if (!aggregatorAddress.reverted) {
+      AggregatorInterfaceTemplate.create(aggregatorAddress.value);
+      chainlink.aggregator = aggregatorAddress.value.toHexString();
     }
 
-    chl.save();
+    chainlink.save();
   }
 
-  let agg = loadOrCreateChainLinkAgg(Address.fromString(chl.aggregator));
-  agg.chainLink = id;
-  agg.save();
+  let aggregator = loadOrCreateChainLinkAgg(
+    Address.fromString(chainlink.aggregator),
+  );
+  aggregator.chainLink = id;
+  aggregator.save();
 
-  return agg;
+  return aggregator;
 }
 
 // returns the price from the aggregator or from the chain of aggregators.
-export function calculateChainLinkPrice(agg: ChainLinkAgg): BigDecimal {
-  let price = convertTokenToDecimal(agg.answer, agg.decimals);
+export function calculateChainLinkPrice(aggregator: ChainLinkAgg): BigDecimal {
+  let price = convertTokenToDecimal(aggregator.answer, aggregator.decimals);
 
-  if (agg.nextAgg) {
-    let nextAgg = loadOrCreateChainLinkAgg(
-      Address.fromString(agg.nextAgg as string),
+  if (aggregator.nextAgg) {
+    let nextAggregator = loadOrCreateChainLinkAgg(
+      Address.fromString(aggregator.nextAgg),
     );
 
-    return price.times(calculateChainLinkPrice(nextAgg));
+    return price.times(calculateChainLinkPrice(nextAggregator));
   }
 
   return price;
 }
 
 export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
-  let agg = loadOrCreateChainLink(
+  let aggregator = loadOrCreateChainLink(
     Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
   );
-  if (!agg.asset) {
-    agg.asset = BNA_ADDRESS;
-    agg.save();
+  if (!aggregator.asset) {
+    aggregator.asset = BNA_ADDRESS;
+    aggregator.save();
   }
 
-  return usdPrice.div(convertTokenToDecimal(agg.answer, agg.decimals));
+  return usdPrice.div(
+    convertTokenToDecimal(aggregator.answer, aggregator.decimals),
+  );
 }

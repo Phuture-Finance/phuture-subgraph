@@ -8,11 +8,11 @@ import { loadOrCreateIndexFactory } from '../entities';
 import { handleIndexCreation } from './baseIndex';
 
 export function handleManagedIndexCreated(event: ManagedIndexCreated): void {
-  let idxFactory = ManagedIndexFactory.bind(event.address);
-  let idxF = loadOrCreateIndexFactory(
+  let indexFactoryContract = ManagedIndexFactory.bind(event.address);
+  let indexFactory = loadOrCreateIndexFactory(
     event.address,
     IndexManaged,
-    idxFactory.vTokenFactory(),
+    indexFactoryContract.vTokenFactory(),
   );
 
   let index = handleIndexCreation(
@@ -21,6 +21,7 @@ export function handleManagedIndexCreated(event: ManagedIndexCreated): void {
     event.params.index,
     event.params._assets,
   );
-  index.indexFactory = idxF.id;
+  index.indexFactory = indexFactory.id;
+
   index.save();
 }

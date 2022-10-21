@@ -69,26 +69,31 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
     let asset = Asset.load(index._assets[i]);
     if (!asset) continue;
 
-    let ia = IndexAsset.load(index.id.concat('-').concat(asset.id));
-    if (!ia) continue;
+    let indexAsset = IndexAsset.load(index.id.concat('-').concat(asset.id));
+    if (!indexAsset) continue;
 
     let reserve = BigInt.fromI32(0);
     for (let i2 = 0; i2 < asset._vTokens.length; i2++) {
       let vt = vToken.load(asset._vTokens[i2]);
       if (vt && !vt.platformTotalSupply.isZero()) {
-        reserve = ia.shares.times(vt.totalAmount).div(vt.platformTotalSupply);
+        reserve = indexAsset.shares
+          .times(vt.totalAmount)
+          .div(vt.platformTotalSupply);
 
         if (index.marketCap.notEqual(BigDecimal.zero())) {
+          // Index_APY = sum(i => APY_i * Q_constituent_i * utilization_ratio_i / totalMarketCap)
+
           let assetQuantityInUSD = convertTokenToDecimal(
             vt.totalAmount,
             asset.decimals,
           ).times(asset.basePrice);
+          // Q_utilized = Q_constituent * utilization_ratio
+          let utilizedAssetQuantityInUSD = assetQuantityInUSD.times(
+            vt.deposited.toBigDecimal().div(vt.totalAmount.toBigDecimal()),
+          );
+          // Index_APY = sum(i => APY_i * Q_utilized / totalMarketCap)
           index.apy = index.apy.plus(
-            vt.apy
-              .times(assetQuantityInUSD.div(index.marketCap))
-              .times(
-                vt.deposited.toBigDecimal().div(vt.totalAmount.toBigDecimal()),
-              ),
+            vt.apy.times(utilizedAssetQuantityInUSD.div(index.marketCap)),
           );
         }
       }

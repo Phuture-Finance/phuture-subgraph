@@ -26,13 +26,13 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.indexCount = BigInt.zero();
     asset._indexes = [];
 
-    let chAggAddr = ChainLinkAssetMap.get(asset.id);
-    if (chAggAddr) {
-      let agg = loadOrCreateChainLink(Address.fromString(chAggAddr));
-      agg.asset = asset.id;
-      agg.save();
+    let aggregatorAddr = ChainLinkAssetMap.get(asset.id);
+    if (aggregatorAddr) {
+      let aggregator = loadOrCreateChainLink(Address.fromString(aggregatorAddr));
+      aggregator.asset = asset.id;
+      aggregator.save();
 
-      asset.basePrice = calculateChainLinkPrice(agg);
+      asset.basePrice = calculateChainLinkPrice(aggregator);
     }
 
     asset.save();
