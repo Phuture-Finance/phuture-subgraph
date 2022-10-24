@@ -1,7 +1,7 @@
 import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts';
 
 import {
-  FeeInBPAUM,
+  FeeAUM,
   FeeInBPBurn,
   FeeInBPMint,
   ONE_BD,
@@ -23,7 +23,7 @@ function saveFeeInBP(
 
   if (type == FeeInBPBurn) {
     index.feeBurn = amount;
-  } else if (type == FeeInBPAUM) {
+  } else if (type == FeeAUM) {
     let scaledPerSecondRate = BigDecimal.fromString(amount.toString());
     let C = BigDecimal.fromString('1000000000000000000000000000');
     let N = BigDecimal.fromString(
@@ -74,9 +74,5 @@ export function handleSetBurningFeeInBP(event: SetBurningFeeInBP): void {
 }
 
 export function handleSetAUMFeeInBP(event: SetAUMScaledPerSecondsRate): void {
-  saveFeeInBP(
-    event.params.index,
-    event.params.AUMScaledPerSecondsRate,
-    FeeInBPAUM,
-  );
+  saveFeeInBP(event.params.index, event.params.AUMScaledPerSecondsRate, FeeAUM);
 }

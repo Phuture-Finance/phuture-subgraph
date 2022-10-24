@@ -1,5 +1,7 @@
 import { Address, BigDecimal, log } from '@graphprotocol/graph-ts';
+import { BigInt } from '@graphprotocol/graph-ts/index';
 
+import { BP_BD } from '../../../../helpers';
 import { VaultController, vToken } from '../../types/schema';
 import { Transfer } from '../../types/templates/erc20/ERC20';
 import { vToken as vTokenContract } from '../../types/templates/vToken/vToken';
@@ -7,87 +9,111 @@ import { SECONDS_IN_YEAR } from '../../utils/timestamp';
 
 import { updateVaultControllerDailyStat } from './stats';
 
-const BP_BD = BigDecimal.fromString('10000');
-
 export function handleTransfer(event: Transfer): void {
-  let fromVToken = vToken.load(event.params.from.toHexString());
-  if (fromVToken && fromVToken.asset == event.address.toHexString()) {
-    fromVToken.assetReserve = fromVToken.assetReserve.minus(event.params.value);
-    fromVToken.totalAmount = fromVToken.assetReserve.plus(fromVToken.deposited);
-    fromVToken.save();
-  }
+  let to = event.params.to.toHexString();
+  let from = event.params.from.toHexString();
+  let value = event.params.value;
+  let asset = event.address.toHexString();
+  let ts = event.block.timestamp;
 
-  let toVToken = vToken.load(event.params.to.toHexString());
-  if (toVToken && toVToken.asset == event.address.toHexString()) {
-    toVToken.assetReserve = toVToken.assetReserve.plus(event.params.value);
+  tryTransferToVToken(from, to, asset, value, ts);
+  tryTransferFromVToken(from, to, asset, value, ts);
+}
+
+function tryTransferToVToken(
+  from: string,
+  to: string,
+  asset: string,
+  value: BigInt,
+  ts: BigInt,
+): void {
+  let toVToken = vToken.load(to);
+  if (toVToken && toVToken.asset == asset) {
+    toVToken.assetReserve = toVToken.assetReserve.minus(value);
     toVToken.totalAmount = toVToken.assetReserve.plus(toVToken.deposited);
-    toVToken.save();
-  }
 
-  let toVaultController = VaultController.load(event.params.to.toHexString());
-  // from vToken -> vaultController: deposit
-  if (fromVToken && toVaultController) {
-    toVaultController.vToken = fromVToken.id;
-    toVaultController.depositedAt = event.block.timestamp;
-    toVaultController.deposit = event.params.value;
-    toVaultController.save();
-  }
+    let fromVaultController = VaultController.load(from);
+    if (fromVaultController) {
+      fromVaultController.vToken = toVToken.id;
+      fromVaultController.withdraw = value;
+      fromVaultController.withdrawnAt = ts;
 
-  let fromVaultController = VaultController.load(
-    event.params.from.toHexString(),
-  );
-  // from vaultController -> vToken: withdraw
-  // (86400 * 365)/(now - previousDepositTime) * ln(withdraw / deposit)
-  if (fromVaultController && toVToken) {
-    fromVaultController.vToken = toVToken.id;
-    fromVaultController.withdraw = event.params.value;
-    fromVaultController.withdrawnAt = event.block.timestamp;
-    fromVaultController.save();
+      fromVaultController.save();
 
-    let vaultControllerApy = BigDecimal.zero();
-    if (fromVaultController.deposit.isZero()) {
-      log.warning('apy for vToken: {} is zero', [toVToken.id]);
-    } else {
-      let depositRatio = fromVaultController.withdraw
-        .toBigDecimal()
-        .div(fromVaultController.deposit.toBigDecimal());
+      let vaultControllerApy = BigDecimal.zero();
+      if (fromVaultController.deposit.isZero()) {
+        log.warning('apy for vToken: {} is zero', [toVToken.id]);
+      } else {
+        // (86400 * 365)/(now - previousDepositTime) * ln(withdraw / deposit)
 
-      let ln = BigDecimal.fromString(
-        Math.log(
-          parseFloat(depositRatio.times(BP_BD).toString()) / 10000,
-        ).toString(),
+        // Ratio between a deposit and withdraw asset values.
+        let depositRatio = value
+          .toBigDecimal()
+          .div(fromVaultController.deposit.toBigDecimal());
+
+        // Deposit ratio logarithm. The percentage yield for the period.
+        let ln = BigDecimal.fromString(
+          Math.log(
+            parseFloat(depositRatio.times(BP_BD).toString()) / 10000,
+          ).toString(),
+        );
+
+        // Time difference between a deposit and withdraw.
+        let interval = ts.minus(fromVaultController.depositedAt).toBigDecimal();
+
+        vaultControllerApy = SECONDS_IN_YEAR.times(ln).div(interval);
+      }
+
+      let vTokenC = vTokenContract.bind(Address.fromString(toVToken.id));
+
+      let currentDepositedPercentageInBP = vTokenC.try_currentDepositedPercentageInBP();
+      if (currentDepositedPercentageInBP.reverted) {
+        log.warning('can not update currentDepositedPercentageInBP: {}', [
+          toVToken.id,
+        ]);
+      } else {
+        toVToken.depositedPercentage = currentDepositedPercentageInBP.value;
+      }
+
+      updateVaultControllerDailyStat(
+        fromVaultController,
+        vaultControllerApy,
+        toVToken.depositedPercentage,
+        ts,
       );
-      let interval = fromVaultController.withdrawnAt
-        .minus(fromVaultController.depositedAt)
-        .toBigDecimal();
 
-      vaultControllerApy = SECONDS_IN_YEAR.div(interval).times(ln);
+      toVToken.apy = vaultControllerApy.gt(BigDecimal.zero())
+        ? vaultControllerApy.times(
+            currentDepositedPercentageInBP.value.toBigDecimal().div(BP_BD),
+          )
+        : toVToken.apy;
     }
-
-    let vTokenC = vTokenContract.bind(Address.fromString(toVToken.id));
-
-    let currentDepositedPercentageInBP = vTokenC.try_currentDepositedPercentageInBP();
-    if (currentDepositedPercentageInBP.reverted) {
-      log.warning('can not update currentDepositedPercentageInBP: {}', [
-        toVToken.id,
-      ]);
-    } else {
-      toVToken.depositedPercentage = currentDepositedPercentageInBP.value;
-    }
-
-    updateVaultControllerDailyStat(
-      fromVaultController,
-      vaultControllerApy,
-      toVToken.depositedPercentage,
-      event.block.timestamp,
-    );
-
-    toVToken.apy = vaultControllerApy.gt(BigDecimal.zero())
-      ? vaultControllerApy.times(
-          currentDepositedPercentageInBP.value.toBigDecimal().div(BP_BD),
-        )
-      : toVToken.apy;
 
     toVToken.save();
+  }
+}
+
+function tryTransferFromVToken(
+  from: string,
+  to: string,
+  asset: string,
+  value: BigInt,
+  ts: BigInt,
+): void {
+  let fromVToken = vToken.load(from);
+  if (fromVToken && fromVToken.asset == asset) {
+    fromVToken.assetReserve = fromVToken.assetReserve.plus(value);
+    fromVToken.totalAmount = fromVToken.assetReserve.plus(fromVToken.deposited);
+
+    fromVToken.save();
+
+    let toVaultController = VaultController.load(to);
+    if (toVaultController) {
+      toVaultController.vToken = fromVToken.id;
+      toVaultController.depositedAt = ts;
+      toVaultController.deposit = value;
+
+      toVaultController.save();
+    }
   }
 }
