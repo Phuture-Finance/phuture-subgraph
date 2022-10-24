@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts';
-import { IndexBettingUser } from "../types/schema";
+import { IndexBettingUser } from "../../types/schema";
 
 export function loadOrCreateIndexBettingUser(address: Address): void {
   if (address.equals(Address.zero())) {

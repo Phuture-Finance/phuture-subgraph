@@ -1,24 +1,25 @@
-// TODO fix the imports
-import {Address, BigInt} from "@graphprotocol/graph-ts";
+import {Address, BigInt, log} from "@graphprotocol/graph-ts";
 
-import {loadOrCreateIndexBetting} from "../entities/IndexBetting";
+import {loadOrCreateIndexBetting} from "./entities/IndexBetting";
 import {Transfer} from "../types/IndexBetting/IndexBetting";
 import {IndexBettingTransfer, IndexBettingUser} from "../types/schema";
-import {loadOrCreateIndexBettingUser} from "../entities/Account";
-import {loadOrCreateTransaction} from "../entities/Transaction";
+import {loadOrCreateIndexBettingUser} from "./entities/Account";
+import {loadOrCreateTransaction} from "./entities/Transaction";
+import {loadOrCreateChainLink} from "./entities/ChainLink";
+import {updateIndexBettingDailyStat} from "./stats";
 
 export function handleTransfer(event: Transfer): void {
     let indexBetting = loadOrCreateIndexBetting(event.address, event.block.timestamp);
+
+    loadOrCreateChainLink(Address.fromString(indexBetting.chainlink), event.address.toHexString());
 
     loadOrCreateIndexBettingUser(event.params.from);
     loadOrCreateIndexBettingUser(event.params.to);
 
     let transferType: string;
     if (event.params.from.equals(Address.zero())) {
-        indexBetting.totalDeposited = indexBetting.totalDeposited.plus(event.params.amount);
         transferType = 'Mint';
     } else if (event.params.to.equals(Address.zero())) {
-        indexBetting.totalDeposited = indexBetting.totalDeposited.minus(event.params.amount);
         transferType = 'Burn';
     } else {
         transferType = 'Send';
@@ -37,9 +38,8 @@ export function handleTransfer(event: Transfer): void {
         fromUser.balance = fromUser.balance.minus(event.params.amount);
 
         if (fromUser.balance.equals(BigInt.zero())) {
-            indexBetting.uniqueHolders = indexBetting.uniqueHolders.minus(BigInt.fromI32(1));
+            indexBetting.betParticipants = indexBetting.betParticipants.minus(BigInt.fromI32(1));
         }
-        // TODO add user histories etc.
         fromUser.save();
     }
 
@@ -53,11 +53,12 @@ export function handleTransfer(event: Transfer): void {
             toUser.balance = BigInt.zero();
         }
 
+        log.info('frotoUsermUser.balance: {}', [toUser.balance.toString()]);
         if (toUser.balance.equals(BigInt.zero())) {
-            indexBetting.uniqueHolders = indexBetting.uniqueHolders.plus(BigInt.fromI32(1));
+            indexBetting.betParticipants = indexBetting.betParticipants.plus(BigInt.fromI32(1));
+            log.info('indexBetting.betParticipants: {}', [indexBetting.betParticipants.toString()]);
         }
         toUser.balance = toUser.balance.plus(event.params.amount);
-        // TODO add user histories etc.
         toUser.save();
     }
 
@@ -86,4 +87,9 @@ export function handleTransfer(event: Transfer): void {
         transferTo.timestamp = event.block.timestamp;
         transferTo.save();
     }
+
+    // For testing purposes
+    // updateIndexBettingDailyStat(indexBetting, event.block.timestamp);
+
+    indexBetting.save();
 }

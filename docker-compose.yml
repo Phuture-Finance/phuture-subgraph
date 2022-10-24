@@ -10,12 +10,12 @@ services:
       - pdata:/var/lib/postgresql/data
 
   ipfs:
-    image: ipfs/go-ipfs:v0.4.23
+    image: ipfs/kubo:latest
     ports:
       - '5001:5001'
 
   graph-node:
-    image: graphprotocol/graph-node:v0.28.2
+    image: graphprotocol/graph-node:v0.25.0
     depends_on:
       - ipfs
       - postgres
@@ -31,74 +31,11 @@ services:
       postgres_pass: letmein
       postgres_db: postgres
       ipfs: 'ipfs:5001'
-#      ethereum: "mainnet:http://hardhat:8545"
-#      ethereum: "mainnet:http://host.docker.internal:8545"
-      ethereum: "mainnet:https://mainnet.infura.io/v3/d07f12dd16f84457bf05f4a51664706d"
-#      ethereum: "localhost:http://0.0.0.0:8545"
-      ELASTICSEARCH_URL: http://elastic:9200
+      ethereum: "mainnet:http://host.docker.internal:8545"
       GRAPH_LOG: debug
-#    extra_hosts:
-#        - "host.docker.internal:host-gateway"
-
-#  hardhat:
-#    image: hardhat_local
-#    build:
-#      context: ./hardhat
-#      dockerfile: Dockerfile
-#    ports:
-#      - '8545:8545'
-#    environment:
-#      PRIVATE_KEY: c1da9f623ffd643ed5f8d0337e8b5cf84fb43da8846de686aff4af1e1d12076d
-#    volumes:
-#      - ./hardhat/data/artifacts:/phuture-contracts/artifacts
-#      - ./hardhat/data/typechain:/phuture-contracts/typechain
-#    command: npx hardhat node --fork https://eth-mainnet.alchemyapi.io/v2/ljuhEKChZyTo674bWzx7mq5cbc4gT3a5 --fork-block-number 15774000
-
-#  hardhat-deploy:
-#    image: hardhat_local
-#    depends_on:
-#      - hardhat
-#    environment:
-#      PRIVATE_KEY: c1da9f623ffd643ed5f8d0337e8b5cf84fb43da8846de686aff4af1e1d12076d
-#      GAS_PRICE_GWEI: 149
-#      SKIP_CONFIRMATION: 'true'
-#    volumes:
-#      - ./hardhat/data/artifacts:/phuture-contracts/artifacts
-#      - ./hardhat/data/typechain:/phuture-contracts/typechain
-#      - ./hardhat/data/mvp-output:/phuture-contracts/mvp-output
-#      - ./hardhat/data/.npm:/root/.npm
-#    command: npm run deploy:local
-
-
-  elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
-    restart: always
-    container_name: elastic
-    environment:
-      - node.name=elastic
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - '9200'
-      - '9300'
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.16.3
-    container_name: kibana
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://elastic:9200
-      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
 
 volumes:
-  data01:
-    driver: local
   pdata:
     driver: local

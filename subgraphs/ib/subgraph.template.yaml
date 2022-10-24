@@ -27,3 +27,26 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       file: ./src/mappings/indexBetting.ts
+
+  - kind: ethereum/contract
+    name: AggregatorInterface
+    network: {{network}}
+    source:
+      abi: AggregatorInterface
+      address: '0xD2A593BF7594aCE1faD597adb697b5645d5edDB2'
+      startBlock: {{IndexBettingBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ChainLink
+      file: ./src/mappings/chainlink/aggregator.ts
+      abis:
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+      eventHandlers:
+        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
+          handler: handleAnswerUpdated

@@ -4,12 +4,9 @@
 
 type IndexBetting @entity {
   id: ID!
-  totalDeposited: BigInt!
-  decimals: BigInt!
-  symbol: String!
-  name: String!
-  uniqueHolders: BigInt!
-  created: BigInt!
+  betParticipants: BigInt!
+  chainlink: ChainLink!
+  dailyStats: [IndexBettingDailyStat!]! @derivedFrom(field: "indexBetting")
 }
 
 type IndexBettingUser @entity {
@@ -46,4 +43,19 @@ type Transaction @entity {
   value: BigInt!
   gasUsed: BigInt!
   gasPrice: BigInt!
+}
+
+type ChainLink @entity {
+  id: ID!
+  indexBetting: IndexBetting!
+}
+
+type IndexBettingDailyStat @entity {
+  id: ID!
+
+  date: BigInt!
+  indexBetting: IndexBetting!
+
+  PDIBasePrice: BigInt!
+  DPIBasePrice: BigInt!
 }
