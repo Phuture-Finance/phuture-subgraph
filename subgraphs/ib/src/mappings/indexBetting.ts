@@ -5,13 +5,13 @@ import {Transfer} from "../types/IndexBetting/IndexBetting";
 import {IndexBettingTransfer, IndexBettingUser} from "../types/schema";
 import {loadOrCreateIndexBettingUser} from "./entities/Account";
 import {loadOrCreateTransaction} from "./entities/Transaction";
-import {loadOrCreateChainLink} from "./entities/ChainLink";
-import {updateIndexBettingDailyStat} from "./stats";
+
+import {loadOrCreateChainlink} from "./entities/ChainLink";
 
 export function handleTransfer(event: Transfer): void {
     let indexBetting = loadOrCreateIndexBetting(event.address, event.block.timestamp);
 
-    loadOrCreateChainLink(Address.fromString(indexBetting.chainlink), event.address.toHexString());
+    loadOrCreateChainlink(Address.fromString(indexBetting.chainlink), event.address.toHexString());
 
     loadOrCreateIndexBettingUser(event.params.from);
     loadOrCreateIndexBettingUser(event.params.to);
@@ -53,10 +53,8 @@ export function handleTransfer(event: Transfer): void {
             toUser.balance = BigInt.zero();
         }
 
-        log.info('frotoUsermUser.balance: {}', [toUser.balance.toString()]);
         if (toUser.balance.equals(BigInt.zero())) {
             indexBetting.betParticipants = indexBetting.betParticipants.plus(BigInt.fromI32(1));
-            log.info('indexBetting.betParticipants: {}', [indexBetting.betParticipants.toString()]);
         }
         toUser.balance = toUser.balance.plus(event.params.amount);
         toUser.save();

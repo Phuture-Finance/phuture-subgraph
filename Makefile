@@ -1,2 +1,6 @@
-phuture-contracts:
-	git clone https://github.com/Phuture-Finance/phuture-contracts.git
+
+docker-down:
+	docker-compose down -v;
+
+docker-up:
+	docker-compose up -d;

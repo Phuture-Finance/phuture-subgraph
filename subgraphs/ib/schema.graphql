@@ -5,7 +5,7 @@
 type IndexBetting @entity {
   id: ID!
   betParticipants: BigInt!
-  chainlink: ChainLink!
+  chainlink: Chainlink!
   dailyStats: [IndexBettingDailyStat!]! @derivedFrom(field: "indexBetting")
 }
 
@@ -45,9 +45,15 @@ type Transaction @entity {
   gasPrice: BigInt!
 }
 
-type ChainLink @entity {
+type Chainlink @entity {
   id: ID!
   indexBetting: IndexBetting!
+  chainlinkAggregator: ChainlinkAggregator!
+}
+
+type ChainlinkAggregator @entity {
+  id: ID!
+  chainlink: Chainlink!
 }
 
 type IndexBettingDailyStat @entity {

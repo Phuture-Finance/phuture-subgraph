@@ -7,12 +7,10 @@ npm run config
 npm run precodegen
 # run codegen
 npm run codegen
-# run post codegen
-npm run postcodegen
 # unit testing
 graph test -r
+# local create
+make create
 # local deploy
-npm run create:local && npm run deploy:local:mainnet
-# remote deploy
-npm run deploy:hosted:mainnet
+make deploy
 ```

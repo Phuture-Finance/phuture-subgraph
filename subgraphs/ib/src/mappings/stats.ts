@@ -31,7 +31,7 @@ export function updateIndexBettingDailyStat(indexBetting: IndexBetting, ts: BigI
 }
 
 // Temporary added to have more smooth charts until hourly is not implemented.
-const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 3600)
+const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 24)
 
 export function getStartingDayTimestamp(timestamp: BigInt): BigInt {
   let dayID = timestamp.div(SECONDS_IN_DAY);

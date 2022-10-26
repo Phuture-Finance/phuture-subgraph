@@ -28,19 +28,21 @@ dataSources:
           handler: handleTransfer
       file: ./src/mappings/indexBetting.ts
 
+#-------------------------------------------------------------------------------
+#                               Template section
+#-------------------------------------------------------------------------------
+templates:
   - kind: ethereum/contract
     name: AggregatorInterface
     network: {{network}}
     source:
       abi: AggregatorInterface
-      address: '0xD2A593BF7594aCE1faD597adb697b5645d5edDB2'
-      startBlock: {{IndexBettingBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - ChainLink
+        - ChainlinkAggregator
       file: ./src/mappings/chainlink/aggregator.ts
       abis:
         - name: AggregatorInterface

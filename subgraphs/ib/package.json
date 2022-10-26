@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "precodegen": "rimraf src/types src/mappings/chainlink/aggregators/*.ts && node config/index.js",
+    "precodegen": "rimraf src/types && node config/index.js",
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
     "create:local": "graph create phuture/ia --node http://0.0.0.0:8020",

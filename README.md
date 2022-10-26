@@ -1,23 +1,68 @@
 # Phuture Subgraph
 
-To generate entity structures from the graphql scheme you need to execute `npm run codegen` for each subgraph stored in `subgraphs` folder.
+For setting up the local development environment there is a `docker-compose.yml` file in the root directory. Instructions for starting the local development environment are as follows:
 
-```console
-npm run codegen
-
-# To pretify codegenrated and the rest code written on typescript.
-npm run lint:fix
+#### 1. Stop any running docker containers
+```bash
+$ docker-compose down -v
+```
+or
+```bash
+$ make docker-down
 ```
 
-Then you have to build code-generated entities for the storage and graphql, with the defined typescripts which are handling the events from the blockchain.
+#### 2. Start the local graph-node and services which it depends on
+```bash
+$ docker-compose up -d
+```
+or
+```bash
+$ make docker-up
+```
 
-```console
-npm run build
+#### 3. Run a local blockchain node
+There are several options for running a local blockchain node ([ganache](https://trufflesuite.com/ganache/), [hardhat](https://hardhat.org/), [anvil](https://book.getfoundry.sh/anvil/)). 
+Preferably, use [anvil](https://book.getfoundry.sh/anvil/) as it is the most lightweight and easy to use. After installation of [forge](https://book.getfoundry.sh/forge/) a local anvil node can be run with the following command:
+````bash
+$ anvil --fork-url https://eth-mainnet.g.alchemy.com/v2/<alchemy-api-key>--fork-block-number 15818552 --gas-limit 50000000 --host 0.0.0.0 --chain-id 1
+````
+There are a couple of caveats to watch for when running anvil:
+- The `--fork-url` flag must be set to a valid ethereum node. The paid tier of [alchemy](https://www.alchemy.com/) is nedeed for this purpose.
+- The `--gas-limit` flag must be set to a value that is greater than the gas limit of the block that is being forked from. This is because the subgraph will not be able to sync if the gas limit is too low. The gas limit of the block that is being forked from can be found on [etherscan](https://etherscan.io/). There is a [bug](https://github.com/bluealloy/revm/issues/135) with anvil requiring the gas limit to be set at 50 million.
+- The `--host` flag must be set to 0.0.0.0. This is because the subgraph will not be able to sync if the host is set to localhost since the graph node is running in a docker container.
+- The `--chain-id` flag must be set to 1 for forking ethereum mainnet.
+
+#### 4. Deploy you contracts to the local blockchain node
+The contracts that are deployed to the local blockchain node are the contracts that the subgraph will be indexing. Make note of the addresses and block numbers of contract deployments.
+
+#### 5. Create the subgraph
+Create the subgraph by positioning yourself in the `subgraphs/subgraph_to_create` directory and running the following command:
+```bash
+$ make create
+```
+
+#### 6. Generate entities from the graphql schema
+After defining entities in the `subgraphs/subgraph_to_create/schema.graphql` file, generate the entities by running the following command:
+```bash
+$ npm run codegen
+```
+Note: Each subgraph folder inside `subgraphs` directory has a config folder where you need to populate addresses and block numbers of [contract deployments](#3-run-a-local-blockchain-node). This info will be used while generating `subgraph.yaml` file from `subgraph.template.yaml` file.
+
+#### 7. Build the subgraph
+After defining entities and its corresponding handlers in the `subgraphs/subgraph_to_create/src/mapping.ts` file, build the subgraph by running the following command:
+```bash
+$ npm run build
+```
+
+#### 8. Deploy the subgraph
+The final step is deploying the subgraph to the local graph-node. This can be done by running the following command:
+```bash
+$ make deploy
 ```
 
 ## Subgraph declaration
 
-Each of the subgraph must declare such list of the scripts in `package.json`.
+Each subgraph folder inside `subgraphs` directory must declare a list of  scripts in `package.json`.
 
 ```json
 {
@@ -33,25 +78,12 @@ Each of the subgraph must declare such list of the scripts in `package.json`.
 
 ### Short explanation of the specified list of scripts:
 
-- `precodegen` drops the caches previously code generated entities, `node config/index.js` execute templating for this files like: `{subgraph}/subgraph.yaml`, `{subgraph}/consts.ts`, etc.
+- `precodegen` drops the caches of previously generated entities, `node config/index.js` execute templating for this files like: `{subgraph}/subgraph.yaml`, `{subgraph}/consts.ts`, etc.
 - `codegen` executes code-generation process, simply saying everything what is defined int the `{subgraph}/schema.graphql`.
 - `build` executes typescript compilation to wasm bytecode which going to be running on the graph hosted server.
 - `create:local` create subgraph entity in the self-hosted node, `${name_of_your_subgraph}` must be uniq name of your subgraph.
 - `deploy:local` executes compilation of typescripts and deploying the metadata information to local ipfs node, and deploying wasm binaries to the local graph node.
 
-## Local development
-
-For local development we have prepared `docker-compose.dev.yml` and `docker-compose.yml` files, where the list of the services needed for graph-node instance is defined.
-
-### Short list of the graph relation between services:
-
-```console
-# run services with connection to infura api
-INFURA_KEY={your_infura_key} docker-compose -f docker-compose.dev.yml up -d
-
-# run services with connection to local private node in ganache
-docker-compose -f docker-compose.yml up -d
-```
 
 ### Overview of the services relation
 
@@ -65,7 +97,7 @@ docker-compose -f docker-compose.yml up -d
 
 ### Definition of storable entities
 
-If you want to store aggregated data in database to be able to query them by grapql after, we need to define such entities in `schema.graphql` file:
+If you want to store aggregated data in database to be able to query them by graphql after, we need to define entities in `schema.graphql` file:
 
 ```graphql
 type vToken @entity {
@@ -152,7 +184,7 @@ export class vToken extends Entity {
 }
 ```
 
-In such typescript definition `id` field always become a primary key and used for loading/saving. All entities are storable in postgres, so when we define new entity with this fields set, in postgres must be created table with similar structure.
+In such typescript definition `id` field is the primary key used for loading/saving. All entities are stored in postgres db, so when we define a new entity with this fields set, there is a table created in postgres with similar structure.
 
 #### Here is example of table structure created in postgres for the `vToken` entity:
 
@@ -206,7 +238,7 @@ Example of `subgraph.template.yaml`:
     file: ./src/mappings/phuture/vTokenFactory.ts
 ```
 
-Here you define all smart-contract which we are listening, and the mapping between event and event handler, in such case subgraph node would be listening `VTokenCreated` events, and executing `handleVTokenCreated` handler function with the event data. To show how application store this entity lets have an example of the code of this handler:
+Here you define all the smart contracts which we are listening, and the mapping between event and event handler, in such case subgraph node would be listening `VTokenCreated` events, and executing `handleVTokenCreated` handler function with the event data. To show how application stores this entity lets have an example of the code of this handler:
 
 ```typescript
 export function loadOrCreateVToken(address: Address): vToken {
@@ -236,4 +268,4 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 }
 ```
 
-##### So here node receive the data from event, do some business logic relevant to this entity and making a save request in to database, so after clients will be available to make a queries to this data.
+##### In this example a node receives the data from event, does some business logic relevant to this entity and makes a save request to the database. Making it available for clinets to query this data.

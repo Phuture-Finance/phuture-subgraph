@@ -1,9 +1,12 @@
-import { AnswerUpdated } from '../../types/AggregatorInterface/AggregatorInterface';
-import {ChainLink, IndexBetting} from "../../types/schema";
+import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
+import {ChainlinkAggregator, IndexBetting, Chainlink} from "../../types/schema";
 import {updateIndexBettingDailyStat} from "../stats";
+import {log} from "@graphprotocol/graph-ts";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
-    let chainlink = ChainLink.load(event.address.toHexString());
+    let chainlinkAggregator = ChainlinkAggregator.load(event.address.toHexString());
+    if (!chainlinkAggregator) return;
+    let chainlink = Chainlink.load(chainlinkAggregator.chainlink);
     if (!chainlink) return;
     let indexBetting = IndexBetting.load(chainlink.indexBetting);
     if (!indexBetting) return;
