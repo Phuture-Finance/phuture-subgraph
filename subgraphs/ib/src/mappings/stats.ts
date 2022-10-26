@@ -1,7 +1,7 @@
 import { IndexBetting, IndexBettingDailyStat, PricesHourlyStat } from '../types/schema';
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 import { IndexBetting as IndexBettingContract } from '../types/IndexBetting/IndexBetting';
-import { getStartingTimestamp, SECONDS_IN_DAY } from '../utils/timestamp';
+import {getStartingTimestamp, SECONDS_IN_DAY, SECONDS_IN_HOUR} from '../utils/timestamp';
 import { IndexHelper } from '../types/UniswapV2Pool/IndexHelper';
 import { ChainLink } from '../types/templates/AggregatorInterface/ChainLink';
 import { DPI_PRICE_FEED, INDEX_HELPER, PDI } from '../../consts';
@@ -35,7 +35,7 @@ export function updateIndexBettingDailyStat(indexBetting: IndexBetting, ts: BigI
 }
 
 export function updatePricesHourlyStat(txHash: string, ts: BigInt): void {
-  let startingHour = getStartingTimestamp(ts, BigInt.fromI32(60));
+  let startingHour = getStartingTimestamp(ts, SECONDS_IN_HOUR);
   log.info('startingHour: {}', [startingHour.toString()]);
   let stat = PricesHourlyStat.load(startingHour.toString());
   log.info('stat: {}', [stat ? stat.id : 'null']);
