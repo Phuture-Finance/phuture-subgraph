@@ -64,3 +64,12 @@ type IndexBettingDailyStat @entity {
   PDIBasePrice: BigInt!
   DPIBasePrice: BigInt!
 }
+
+type PricesHourlyStat @entity {
+  id: ID!
+
+  date: BigInt!
+
+  PDIBasePrice: BigInt!
+  DPIBasePrice: BigInt!
+}

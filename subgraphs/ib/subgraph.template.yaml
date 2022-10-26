@@ -28,6 +28,29 @@ dataSources:
           handler: handleTransfer
       file: ./src/mappings/indexBetting.ts
 
+  - kind: ethereum/contract
+    name: UniswapV2Pool
+    network: {{network}}
+    source:
+      abi: UniswapPair
+      address: '{{UniswapPair}}'
+      startBlock: {{UniswapPairBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - PricesDailyStat
+      abis:
+        - name: IndexHelper
+          file: ../abis/Phuture/IndexHelper.json
+        - name: UniswapPair
+          file: ../abis/Uniswap/UniswapPair.json
+      eventHandlers:
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: handleSwap
+      file: ./src/mappings/swap.ts
+
 #-------------------------------------------------------------------------------
 #                               Template section
 #-------------------------------------------------------------------------------
