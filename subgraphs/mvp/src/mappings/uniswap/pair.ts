@@ -23,7 +23,13 @@ export function handleSync(event: Sync): void {
   pair.save();
 }
 
-export function updateAssetsBasePrice(reserve0: BigInt, reserve1: BigInt, asset0: Asset, asset1: Asset, ts: BigInt): void {
+export function updateAssetsBasePrice(
+  reserve0: BigInt,
+  reserve1: BigInt,
+  asset0: Asset,
+  asset1: Asset,
+  ts: BigInt,
+): void {
   let asset0Reserve = convertTokenToDecimal(reserve0, asset0.decimals);
   let asset1Reserve = convertTokenToDecimal(reserve1, asset1.decimals);
 
@@ -41,7 +47,7 @@ function updateAssetBasePrice(
   asset: Asset,
   baseAssetReserve: BigDecimal,
   assetReserve: BigDecimal,
-  ts: BigInt
+  ts: BigInt,
 ): void {
   baseAsset.basePriceUni = getEthPriceInUSD();
   baseAsset.save();

@@ -12,7 +12,7 @@ let data = {
   ...impBlocks,
   ...network,
 
-  IndexBettingBlockNumber: impBlocks.IndexBettingBlockNumber
+  IndexBettingBlockNumber: impBlocks.IndexBettingBlockNumber,
 };
 
 module.exports = {

@@ -1,7 +1,7 @@
-import {Address, log} from "@graphprotocol/graph-ts";
-import {Chainlink, ChainlinkAggregator} from "../../types/schema";
-import {AggregatorInterface} from "../../types/templates";
-import {ChainLink as ChainLinkSmartContract} from "../../types/templates/AggregatorInterface/ChainLink";
+import { Address, log } from '@graphprotocol/graph-ts';
+import { Chainlink, ChainlinkAggregator } from '../../types/schema';
+import { AggregatorInterface } from '../../types/templates';
+import { ChainLink as ChainLinkSmartContract } from '../../types/templates/AggregatorInterface/ChainLink';
 
 export function loadOrCreateChainlink(addr: Address, indexBettingAddress: string): Chainlink {
   let id = addr.toHexString();
@@ -12,13 +12,13 @@ export function loadOrCreateChainlink(addr: Address, indexBettingAddress: string
   if (!chainlink) {
     chainlink = new Chainlink(id);
     chainlink.indexBetting = indexBettingAddress;
-    if(aggregator !== null) {
+    if (aggregator !== null) {
       createChainlinkAggregator(aggregator as Address, chainlink);
     }
   } else {
-    if(aggregator !== null) {
+    if (aggregator !== null) {
       // Aggregator has changed, create new data source from the template
-      if(chainlink.chainlinkAggregator.toLowerCase() != (aggregator as Address).toHexString().toLowerCase()) {
+      if (chainlink.chainlinkAggregator.toLowerCase() != (aggregator as Address).toHexString().toLowerCase()) {
         createChainlinkAggregator(aggregator as Address, chainlink);
       }
     }
@@ -32,10 +32,10 @@ export function loadOrCreateChainlink(addr: Address, indexBettingAddress: string
 export function createChainlinkAggregator(aggregator: Address, chainlink: Chainlink): void {
   AggregatorInterface.create(aggregator);
   let chainlinkAggregator = ChainlinkAggregator.load(aggregator.toHexString());
-    if (!chainlinkAggregator) {
-        chainlinkAggregator = new ChainlinkAggregator(aggregator.toHexString());
-        chainlinkAggregator.chainlink = chainlink.id;
-    }
+  if (!chainlinkAggregator) {
+    chainlinkAggregator = new ChainlinkAggregator(aggregator.toHexString());
+    chainlinkAggregator.chainlink = chainlink.id;
+  }
   chainlinkAggregator.save();
   chainlink.chainlinkAggregator = aggregator.toHexString();
 }
@@ -43,8 +43,8 @@ export function createChainlinkAggregator(aggregator: Address, chainlink: Chainl
 export function getAggregatorAddress(chainlinkAddr: Address): Address | null {
   let chainLinkContract = ChainLinkSmartContract.bind(chainlinkAddr);
   let aggregator = chainLinkContract.try_aggregator();
-  if(aggregator.reverted) {
-    return null
+  if (aggregator.reverted) {
+    return null;
   }
   return aggregator.value;
 

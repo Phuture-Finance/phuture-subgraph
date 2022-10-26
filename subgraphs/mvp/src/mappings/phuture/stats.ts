@@ -17,8 +17,8 @@ import {
   YearlyIndexStat,
 } from '../../types/schema';
 import { FACTORY_ADDRESS } from '../../../consts';
-import { convertTokenToDecimal } from "../../utils/calc";
-import { getStartingDayTimestamp } from "../../utils/timestamp";
+import { convertTokenToDecimal } from '../../utils/calc';
+import { getStartingDayTimestamp } from '../../utils/timestamp';
 
 export function updateDailyStat(ts: BigInt): DailyStat {
   let timestamp = ts.toI32();
@@ -81,7 +81,7 @@ export function updateHourlyIndexStat(index: Index, ts: BigInt): HourlyIndexStat
 }
 
 export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapitalization {
-  let id = index.id.concat("-").concat(getStartingDayTimestamp(ts).toString());
+  let id = index.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
   let dailyCap = DailyCapitalization.load(id);
 
   if (!dailyCap) {
@@ -99,7 +99,7 @@ export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapita
 }
 
 export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDailyCapitalization {
-  let id = vault.id.concat("-").concat(getStartingDayTimestamp(ts).toString());
+  let id = vault.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
 
   let dailyCap = SVDailyCapitalization.load(id);
   if (!dailyCap) {
@@ -119,7 +119,7 @@ export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDaily
 export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
   let startingDay = getStartingDayTimestamp(ts);
 
-  let stat = SVDailyStat.load(vault.id.concat("-").concat(startingDay.toString()));
+  let stat = SVDailyStat.load(vault.id.concat('-').concat(startingDay.toString()));
   if (!stat) {
     stat = new SVDailyStat(vault.id.concat('-').concat(startingDay.toString()));
     stat.date = startingDay;

@@ -1,6 +1,6 @@
-import { assert, clearStore, test } from "matchstick-as/assembly/index";
+import { assert, clearStore, test } from 'matchstick-as/assembly/index';
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
-import { updateIndexBasePriceByIndex } from "../src/utils/index"
+import { updateIndexBasePriceByIndex } from '../src/utils/index';
 import { Index, Asset, IndexAsset } from '../src/types/schema';
 //import { logStore } from "matchstick-as/assembly/store";
 

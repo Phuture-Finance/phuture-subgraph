@@ -3,8 +3,8 @@ import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
-import {ChainLinkAssetMap} from "../../../consts";
-import {calculateChainLinkPrice, loadOrCreateChainLink} from "./ChainLink";
+import { ChainLinkAssetMap } from '../../../consts';
+import { calculateChainLinkPrice, loadOrCreateChainLink } from './ChainLink';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();

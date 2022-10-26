@@ -132,9 +132,7 @@
     "absolutePath": "src/TestContract.sol",
     "id": 27952,
     "exportedSymbols": {
-      "TestContract": [
-        27951
-      ]
+      "TestContract": [27951]
     },
     "nodeType": "SourceUnit",
     "src": "39:312:37",
@@ -143,12 +141,7 @@
         "id": 27915,
         "nodeType": "PragmaDirective",
         "src": "39:24:37",
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".13"
-        ]
+        "literals": ["solidity", "^", "0.8", ".13"]
       },
       {
         "id": 27951,
@@ -575,9 +568,7 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "linearizedBaseContracts": [
-          27951
-        ],
+        "linearizedBaseContracts": [27951],
         "name": "TestContract",
         "nameLocation": "74:12:37",
         "scope": 27952,

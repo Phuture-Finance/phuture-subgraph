@@ -7,8 +7,8 @@ import {
   loadOrCreateDaylyUserIndexHistory,
 } from '../entities';
 import { ONE_BI } from '../../../../helpers';
-import { updateIndexBasePriceByIndex } from "../../utils";
-import { convertDecimals, convertTokenToDecimal } from "../../utils/calc";
+import { updateIndexBasePriceByIndex } from '../../utils';
+import { convertDecimals, convertTokenToDecimal } from '../../utils/calc';
 
 export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, to: Address, value: BigInt): void {
   let tx = loadOrCreateTransaction(event);
@@ -48,7 +48,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
     // balance * (marketCap / totalSupply)
     fromUserIndex.capitalization = convertDecimals(fromUserIndex.balance, index.decimals).times(
-        index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals))
+      index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals)),
     );
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
@@ -94,7 +94,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
     toUserIndex.capitalization = toUserIndex.balance.div(index.totalSupply.toBigDecimal()).times(index.marketCap);
     // balance * (marketCap / totalSupply)
     toUserIndex.capitalization = convertDecimals(toUserIndex.balance, index.decimals).times(
-        index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals))
+      index.marketCap.div(convertTokenToDecimal(index.totalSupply, index.decimals)),
     );
 
     toUserIndex.save();
@@ -119,9 +119,7 @@ export function handleAllIndexesTransfers(event: ethereum.Event, from: Address, 
 
   index.save();
 
-  let transfer = new Transfer(
-    event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString()),
-  );
+  let transfer = new Transfer(event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toString()));
 
   transfer.index = event.address.toHexString();
   transfer.transaction = tx.id;

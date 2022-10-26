@@ -1,4 +1,4 @@
-import {Address, BigInt} from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
 import { STATIC_TYPE } from '../../../../helpers';
 import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';

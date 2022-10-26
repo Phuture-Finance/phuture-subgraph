@@ -5,7 +5,7 @@
     "resolveJsonModule": true,
     "baseUrl": "src",
     "paths": {
-      "types/*": ["types/*"],
+      "types/*": ["types/*"]
     }
   }
 }

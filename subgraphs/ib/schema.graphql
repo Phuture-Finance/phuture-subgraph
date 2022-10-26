@@ -10,9 +10,9 @@ type IndexBetting @entity {
 }
 
 type IndexBettingUser @entity {
-    id: ID!
-    indexBetting: IndexBetting!
-    balance: BigInt!
+  id: ID!
+  indexBetting: IndexBetting!
+  balance: BigInt!
 }
 
 enum IndexBettingTransferType {
@@ -36,7 +36,6 @@ type IndexBettingTransfer @entity {
 
 type Transaction @entity {
   id: ID! # txn hash
-
   blockNumber: BigInt!
   timestamp: BigInt!
 

@@ -1,7 +1,7 @@
 import { IndexTracked } from '../../../../helpers';
 import { handleIndexCreation } from './baseIndex';
 import { TrackedIndexCreated, TrackedIndexFactory } from '../../types/TrackedIndexFactory/TrackedIndexFactory';
-import { loadOrCreateIndexFactory } from "../entities";
+import { loadOrCreateIndexFactory } from '../entities';
 
 export function handleTrackedIndexCreated(event: TrackedIndexCreated): void {
   let idxFactory = TrackedIndexFactory.bind(event.address);

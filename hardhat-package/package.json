@@ -12,6 +12,5 @@
   "workspaces": [
     "subgraphs/**"
   ],
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

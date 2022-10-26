@@ -1,34 +1,27 @@
-import {ASSET_ROLE, UNI_V3_ORACLE_ROLE, UNI_V3_PATH_ORACLE_ROLE} from '../../../../helpers';
+import { ASSET_ROLE, UNI_V3_ORACLE_ROLE, UNI_V3_PATH_ORACLE_ROLE } from '../../../../helpers';
 import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
 import { SetName, SetSymbol } from '../../types/templates/ManagedIndex/IndexRegistry';
 import { RoleGranted, RoleRevoked } from '../../types/IndexRegistry/IndexRegistry';
-import { Index, UniV3PathPriceOracle, UniV3PriceOracle} from '../../types/schema';
+import { Index, UniV3PathPriceOracle, UniV3PriceOracle } from '../../types/schema';
 import {
   Asset as AssetTemplate,
   UniswapPair as UniswapPairTemplate,
   SushiswapPair as SushiswapPairTemplate,
-  erc20 as erc20tpl, Pool as PoolTemplate,
+  erc20 as erc20tpl,
+  Pool as PoolTemplate,
 } from '../../types/templates';
-import {
-  loadOrCreateAsset,
-  loadOrCreatePair,
-  loadOrCreateSushiPair
-} from '../entities';
+import { loadOrCreateAsset, loadOrCreatePair, loadOrCreateSushiPair } from '../entities';
 
 import { UniswapPair } from '../../types/templates/UniswapPair/UniswapPair';
 import { UniswapPair as SushiswapPair } from '../../types/templates/SushiswapPair/UniswapPair';
-import { UniswapV3PriceOracle } from "../../types/IndexRegistry/UniswapV3PriceOracle";
-import {Address, BigDecimal, BigInt, log} from '@graphprotocol/graph-ts';
+import { UniswapV3PriceOracle } from '../../types/IndexRegistry/UniswapV3PriceOracle';
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 
-import {
-  UNI_FACTORY_ADDRESS,
-  SUSHI_FACTORY_ADDRESS,
-  BASE_ASSETS,
-} from '../../../consts';
+import { UNI_FACTORY_ADDRESS, SUSHI_FACTORY_ADDRESS, BASE_ASSETS } from '../../../consts';
 import { updateAssetsBasePrice } from '../uniswap/pair';
 import { updateSushiAssetsBasePrice } from '../sushiswap/pair';
-import { UniswapPathPriceOracle } from "../../types/IndexRegistry/UniswapPathPriceOracle";
-import { exponentToBigDecimal } from "../../utils/calc";
+import { UniswapPathPriceOracle } from '../../types/IndexRegistry/UniswapPathPriceOracle';
+import { exponentToBigDecimal } from '../../utils/calc';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
   let asset = loadOrCreateAsset(event.params.asset);
@@ -143,17 +136,19 @@ export function handleRoleGranted(event: RoleGranted): void {
 
       let a0 = loadOrCreateAsset(asset0);
       let a1 = loadOrCreateAsset(asset1);
-      let dt = po.try_lastAssetPerBaseInUQ(asset0)
+      let dt = po.try_lastAssetPerBaseInUQ(asset0);
       if (!dt.reverted) {
         let exp = exponentToBigDecimal(a0.decimals).div(exponentToBigDecimal(a1.decimals));
-        a0.basePrice = new BigDecimal(BigInt.fromString('5192296858534827628530496329220096')).div(new BigDecimal(dt.value)).times(exp);
+        a0.basePrice = new BigDecimal(BigInt.fromString('5192296858534827628530496329220096'))
+          .div(new BigDecimal(dt.value))
+          .times(exp);
       }
       a0.oracle = event.params.account.toHexString();
       a0.save();
 
       PoolTemplate.create(tPool.value);
     } else {
-      log.error("failed get pool on address: {}", [event.params.account.toHexString()]);
+      log.error('failed get pool on address: {}', [event.params.account.toHexString()]);
     }
 
     // UNI_V3_PATH_ORACLE_ROLE handling.
@@ -162,7 +157,7 @@ export function handleRoleGranted(event: RoleGranted): void {
 
     let tAnatomy = ppo.try_anatomy();
     if (!tAnatomy.reverted) {
-      let asset0 = tAnatomy.value.value0[tAnatomy.value.value0.length-1];
+      let asset0 = tAnatomy.value.value0[tAnatomy.value.value0.length - 1];
       let asset1 = tAnatomy.value.value0[0];
 
       for (let i = 0; i < tAnatomy.value.value1.length; i++) {
@@ -175,19 +170,20 @@ export function handleRoleGranted(event: RoleGranted): void {
         PoolTemplate.create(tAnatomy.value.value1[i]);
       }
 
-      let dt = ppo.try_lastAssetPerBaseInUQ(tAnatomy.value.value0[tAnatomy.value.value0.length-1]);
+      let dt = ppo.try_lastAssetPerBaseInUQ(tAnatomy.value.value0[tAnatomy.value.value0.length - 1]);
       if (!dt.reverted) {
         let a0 = loadOrCreateAsset(asset0);
         let a1 = loadOrCreateAsset(asset1);
 
         let exp = exponentToBigDecimal(a0.decimals).div(exponentToBigDecimal(a1.decimals));
-        a0.basePrice = new BigDecimal(BigInt.fromString('5192296858534827628530496329220096')).div(new BigDecimal(dt.value)).times(exp);
+        a0.basePrice = new BigDecimal(BigInt.fromString('5192296858534827628530496329220096'))
+          .div(new BigDecimal(dt.value))
+          .times(exp);
         a0.oracle = event.params.account.toHexString();
         a0.save();
       }
-
     } else {
-      log.error("failed get anatomy on address: {}", [event.params.account.toHexString()]);
+      log.error('failed get anatomy on address: {}', [event.params.account.toHexString()]);
     }
   }
 }

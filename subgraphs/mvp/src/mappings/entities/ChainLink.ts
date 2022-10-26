@@ -1,10 +1,10 @@
 import { ChainLink, ChainLinkAgg } from '../../types/schema';
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
-import { ChainLinkAssetMap, BNA_ADDRESS } from "../../../consts";
-import { AggregatorInterface as AggregatorInterfaceTemplate } from "../../types/templates";
-import { ChainLink as ChainLinkAggTemplate } from "../../types/templates/AggregatorInterface/ChainLink";
-import { convertTokenToDecimal } from "../../utils/calc";
-import { AggregatorInterface } from "../../types/ChainlinkPriceOracle/AggregatorInterface";
+import { ChainLinkAssetMap, BNA_ADDRESS } from '../../../consts';
+import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
+import { ChainLink as ChainLinkAggTemplate } from '../../types/templates/AggregatorInterface/ChainLink';
+import { convertTokenToDecimal } from '../../utils/calc';
+import { AggregatorInterface } from '../../types/ChainlinkPriceOracle/AggregatorInterface';
 
 export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
   let cl = AggregatorInterface.bind(addr);
@@ -28,7 +28,7 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
       agg.description = description.value;
     }
 
-    if (agg.description.substring(agg.description.length - 3, agg.description.length) == "ETH") {
+    if (agg.description.substring(agg.description.length - 3, agg.description.length) == 'ETH') {
       let nextAgg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
       agg.nextAgg = nextAgg.id;
     }
@@ -45,7 +45,7 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
   if (!chl) {
     chl = new ChainLink(id);
 
-    let aggAddr = cl.try_aggregator()
+    let aggAddr = cl.try_aggregator();
     if (!aggAddr.reverted) {
       AggregatorInterfaceTemplate.create(aggAddr.value);
       chl.aggregator = aggAddr.value.toHexString();
@@ -76,7 +76,7 @@ export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
   let agg = loadOrCreateChainLink(Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)));
   if (!agg.asset) {
     agg.asset = BNA_ADDRESS;
-    agg.save()
+    agg.save();
   }
 
   return usdPrice.div(convertTokenToDecimal(agg.answer, agg.decimals));

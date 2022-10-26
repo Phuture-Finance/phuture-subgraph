@@ -82,7 +82,7 @@ export function handleAssetRemoved(assetRemovedAddr: Address): void {
   for (let i = 0; i < assetRemoved._indexes.length; i++) {
     let index = Index.load(assetRemoved._indexes[i]);
     if (!index) {
-      continue
+      continue;
     }
 
     let indexAsset = loadOrCreateIndexAsset(index.id, assetRemovedAddr.toHexString());

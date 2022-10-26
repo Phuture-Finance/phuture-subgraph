@@ -37,7 +37,7 @@ export function handlerCompleteOrder(event: CompleteOrder): void {
   sellOrderDetails.save();
 
   let order = Order.load(event.params.id.toString());
-  let sellAsset = Asset.load(event.params.sellAsset.toHexString())
+  let sellAsset = Asset.load(event.params.sellAsset.toHexString());
   let buyAsset = Asset.load(event.params.buyAsset.toHexString());
   if (order && sellAsset && buyAsset) {
     let ocId = event.transaction.hash.toHexString();
@@ -55,7 +55,7 @@ export function handlerCompleteOrder(event: CompleteOrder): void {
     oc.buyTokenPrice = buyAsset.basePrice;
 
     oc.transactionGas = event.transaction.gasPrice;
-    oc.transactionFee = event.transaction.value
+    oc.transactionFee = event.transaction.value;
 
     oc.save();
   }

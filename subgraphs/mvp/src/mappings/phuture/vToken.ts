@@ -77,7 +77,7 @@ function updateVToken(vt: vToken, event: VTokenTransfer, isInc: bool): void {
 
 export function handlerUpdateDeposit(event: UpdateDeposit): void {
   let vt = loadOrCreateVToken(event.address);
- 
+
   vt.deposited = event.params.depositedAmount;
   vt.totalAmount = vt.assetReserve.plus(vt.deposited);
 

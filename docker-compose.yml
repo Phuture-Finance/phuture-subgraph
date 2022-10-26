@@ -31,10 +31,10 @@ services:
       postgres_pass: letmein
       postgres_db: postgres
       ipfs: 'ipfs:5001'
-      ethereum: "mainnet:http://host.docker.internal:8545"
+      ethereum: 'mainnet:http://host.docker.internal:8545'
       GRAPH_LOG: debug
     extra_hosts:
-        - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
 
 volumes:
   pdata:
