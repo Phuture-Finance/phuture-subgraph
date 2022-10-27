@@ -6,8 +6,8 @@
   "scripts": {
     "build": "lerna run build --stream",
     "codegen": "lerna run codegen --stream",
-    "lint": "nx run-many --target=lint",
-    "lint:fix": "nx run-many --target=lint --fix"
+    "lint": "lerna run lint --stream",
+    "lint:fix": "lerna run lint:fix --stream"
   },
   "workspaces": [
     "subgraphs/**"
