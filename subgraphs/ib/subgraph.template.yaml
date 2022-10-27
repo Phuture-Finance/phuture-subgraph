@@ -2,7 +2,7 @@ specVersion: 0.0.3
 description: Phuture Index Betting
 repository: https://github.com/Phuture-Finance/phuture-subgraph
 schema:
-  file: ./schema.graphql
+   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: IndexBetting
@@ -17,9 +17,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - IndexBetting
-        - IndexBettingUser
-        - IndexBettingTransfer
-        - IndexBettingTransaction
+        - User
+        - Transfer
       abis:
         - name: IndexBetting
           file: ../abis/IndexBetting/IndexBetting.json
@@ -46,32 +45,9 @@ dataSources:
           file: ../abis/Phuture/IndexHelper.json
         - name: UniswapPair
           file: ../abis/Uniswap/UniswapPair.json
+        - name: Chainlink
+          file: ../abis/Chainlink/ChainLink.json
       eventHandlers:
         - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
           handler: handleSwap
       file: ./src/mappings/swap.ts
-
-#-------------------------------------------------------------------------------
-#                               Template section
-#-------------------------------------------------------------------------------
-templates:
-  - kind: ethereum/contract
-    name: AggregatorInterface
-    network: {{network}}
-    source:
-      abi: AggregatorInterface
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - ChainlinkAggregator
-      file: ./src/mappings/chainlink/aggregator.ts
-      abis:
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
-          handler: handleAnswerUpdated

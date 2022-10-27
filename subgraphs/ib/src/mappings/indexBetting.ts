@@ -1,20 +1,17 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { loadOrCreateIndexBetting } from './entities/IndexBetting';
 import { Transfer } from '../types/IndexBetting/IndexBetting';
-import { IndexBettingTransfer, IndexBettingUser } from '../types/schema';
-import { loadOrCreateIndexBettingUser } from './entities/Account';
-import { loadOrCreateTransaction } from './entities/Transaction';
+import { User } from '../types/schema';
+import { loadOrCreateUser } from './entities/Account';
 
-import { loadOrCreateChainlink } from './entities/ChainLink';
+import { createTransfer } from './entities/Transfer';
 
 export function handleTransfer(event: Transfer): void {
   let indexBetting = loadOrCreateIndexBetting(event.address, event.block.timestamp);
 
-  loadOrCreateChainlink(Address.fromString(indexBetting.chainlink), event.address.toHexString());
-
-  loadOrCreateIndexBettingUser(event.params.from);
-  loadOrCreateIndexBettingUser(event.params.to);
+  loadOrCreateUser(event.params.from);
+  loadOrCreateUser(event.params.to);
 
   let transferType: string;
   if (event.params.from.equals(Address.zero())) {
@@ -28,9 +25,9 @@ export function handleTransfer(event: Transfer): void {
   // It's a transfer or a burn
   if (!event.params.from.equals(Address.zero())) {
     let fromUserId = event.params.from.toHexString();
-    let fromUser = IndexBettingUser.load(fromUserId);
+    let fromUser = User.load(fromUserId);
     if (!fromUser) {
-      fromUser = new IndexBettingUser(fromUserId);
+      fromUser = new User(fromUserId);
       fromUser.indexBetting = event.address.toHexString();
       fromUser.balance = BigInt.zero();
     }
@@ -46,9 +43,9 @@ export function handleTransfer(event: Transfer): void {
   // It's a transfer or a mint
   if (!event.params.to.equals(Address.zero())) {
     let toUserId = event.params.to.toHexString();
-    let toUser = IndexBettingUser.load(toUserId);
+    let toUser = User.load(toUserId);
     if (!toUser) {
-      toUser = new IndexBettingUser(toUserId);
+      toUser = new User(toUserId);
       toUser.indexBetting = event.address.toHexString();
       toUser.balance = BigInt.zero();
     }
@@ -60,34 +57,6 @@ export function handleTransfer(event: Transfer): void {
     toUser.save();
   }
 
-  loadOrCreateTransaction(event);
-
-  let transferFrom = IndexBettingTransfer.load(event.params.from.toHexString());
-  if (!transferFrom) {
-    transferFrom = new IndexBettingTransfer(event.params.from.toHexString());
-    transferFrom.indexBetting = event.address.toHexString();
-    transferFrom.from = event.params.from.toHexString();
-    transferFrom.to = event.params.to.toHexString();
-    transferFrom.amount = event.params.amount;
-    transferFrom.type = transferType;
-    transferFrom.timestamp = event.block.timestamp;
-    transferFrom.save();
-  }
-
-  let transferTo = IndexBettingTransfer.load(event.params.to.toHexString());
-  if (!transferTo) {
-    transferTo = new IndexBettingTransfer(event.params.to.toHexString());
-    transferTo.indexBetting = event.address.toHexString();
-    transferTo.from = event.params.from.toHexString();
-    transferTo.to = event.params.to.toHexString();
-    transferTo.amount = event.params.amount;
-    transferTo.type = transferType;
-    transferTo.timestamp = event.block.timestamp;
-    transferTo.save();
-  }
-
-  // For testing purposes
-  // updateIndexBettingDailyStat(indexBetting, event.block.timestamp);
-
+  createTransfer(event, transferType);
   indexBetting.save();
 }

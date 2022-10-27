@@ -5,11 +5,9 @@
 type IndexBetting @entity {
   id: ID!
   betParticipants: BigInt!
-  chainlink: Chainlink!
-  dailyStats: [IndexBettingDailyStat!]! @derivedFrom(field: "indexBetting")
 }
 
-type IndexBettingUser @entity {
+type User @entity {
   id: ID!
   indexBetting: IndexBetting!
   balance: BigInt!
@@ -21,48 +19,16 @@ enum IndexBettingTransferType {
   Burn
 }
 
-type IndexBettingTransfer @entity {
+type Transfer @entity {
   id: ID!
   indexBetting: IndexBetting!
-  transaction: Transaction!
   type: IndexBettingTransferType!
 
-  from: IndexBettingUser
-  to: IndexBettingUser
+  from: User
+  to: User
   amount: BigInt!
 
   timestamp: BigInt!
-}
-
-type Transaction @entity {
-  id: ID! # txn hash
-  blockNumber: BigInt!
-  timestamp: BigInt!
-
-  value: BigInt!
-  gasUsed: BigInt!
-  gasPrice: BigInt!
-}
-
-type Chainlink @entity {
-  id: ID!
-  indexBetting: IndexBetting!
-  chainlinkAggregator: ChainlinkAggregator!
-}
-
-type ChainlinkAggregator @entity {
-  id: ID!
-  chainlink: Chainlink!
-}
-
-type IndexBettingDailyStat @entity {
-  id: ID!
-
-  date: BigInt!
-  indexBetting: IndexBetting!
-
-  PDIBasePrice: BigInt!
-  DPIBasePrice: BigInt!
 }
 
 type PricesHourlyStat @entity {
