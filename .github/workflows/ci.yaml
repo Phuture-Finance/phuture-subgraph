@@ -16,7 +16,7 @@ env:
 
 permissions:
   id-token: write
-  contents: read   # This is required for actions/checkout@v2
+  contents: read # This is required for actions/checkout@v2
 
 jobs:
   ci:
@@ -32,7 +32,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
+          node-version: '16.x'
 
       - name: Build1
         run: cd ./repoPath/subgraphs/mvp && npm install --force && CONFIG_PATH=./mainnet/ npm run codegen
@@ -41,7 +41,8 @@ jobs:
         run: cd ./repoPath && cp -r node_modules/matchstick-as/ subgraphs/mvp/node_modules/
 
       - name: Build3
-        run: cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
+        run:
+          cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
 
           #      - name: Test
           #        run: cd ./repoPath/subgraphs/mvp && ./graph test
@@ -65,4 +66,3 @@ jobs:
         run: |
           docker build -f ./repoPath/Dockerfile.deploy -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-

@@ -1,32 +1,29 @@
-import {Address, BigInt} from '@graphprotocol/graph-ts';
-import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
+import { Address } from '@graphprotocol/graph-ts';
+
 import { STATIC_TYPE } from '../../../../helpers';
 import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';
-
-import { vToken } from '../../types/templates';
+import { vToken as vTokenEntity } from '../../types/templates';
+import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
 
 export function handleStaticVTokenCreated(event: ManagedVTokenCreated): void {
   if (event.params.vToken.equals(Address.zero())) return;
 
-  let vt = loadOrCreateVToken(event.params.vToken);
-  vt.asset = event.params.asset.toHexString();
-  vt.factory = event.address.toHexString();
+  let vToken = loadOrCreateVToken(event.params.vToken);
+  vToken.asset = event.params.asset.toHexString();
+  vToken.factory = event.address.toHexString();
+  vToken.tokenType = STATIC_TYPE;
 
-  let assetAddr = Address.fromString(vt.asset);
-  let asset = loadOrCreateAsset(assetAddr);
-
-  let value = asset._vTokens;
+  let assetAddress = Address.fromString(vToken.asset);
+  let asset = loadOrCreateAsset(assetAddress);
 
   // TODO: temporary added since we could have issue in contracts where we don't send initial event.
   // vt.platformTotalSupply = BigInt.fromI32(10000);
-  vt.tokenType = STATIC_TYPE;
-  value = [vt.id].concat(asset._vTokens);
+  asset._vTokens = [vToken.id].concat(asset._vTokens);
 
-  asset._vTokens = value;
   asset.save();
 
-  // Generate template for monitoring new address.
-  vToken.create(event.params.vToken);
+  // Generate a template for monitoring new address.
+  vTokenEntity.create(event.params.vToken);
 
-  vt.save();
+  vToken.save();
 }
