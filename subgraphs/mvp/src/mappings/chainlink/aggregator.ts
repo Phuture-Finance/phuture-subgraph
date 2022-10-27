@@ -1,6 +1,6 @@
 import { log } from '@graphprotocol/graph-ts';
 
-import { Asset, ChainLinkAgg, SVVault } from '../../types/schema';
+import { Asset, ChainLinkAggregator, SVVault } from '../../types/schema';
 import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
 import { updateIndexBasePriceByAsset } from '../../utils';
 import {
@@ -11,7 +11,7 @@ import {
 import { calculateChainLinkPrice } from '../entities';
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
-  let agg = ChainLinkAgg.load(event.address.toHexString());
+  let agg = ChainLinkAggregator.load(event.address.toHexString());
   if (!agg) return;
 
   agg.answer = event.params.current;

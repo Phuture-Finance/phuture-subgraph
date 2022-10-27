@@ -1,5 +1,5 @@
 import { AssetAdded } from '../../types/ChainlinkPriceOracle/ChainlinkPriceOracle';
-import { ChainLinkAgg } from '../../types/schema';
+import { ChainLinkAggregator } from '../../types/schema';
 import {
   calculateChainLinkPrice,
   loadOrCreateAsset,
@@ -8,7 +8,7 @@ import {
 
 export function handleAssetAdded(event: AssetAdded): void {
   let asset = loadOrCreateAsset(event.params._asset);
-  let prevAggregator: ChainLinkAgg | null = null;
+  let prevAggregator: ChainLinkAggregator | null = null;
 
   for (let i = 0; i < event.params._aggregators.length; i++) {
     let nextAggregator = loadOrCreateChainLink(event.params._aggregators[i]);

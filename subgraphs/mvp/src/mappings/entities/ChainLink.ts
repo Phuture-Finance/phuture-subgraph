@@ -2,17 +2,17 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 import { ChainLinkAssetMap, BNA_ADDRESS } from '../../../consts';
 import { AggregatorInterface } from '../../types/ChainlinkPriceOracle/AggregatorInterface';
-import { ChainLink, ChainLinkAgg } from '../../types/schema';
+import { ChainLink, ChainLinkAggregator } from '../../types/schema';
 import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
 import { ChainLink as ChainLinkAggTemplate } from '../../types/templates/AggregatorInterface/ChainLink';
 import { convertTokenToDecimal } from '../../utils/calc';
 
-export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
+export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAggregator {
   let aggregatorContract = AggregatorInterface.bind(addr);
 
-  let aggregator = ChainLinkAgg.load(addr.toHexString());
+  let aggregator = ChainLinkAggregator.load(addr.toHexString());
   if (!aggregator) {
-    aggregator = new ChainLinkAgg(addr.toHexString());
+    aggregator = new ChainLinkAggregator(addr.toHexString());
 
     let answer = aggregatorContract.try_latestAnswer();
     if (!answer.reverted) {
@@ -47,7 +47,7 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAgg {
   return aggregator;
 }
 
-export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
+export function loadOrCreateChainLink(addr: Address): ChainLinkAggregator {
   let id = addr.toHexString();
   let aggregatorContract = ChainLinkAggTemplate.bind(addr);
 
@@ -74,7 +74,9 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAgg {
 }
 
 // returns the price from the aggregator or from the chain of aggregators.
-export function calculateChainLinkPrice(aggregator: ChainLinkAgg): BigDecimal {
+export function calculateChainLinkPrice(
+  aggregator: ChainLinkAggregator,
+): BigDecimal {
   let price = convertTokenToDecimal(aggregator.answer, aggregator.decimals);
 
   if (aggregator.nextAgg) {

@@ -21,10 +21,6 @@ dataSources:
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -120,7 +116,7 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - ChainLinkAgg
+        - ChainLinkAggregator
       abis:
         - name: ChainlinkPriceOracle
           file: ../abis/Phuture/ChainlinkPriceOracle.json
@@ -343,7 +339,7 @@ templates:
       language: wasm/assemblyscript
       entities:
         - Asset
-        - ChainLinkAgg
+        - ChainLinkAggregator
         - SVVault
       file: ./src/mappings/chainlink/aggregator.ts
       abis:
@@ -358,58 +354,6 @@ templates:
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           handler: handleAnswerUpdated
-
-  - kind: ethereum/contract
-    name: SushiswapPair
-    network: {{network}}
-    source:
-      abi: UniswapPair
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/sushiswap/pair.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: Sync(uint112,uint112)
-          handler: handleSync
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-
-  - kind: ethereum/contract
-    name: UniswapPair
-    network: {{network}}
-    source:
-      abi: UniswapPair
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/uniswap/pair.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: Sync(uint112,uint112)
-          handler: handleSync
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
 
   - kind: ethereum/contract
     name: vToken

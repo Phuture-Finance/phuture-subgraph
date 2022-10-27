@@ -35,7 +35,7 @@ export function handleIndexCreation(
     let assetId = paramAssets[i].toHexString();
     let asset = loadOrCreateAsset(paramAssets[i]);
 
-    asset.indexCount = asset.indexCount.plus(ONE_BI);
+    // asset.indexCount = asset.indexCount.plus(ONE_BI);
     asset._indexes = asset._indexes.concat([index.id]);
     asset.save();
 
@@ -71,7 +71,7 @@ export function handleIndexCreation(
   }
 
   let stat = updateStat(event.block.timestamp);
-  stat.indexCount = stat.indexCount.plus(ONE_BI);
+  // stat.indexCount = stat.indexCount.plus(ONE_BI);
   stat.save();
 
   return index;

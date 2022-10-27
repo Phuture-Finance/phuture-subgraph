@@ -32,12 +32,6 @@ export function updateDailyStat(ts: BigInt): DailyStat {
     stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
     stat.totalValueLocked = BigDecimal.zero();
-    stat.indexCount = BigInt.zero();
-  }
-
-  let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
-  if (allTimeStat) {
-    stat.indexCount = allTimeStat.indexCount;
   }
 
   stat.save();
@@ -50,7 +44,6 @@ export function updateStat(ts: BigInt): Stat {
   if (!stat) {
     stat = new Stat(FACTORY_ADDRESS.toString());
     stat.totalValueLocked = BigDecimal.zero();
-    stat.indexCount = BigInt.zero();
 
     stat.save();
   }
@@ -191,6 +184,7 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
@@ -219,11 +213,12 @@ export function updateWeeklyIndexStat(
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
-  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePrice = index.basePrice;
   indexStat.basePriceETH = index.basePriceETH;
-  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+  indexStat.baseVolume = index.baseVolume;
 
   indexStat.save();
 
@@ -249,6 +244,7 @@ export function updateMonthlyIndexStat(
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
@@ -277,6 +273,7 @@ export function updateYearlyIndexStat(
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;

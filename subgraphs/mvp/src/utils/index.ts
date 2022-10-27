@@ -81,19 +81,15 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
           .div(vt.platformTotalSupply);
 
         if (index.marketCap.notEqual(BigDecimal.zero())) {
-          // Index_APY = sum(i => APY_i * Q_constituent_i * utilization_ratio_i / totalMarketCap)
+          // Index_APY = sum(i => APY_of_utilized_i * Q_constituent_i / totalMarketCap)
 
           let assetQuantityInUSD = convertTokenToDecimal(
             vt.totalAmount,
             asset.decimals,
           ).times(asset.basePrice);
-          // Q_utilized = Q_constituent * utilization_ratio
-          let utilizedAssetQuantityInUSD = assetQuantityInUSD.times(
-            vt.deposited.toBigDecimal().div(vt.totalAmount.toBigDecimal()),
-          );
           // Index_APY = sum(i => APY_i * Q_utilized / totalMarketCap)
           index.apy = index.apy.plus(
-            vt.apy.times(utilizedAssetQuantityInUSD.div(index.marketCap)),
+            vt.apy.times(assetQuantityInUSD.div(index.marketCap)),
           );
         }
       }

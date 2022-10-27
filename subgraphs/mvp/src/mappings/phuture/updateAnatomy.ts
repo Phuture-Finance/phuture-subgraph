@@ -37,7 +37,6 @@ export function updateAnatomy(
       }
     }
 
-    asset.indexCount = asset.indexCount.minus(BigInt.fromI32(1));
     asset._indexes = indicesAddr;
 
     asset.save();
@@ -58,7 +57,6 @@ export function updateAnatomy(
       assetsAddr.push(asset.id);
 
       asset._indexes = asset._indexes.concat([index.id]);
-      asset.indexCount = asset.indexCount.plus(BigInt.fromI32(1));
       asset.save();
     }
 

@@ -1,51 +1,74 @@
 type Asset @entity {
-  "Address (hash)"
+  "Address of the asset (hash)"
   id: ID!
 
+  "Is this asset whitelisted"
   isWhitelisted: Boolean!
 
-  # used for other stats like marketcap
+  "Total number of tokens in existence"
   totalSupply: BigInt!
-  # mirrored from the smart contract
+
+  "Number of decimals this asset uses"
   decimals: BigInt!
+
+  "Symbol of the asset"
   symbol: String!
+
+  "Name of the asset"
   name: String!
 
-  indexCount: BigInt!
-  _indexes: [ID!]!
-  indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+  # "Number of indexes this asset belongs to"
+  # indexCount: BigInt!
 
+  "Indexes this asset belongs to"
+  indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+  _indexes: [ID!]!
+
+  "Base price of the asset on SushiSwap"
   basePriceSushi: BigDecimal!
+
+  "Base price of the asset on Uniswap"
   basePriceUni: BigDecimal!
+
+  "Base price of the asset"
   basePrice: BigDecimal!
+
+  "Market capitalization of the asset"
   marketCap: BigInt!
 
-  _vTokens: [ID!]!
+  "The vTokens this asset has"
   vTokens: [vToken!]! @derivedFrom(field: "asset")
+  _vTokens: [ID!]!
 
+  "Amount of the asset in the vault"
   vaultReserve: BigDecimal!
+
+  "Amount of the asset in the vault in base units"
   vaultBaseReserve: BigDecimal!
 
-  pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
-  pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
+  # "Pairs where this asset is asset0"
+  # pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
+  #
+  # "Pairs where this asset is asset1"
+  # pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
 
+  "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 
+  "Uniswap V3 price oracle for this asset"
   oracle: UniV3PriceOracle
 }
 
-type Swap @entity {
-  id: ID!
-
-  pairs: [Pair!]! @derivedFrom(field: "swap")
-}
-
 type ChainLink @entity {
+  "Address of the ChainLink Aggregator Proxy"
   id: ID!
-  aggregator: ChainLinkAgg!
+
+  "ChainLink Aggregator"
+  aggregator: ChainLinkAggregator!
 }
 
-type ChainLinkAgg @entity {
+type ChainLinkAggregator @entity {
+  "Address of the ChainLink Aggregator"
   id: ID!
   chainLink: ChainLink!
   asset: Asset!
@@ -53,53 +76,57 @@ type ChainLinkAgg @entity {
   description: String!
   answer: BigInt!
   updatedAt: BigInt!
-  nextAgg: ChainLinkAgg
+  nextAgg: ChainLinkAggregator
 
   vaults: [SVVault!]!
 }
 
-type Pair @entity {
-  id: ID!
+# type Pair @entity {
+#   id: ID!
+#
+#   swap: Swap!
+#
+#   asset0: Asset!
+#   asset1: Asset!
+#
+#   totalSupply: BigInt!
+#
+#   asset0Reserve: BigDecimal!
+#   asset1Reserve: BigDecimal!
+# }
 
-  swap: Swap!
+# type SushiPair @entity {
+#   id: ID!
+#
+#   swap: Swap!
+#
+#   asset0: Asset!
+#   asset1: Asset!
+#
+#   totalSupply: BigInt!
+#
+#   asset0Reserve: BigDecimal!
+#   asset1Reserve: BigDecimal!
+# }
 
-  asset0: Asset!
-  asset1: Asset!
-
-  totalSupply: BigInt!
-
-  asset0Reserve: BigDecimal!
-  asset1Reserve: BigDecimal!
-}
-
-type SushiPair @entity {
-  id: ID!
-
-  swap: Swap!
-
-  asset0: Asset!
-  asset1: Asset!
-
-  totalSupply: BigInt!
-
-  asset0Reserve: BigDecimal!
-  asset1Reserve: BigDecimal!
-}
-
-type DEX @entity {
-  id: ID!
-  router: String!
-  type: String!
-}
+# type DEX @entity {
+#   id: ID!
+#   router: String!
+#   type: String!
+# }
 
 type IndexFactory @entity {
   "Address (hash) of the factory"
   id: ID!
+
+  "Type of the factory, e.g. 'managed'"
   type: String!
 
+  "Address of the vTokenFactory of this factory"
   vTokenFactory: String!
 
-  indices: [Index!]! @derivedFrom(field: "indexFactory")
+  "Indexes created by this factory"
+  indexes: [Index!]! @derivedFrom(field: "indexFactory")
 }
 
 type Index @entity {
@@ -107,7 +134,7 @@ type Index @entity {
   id: ID!
   type: String!
 
-  # used for other stats like marketcap
+  # used for other stats like market cap
   totalSupply: BigInt!
   # metadata
   decimals: BigInt!
@@ -353,7 +380,7 @@ type Stat @entity {
   # index factory address
   id: ID!
 
-  indexCount: BigInt!
+  "Total value of all indexes in base"
   totalValueLocked: BigDecimal!
 }
 
@@ -361,7 +388,6 @@ type DailyStat @entity {
   id: ID!
   date: Int!
 
-  indexCount: BigInt!
   totalValueLocked: BigDecimal!
 }
 
@@ -384,6 +410,7 @@ type HourlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type DailyIndexStat @entity {
@@ -393,11 +420,12 @@ type DailyIndexStat @entity {
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
-  "price of the index in USD"
+  "Price of the index in USD"
   basePrice: BigDecimal!
-  "price of the index in ETH"
+  "Price of the index in chain native token"
   basePriceETH: BigDecimal!
   baseVolume: BigDecimal!
+  apy: BigDecimal!
 }
 
 type WeeklyIndexStat @entity {
@@ -412,6 +440,7 @@ type WeeklyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type MonthlyIndexStat @entity {
@@ -426,6 +455,7 @@ type MonthlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type YearlyIndexStat @entity {
@@ -440,6 +470,7 @@ type YearlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 # ----------------------------------------------------------------

@@ -29,7 +29,7 @@ function tryTransferToVToken(
 ): void {
   let toVToken = vToken.load(to);
   if (toVToken && toVToken.asset == asset) {
-    toVToken.assetReserve = toVToken.assetReserve.minus(value);
+    toVToken.assetReserve = toVToken.assetReserve.plus(value);
     toVToken.totalAmount = toVToken.assetReserve.plus(toVToken.deposited);
 
     let fromVaultController = VaultController.load(from);
@@ -54,7 +54,11 @@ function tryTransferToVToken(
         // Deposit ratio logarithm. The percentage yield for the period.
         let ln = BigDecimal.fromString(
           Math.log(
-            parseFloat(depositRatio.times(BP_BD).toString()) / 10000,
+            parseFloat(
+              depositRatio
+                .times(BigDecimal.fromString('1000000000000000000'))
+                .toString(),
+            ) / 1000000000000000000,
           ).toString(),
         );
 
@@ -102,7 +106,7 @@ function tryTransferFromVToken(
 ): void {
   let fromVToken = vToken.load(from);
   if (fromVToken && fromVToken.asset == asset) {
-    fromVToken.assetReserve = fromVToken.assetReserve.plus(value);
+    fromVToken.assetReserve = fromVToken.assetReserve.minus(value);
     fromVToken.totalAmount = fromVToken.assetReserve.plus(fromVToken.deposited);
 
     fromVToken.save();
