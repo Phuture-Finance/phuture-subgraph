@@ -70,7 +70,8 @@ function tryTransferToVToken(
 
       let vTokenC = vTokenContract.bind(Address.fromString(toVToken.id));
 
-      let currentDepositedPercentageInBP = vTokenC.try_currentDepositedPercentageInBP();
+      let currentDepositedPercentageInBP =
+        vTokenC.try_currentDepositedPercentageInBP();
       if (currentDepositedPercentageInBP.reverted) {
         log.warning('can not update currentDepositedPercentageInBP: {}', [
           toVToken.id,

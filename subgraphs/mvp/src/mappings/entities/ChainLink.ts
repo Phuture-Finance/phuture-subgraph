@@ -40,8 +40,6 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAggregator {
       );
       aggregator.nextAgg = nextAgg.id;
     }
-
-    aggregator.vaults = [];
   }
 
   return aggregator;

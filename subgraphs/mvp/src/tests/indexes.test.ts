@@ -8,12 +8,7 @@ import {
 } from 'matchstick-as/assembly/index';
 import { logStore } from 'matchstick-as/assembly/store';
 
-import {
-  BASE_ASSETS,
-  ChainLinkAssetMap,
-  SUSHI_FACTORY_ADDRESS,
-  UNI_FACTORY_ADDRESS,
-} from '../../consts';
+import { BASE_ASSETS, ChainLinkAssetMap } from '../../consts';
 import { handleUpdateAsset } from '../mappings/phuture/indexRegistry';
 import { handleAllIndexesTransfers } from '../mappings/phuture/transfer';
 import { UpdateAsset } from '../types/IndexRegistry/IndexRegistry';

@@ -7,9 +7,6 @@ import {
   DailyCapitalization,
   DailyIndexStat,
   DailyStat,
-  SVDailyCapitalization,
-  SVDailyStat,
-  SVVault,
   HourlyIndexStat,
   Index,
   MonthlyIndexStat,
@@ -101,52 +98,6 @@ export function updateDailyCapitalisation(
   dailyCap.save();
 
   return dailyCap;
-}
-
-export function updateSVDailyCapitalisation(
-  vault: SVVault,
-  ts: BigInt,
-): SVDailyCapitalization {
-  let id = vault.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
-
-  let dailyCap = SVDailyCapitalization.load(id);
-  if (!dailyCap) {
-    dailyCap = new SVDailyCapitalization(id);
-    dailyCap.vault = vault.id;
-    dailyCap.timestamp = ts;
-  }
-
-  dailyCap.basePrice = vault.basePrice;
-  dailyCap.totalSupply = vault.totalSupply;
-  dailyCap.capitalization = vault.basePrice.times(
-    convertTokenToDecimal(vault.totalSupply, vault.decimals),
-  );
-  dailyCap.save();
-
-  return dailyCap;
-}
-
-export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
-  let startingDay = getStartingDayTimestamp(ts);
-
-  let stat = SVDailyStat.load(
-    vault.id.concat('-').concat(startingDay.toString()),
-  );
-  if (!stat) {
-    stat = new SVDailyStat(vault.id.concat('-').concat(startingDay.toString()));
-    stat.date = startingDay;
-    stat.vault = vault.id;
-  }
-
-  stat.marketCap = vault.marketCap;
-  stat.uniqueHolders = vault.uniqueHolders;
-  stat.basePrice = vault.basePrice;
-  stat.basePriceETH = vault.basePriceETH;
-  stat.apy = vault.apy;
-
-  stat.save();
-
-  return stat as SVDailyStat;
 }
 
 export function updateVaultControllerDailyStat(
