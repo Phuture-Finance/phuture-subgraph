@@ -1,5 +1,6 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
+import { FACTORY_ADDRESS } from '../../../consts';
 import {
   Asset,
   DailyAssetStat,
@@ -15,8 +16,9 @@ import {
   Stat,
   WeeklyIndexStat,
   YearlyIndexStat,
+  VaultController,
+  VaultControllerStat,
 } from '../../types/schema';
-import { FACTORY_ADDRESS } from '../../../consts';
 import { convertTokenToDecimal } from '../../utils/calc';
 import { getStartingDayTimestamp } from '../../utils/timestamp';
 
@@ -30,12 +32,6 @@ export function updateDailyStat(ts: BigInt): DailyStat {
     stat = new DailyStat(dayID.toString());
     stat.date = dayStartTimestamp;
     stat.totalValueLocked = BigDecimal.zero();
-    stat.indexCount = BigInt.zero();
-  }
-
-  let allTimeStat = Stat.load(FACTORY_ADDRESS.toString());
-  if (allTimeStat) {
-    stat.indexCount = allTimeStat.indexCount;
   }
 
   stat.save();
@@ -48,7 +44,6 @@ export function updateStat(ts: BigInt): Stat {
   if (!stat) {
     stat = new Stat(FACTORY_ADDRESS.toString());
     stat.totalValueLocked = BigDecimal.zero();
-    stat.indexCount = BigInt.zero();
 
     stat.save();
   }
@@ -58,12 +53,17 @@ export function updateStat(ts: BigInt): Stat {
   return stat as Stat;
 }
 
-export function updateHourlyIndexStat(index: Index, ts: BigInt): HourlyIndexStat {
+export function updateHourlyIndexStat(
+  index: Index,
+  ts: BigInt,
+): HourlyIndexStat {
   let timestamp = ts.toI32();
   let ID = timestamp / 3600;
   let startTimestamp = ID * 3600;
 
-  let indexStat = HourlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  let indexStat = HourlyIndexStat.load(
+    index.id.concat('-').concat(ID.toString()),
+  );
   if (!indexStat) {
     indexStat = new HourlyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
@@ -80,7 +80,10 @@ export function updateHourlyIndexStat(index: Index, ts: BigInt): HourlyIndexStat
   return indexStat as HourlyIndexStat;
 }
 
-export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapitalization {
+export function updateDailyCapitalisation(
+  index: Index,
+  ts: BigInt,
+): DailyCapitalization {
   let id = index.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
   let dailyCap = DailyCapitalization.load(id);
 
@@ -92,13 +95,18 @@ export function updateDailyCapitalisation(index: Index, ts: BigInt): DailyCapita
 
   dailyCap.basePrice = index.basePrice;
   dailyCap.totalSupply = index.totalSupply;
-  dailyCap.capitalization = index.basePrice.times(convertTokenToDecimal(index.totalSupply, index.decimals));
+  dailyCap.capitalization = index.basePrice.times(
+    convertTokenToDecimal(index.totalSupply, index.decimals),
+  );
   dailyCap.save();
 
   return dailyCap;
 }
 
-export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDailyCapitalization {
+export function updateSVDailyCapitalisation(
+  vault: SVVault,
+  ts: BigInt,
+): SVDailyCapitalization {
   let id = vault.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
 
   let dailyCap = SVDailyCapitalization.load(id);
@@ -110,7 +118,9 @@ export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDaily
 
   dailyCap.basePrice = vault.basePrice;
   dailyCap.totalSupply = vault.totalSupply;
-  dailyCap.capitalization = vault.basePrice.times(convertTokenToDecimal(vault.totalSupply, vault.decimals));
+  dailyCap.capitalization = vault.basePrice.times(
+    convertTokenToDecimal(vault.totalSupply, vault.decimals),
+  );
   dailyCap.save();
 
   return dailyCap;
@@ -119,7 +129,9 @@ export function updateSVDailyCapitalisation(vault: SVVault, ts: BigInt): SVDaily
 export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
   let startingDay = getStartingDayTimestamp(ts);
 
-  let stat = SVDailyStat.load(vault.id.concat('-').concat(startingDay.toString()));
+  let stat = SVDailyStat.load(
+    vault.id.concat('-').concat(startingDay.toString()),
+  );
   if (!stat) {
     stat = new SVDailyStat(vault.id.concat('-').concat(startingDay.toString()));
     stat.date = startingDay;
@@ -130,10 +142,36 @@ export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
   stat.uniqueHolders = vault.uniqueHolders;
   stat.basePrice = vault.basePrice;
   stat.basePriceETH = vault.basePriceETH;
+  stat.apy = vault.apy;
 
   stat.save();
 
   return stat as SVDailyStat;
+}
+
+export function updateVaultControllerDailyStat(
+  vc: VaultController,
+  apy: BigDecimal,
+  dp: BigInt,
+  ts: BigInt,
+): VaultControllerStat {
+  let stat = VaultControllerStat.load(vc.id.concat('-').concat(ts.toString()));
+  if (!stat) {
+    stat = new VaultControllerStat(vc.id.concat('-').concat(ts.toString()));
+    stat.date = ts;
+    stat.vaultController = vc.id;
+  }
+
+  stat.apy = apy;
+  stat.depositedPercentage = dp;
+  stat.withdraw = vc.withdraw;
+  stat.withdrawnAt = vc.withdrawnAt;
+  stat.deposit = vc.deposit;
+  stat.depositedAt = vc.depositedAt;
+
+  stat.save();
+
+  return stat;
 }
 
 export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
@@ -146,6 +184,7 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
@@ -157,41 +196,55 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
   return indexStat as DailyIndexStat;
 }
 
-export function updateWeeklyIndexStat(index: Index, ts: BigInt): WeeklyIndexStat {
+export function updateWeeklyIndexStat(
+  index: Index,
+  ts: BigInt,
+): WeeklyIndexStat {
   let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 7);
   let startTimestamp = ID * (86400 * 7);
 
-  let indexStat = WeeklyIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  let indexStat = WeeklyIndexStat.load(
+    index.id.concat('-').concat(ID.toString()),
+  );
   if (!indexStat) {
     indexStat = new WeeklyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
-  indexStat.basePrice = index.basePrice; // index.basePrice;
+  indexStat.basePrice = index.basePrice;
   indexStat.basePriceETH = index.basePriceETH;
-  indexStat.baseVolume = index.baseVolume; // index.baseVolume;
+  indexStat.baseVolume = index.baseVolume;
 
   indexStat.save();
 
   return indexStat as WeeklyIndexStat;
 }
 
-export function updateMonthlyIndexStat(index: Index, ts: BigInt): MonthlyIndexStat {
+export function updateMonthlyIndexStat(
+  index: Index,
+  ts: BigInt,
+): MonthlyIndexStat {
   let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 30);
   let startTimestamp = ID * 86400 * 30;
 
-  let indexStat = MonthlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  let indexStat = MonthlyIndexStat.load(
+    index.id.concat('-').concat(ID.toString()),
+  );
   if (!indexStat) {
-    indexStat = new MonthlyIndexStat(index.id.concat('-').concat(ID.toString()));
+    indexStat = new MonthlyIndexStat(
+      index.id.concat('-').concat(ID.toString()),
+    );
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
@@ -203,18 +256,24 @@ export function updateMonthlyIndexStat(index: Index, ts: BigInt): MonthlyIndexSt
   return indexStat as MonthlyIndexStat;
 }
 
-export function updateYearlyIndexStat(index: Index, ts: BigInt): YearlyIndexStat {
+export function updateYearlyIndexStat(
+  index: Index,
+  ts: BigInt,
+): YearlyIndexStat {
   let timestamp = ts.toI32();
   let ID = timestamp / (86400 * 365);
   let startTimestamp = ID * (86400 * 365);
 
-  let indexStat = YearlyIndexStat.load(index.id.concat('-').concat(ID.toString()));
+  let indexStat = YearlyIndexStat.load(
+    index.id.concat('-').concat(ID.toString()),
+  );
   if (!indexStat) {
     indexStat = new YearlyIndexStat(index.id.concat('-').concat(ID.toString()));
     indexStat.date = startTimestamp;
     indexStat.index = index.id;
   }
 
+  indexStat.apy = index.apy;
   indexStat.marketCap = index.marketCap;
   indexStat.uniqueHolders = index.uniqueHolders;
   indexStat.basePrice = index.basePrice; // index.basePrice;
@@ -226,11 +285,16 @@ export function updateYearlyIndexStat(index: Index, ts: BigInt): YearlyIndexStat
   return indexStat as YearlyIndexStat;
 }
 
-export function updateDailyAssetStat(event: ethereum.Event, asset: Asset): DailyAssetStat | null {
+export function updateDailyAssetStat(
+  event: ethereum.Event,
+  asset: Asset,
+): DailyAssetStat | null {
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
-  let dayAssetID = asset.id.concat('-').concat(BigInt.fromI32(dayID).toString());
+  let dayAssetID = asset.id
+    .concat('-')
+    .concat(BigInt.fromI32(dayID).toString());
 
   let dailyAssetStat = DailyAssetStat.load(dayAssetID);
   if (!dailyAssetStat) {

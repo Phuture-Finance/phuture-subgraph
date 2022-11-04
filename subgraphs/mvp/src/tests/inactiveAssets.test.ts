@@ -1,24 +1,25 @@
-import { assert, clearStore, test } from 'matchstick-as/assembly/index';
 import { Address } from '@graphprotocol/graph-ts';
-import { handleAssetRemoved } from '../src/mappings/phuture/baseIndex';
-import { Index, Asset } from '../src/types/schema';
+import { assert, clearStore, test } from 'matchstick-as/assembly/index';
+
+import { handleAssetRemoved } from '../mappings/phuture/baseIndex';
+import { Index, Asset } from '../types/schema';
 //import { logStore } from "matchstick-as/assembly/store";
 
 test('remove asset', () => {
-  let indexID1 = '0xa16081f360e3847006db660bae1c6d1bac0ffee1';
-  let indexID2 = '0xa16081f360e3847006db660bae1c6d1bac0ffee2';
-  let indexID3 = '0xa16081f360e3847006db660bae1c6d1bac0ffee3';
-  let indexID4 = '0xa16081f360e3847006db660bae1c6d1bac0ffee4';
+  const indexID1 = '0xa16081f360e3847006db660bae1c6d1bac0ffee1';
+  const indexID2 = '0xa16081f360e3847006db660bae1c6d1bac0ffee2';
+  const indexID3 = '0xa16081f360e3847006db660bae1c6d1bac0ffee3';
+  const indexID4 = '0xa16081f360e3847006db660bae1c6d1bac0ffee4';
 
-  let assetID1 = '0xa16081f360e3847006db660bae1c6d1babcbeef1';
+  const assetID1 = '0xa16081f360e3847006db660bae1c6d1babcbeef1';
 
-  let index1 = new Index(indexID1);
-  let index2 = new Index(indexID2);
-  let index3 = new Index(indexID3);
-  let index4 = new Index(indexID4);
-  let asset1 = new Asset(assetID1);
+  const index1 = new Index(indexID1);
+  const index2 = new Index(indexID2);
+  const index3 = new Index(indexID3);
+  const index4 = new Index(indexID4);
+  const asset1 = new Asset(assetID1);
 
-  let indexes = asset1._indexes;
+  const indexes = asset1._indexes;
 
   indexes.push(indexID1);
   indexes.push(indexID2);

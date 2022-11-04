@@ -1,13 +1,27 @@
 import { IndexManaged } from '../../../../helpers';
-import { handleIndexCreation } from './baseIndex';
-import { ManagedIndexCreated, ManagedIndexFactory } from '../../types/Index/ManagedIndexFactory';
+import {
+  ManagedIndexCreated,
+  ManagedIndexFactory,
+} from '../../types/Index/ManagedIndexFactory';
 import { loadOrCreateIndexFactory } from '../entities';
 
-export function handleManagedIndexCreated(event: ManagedIndexCreated): void {
-  let idxFactory = ManagedIndexFactory.bind(event.address);
-  let idxF = loadOrCreateIndexFactory(event.address, IndexManaged, idxFactory.vTokenFactory());
+import { handleIndexCreation } from './baseIndex';
 
-  let index = handleIndexCreation(IndexManaged, event, event.params.index, event.params._assets);
-  index.indexFactory = idxF.id;
+export function handleManagedIndexCreated(event: ManagedIndexCreated): void {
+  let indexFactoryContract = ManagedIndexFactory.bind(event.address);
+  let indexFactory = loadOrCreateIndexFactory(
+    event.address,
+    IndexManaged,
+    indexFactoryContract.vTokenFactory(),
+  );
+
+  let index = handleIndexCreation(
+    IndexManaged,
+    event,
+    event.params.index,
+    event.params._assets,
+  );
+  index.indexFactory = indexFactory.id;
+
   index.save();
 }

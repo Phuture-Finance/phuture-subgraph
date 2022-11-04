@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { Reserve } from '../types/schema';
 import { LP, PHTR, USDC } from '../../consts';
+import { Reserve } from '../types/schema';
 import { Sync, Transfer } from '../types/UniswapPair/UniswapPair';
 
 export function handleSync(event: Sync): void {

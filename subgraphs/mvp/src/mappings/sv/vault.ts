@@ -1,19 +1,22 @@
-import { FCashMinted as FCashMintedEvent, Transfer as TransferEvent, Vault } from '../../types/SVault/Vault';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+
 import { FCash, SVTransfer, SVVault, UserVault } from '../../types/schema';
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
-import { convertDecimals, convertTokenToDecimal } from '../../../src/utils/calc';
-import { loadOrCreateSVVault } from '../entities/SVault';
-import { loadOrCreateSVAccount } from '../entities/Account';
-import { updateSVDailyCapitalisation, updateSVDailyStat } from '../phuture/stats';
-import { loadOrCreateDailyUserSVHistory, newUserSVHistory } from '../entities/SVHistory';
-import { convertUSDToETH } from '../entities';
+import {
+  FCashMinted as FCashMintedEvent,
+  Transfer as TransferEvent,
+} from '../../types/SVault/Vault';
+import { convertDecimals, convertTokenToDecimal } from '../../utils/calc';
+import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
+import { loadOrCreateSVAccount } from '../entities';
+import { loadOrCreateSVVault } from '../entities';
+import { loadOrCreateDailyUserSVHistory, newUserSVHistory } from '../entities';
 
-const fCashDec = 8;
-const usdcDec = 6;
+let fCashDec = 8;
+let usdcDec = 6;
 
-const threeMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 3);
-const sixMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 6);
-const oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
+let threeMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 3);
+let sixMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 6);
+let oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
 
 export function handleTransfer(event: TransferEvent): void {
   let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
@@ -33,7 +36,10 @@ export function handleTransfer(event: TransferEvent): void {
   }
 
   if (!event.params.from.equals(Address.zero())) {
-    let fromUserId = event.params.from.toHexString().concat('-').concat(event.address.toHexString());
+    let fromUserId = event.params.from
+      .toHexString()
+      .concat('-')
+      .concat(event.address.toHexString());
     let fromUser = UserVault.load(fromUserId);
     if (!fromUser) {
       fromUser = new UserVault(fromUserId);
@@ -44,9 +50,10 @@ export function handleTransfer(event: TransferEvent): void {
 
     fromUser.balance = fromUser.balance.minus(event.params.value);
     if (!fVault.totalSupply.isZero()) {
-      fromUser.capitalization = convertDecimals(fromUser.balance.toBigDecimal(), fVault.decimals).times(
-        fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals)),
-      );
+      fromUser.capitalization = convertDecimals(
+        fromUser.balance.toBigDecimal(),
+        fVault.decimals,
+      ).times(fVault.basePrice);
     }
 
     if (fromUser.balance.equals(BigInt.zero())) {
@@ -66,7 +73,10 @@ export function handleTransfer(event: TransferEvent): void {
   }
 
   if (!event.params.to.equals(Address.zero())) {
-    let toUserId = event.params.to.toHexString().concat('-').concat(event.address.toHexString());
+    let toUserId = event.params.to
+      .toHexString()
+      .concat('-')
+      .concat(event.address.toHexString());
     let toUser = UserVault.load(toUserId);
     if (!toUser) {
       toUser = new UserVault(toUserId);
@@ -81,9 +91,10 @@ export function handleTransfer(event: TransferEvent): void {
 
     toUser.balance = toUser.balance.plus(event.params.value);
     if (!fVault.totalSupply.isZero()) {
-      toUser.capitalization = convertDecimals(toUser.balance.toBigDecimal(), fVault.decimals).times(
-        fVault.totalAssets.toBigDecimal().div(convertTokenToDecimal(fVault.totalSupply, fVault.decimals)),
-      );
+      toUser.capitalization = convertDecimals(
+        toUser.balance.toBigDecimal(),
+        fVault.decimals,
+      ).times(fVault.basePrice);
     }
 
     updateUserHistories(
@@ -135,12 +146,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
 
   let fc = new FCash(id);
 
-  // let wfc = wfCashBase.bind(event.params._fCashPosition);
-  // let mt = wfc.try_getMaturity();
-  // if (!mt.reverted) {
-  //     fc.maturity = mt.value;
-  // }
-
   fc.vault = event.address.toHexString();
   fc.position = event.params._fCashPosition.toHexString();
   fc.amount = event.params._fCashAmount;
@@ -148,16 +153,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
   fc.timestamp = event.block.timestamp;
   fc.isRedeem = false;
   fc.save();
-
-  // let mint = [] as Array<string>;
-  // for (let i = 0; i < fVault.mint.length; i++) {
-  //     let oldFc = FCash.load(fVault.mint[i]);
-  //     if (oldFc && oldFc.maturity.gt(event.block.timestamp)) {
-  //         mint.push(oldFc.id);
-  //     }
-  // }
-  // mint.push(id);
-  // fVault.mint = mint;
 
   updateVaultTotals(fVault);
   updateVaultPrice(fVault, event.block.timestamp);
@@ -174,6 +169,7 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
   for (let i = 0; i < fCash.length; i++) {
     let fc = FCash.load(fCash[i]);
     if (!fc) continue;
+
     let delta = fc.maturity.minus(ts);
     if (delta.lt(threeMonthSecond)) {
       threeMonth.push(fc);
@@ -190,14 +186,12 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
   }
 
   if (!totalAssetAmount.isZero() && !totalFCash.isZero()) {
-    let totalFCashDec = convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec));
-    let totalAssetAmountDec = convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec));
     arp = arp.plus(
-      totalFCashDec
-        .div(totalAssetAmountDec)
+      convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec))
+        .div(convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec)))
         .minus(BigInt.fromI32(1).toBigDecimal())
-        .div(threeMonthSecond.toBigDecimal())
-        .times(oneYearSecond.toBigDecimal()),
+        .times(oneYearSecond.toBigDecimal())
+        .div(threeMonthSecond.toBigDecimal()),
     );
   }
 
@@ -208,46 +202,17 @@ export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
     totalFCash = totalFCash.plus(sixMonth[i].amount);
   }
 
-  if (!totalAssetAmount.isZero() && !totalFCash.isZero()) {
-    let totalFCashDec = convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec));
-    let totalAssetAmountDec = convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec));
-    arp = arp.plus(
-      totalFCashDec
-        .div(totalAssetAmountDec)
-        .minus(BigInt.fromI32(1).toBigDecimal())
-        .div(sixMonthSecond.toBigDecimal())
-        .times(oneYearSecond.toBigDecimal()),
-    );
+  if (totalAssetAmount.isZero() || totalFCash.isZero()) {
+    return arp;
   }
 
-  return arp;
-}
-
-function updateVaultTotals(fVault: SVVault): void {
-  let vault = Vault.bind(Address.fromString(fVault.id));
-
-  let totalSupply = vault.try_totalSupply();
-  if (!totalSupply.reverted) {
-    fVault.totalSupply = totalSupply.value;
-  }
-
-  let totalAssets = vault.try_totalAssets();
-  if (!totalAssets.reverted) {
-    fVault.totalAssets = totalAssets.value;
-    fVault.marketCap = totalAssets.value;
-  }
-}
-
-function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
-  if (!fVault.totalSupply.isZero() && fVault.decimals) {
-    fVault.basePrice = fVault.totalAssets
-      .toBigDecimal()
-      .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
-    fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
-  }
-
-  updateSVDailyCapitalisation(fVault, ts);
-  updateSVDailyStat(fVault, ts);
+  return arp.plus(
+    convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec))
+      .div(convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec)))
+      .minus(BigInt.fromI32(1).toBigDecimal())
+      .times(oneYearSecond.toBigDecimal())
+      .div(sixMonthSecond.toBigDecimal()),
+  );
 }
 
 function updateUserHistories(
@@ -268,8 +233,12 @@ function updateUserHistories(
   userIndexHistory.save();
 
   let fromDailyUIH = loadOrCreateDailyUserSVHistory(user, fVault.id, ts);
-  fromDailyUIH.total = fromDailyUIH.total.plus(userIndexHistory.balance.toBigDecimal());
-  fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(userIndexHistory.capitalization);
+  fromDailyUIH.total = fromDailyUIH.total.plus(
+    userIndexHistory.balance.toBigDecimal(),
+  );
+  fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(
+    userIndexHistory.capitalization,
+  );
   fromDailyUIH.totalSupply = fVault.totalSupply;
   fromDailyUIH.save();
 }

@@ -1,10 +1,10 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-// Temporary added to have more smooth charts until hourly is not implemented.
-const SECONDS_IN_DAY = BigInt.fromI32(60 * 60 * 4);
+// To have more smooth charts until hourly not implemented.
+export let SECONDS_IN_DAY = BigInt.fromI32(86_400); // 60 * 60 * 24
+
+export let SECONDS_IN_YEAR = BigDecimal.fromString('31556952'); // 365.2425 * 24 * 60 * 60
 
 export function getStartingDayTimestamp(timestamp: BigInt): BigInt {
-  let dayID = timestamp.div(SECONDS_IN_DAY);
-
-  return dayID.times(SECONDS_IN_DAY);
+  return timestamp.div(SECONDS_IN_DAY).times(SECONDS_IN_DAY);
 }

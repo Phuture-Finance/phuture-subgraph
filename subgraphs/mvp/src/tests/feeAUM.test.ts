@@ -1,13 +1,16 @@
-import { handleSetAUMFeeInBP } from '../src/mappings/phuture/feePool';
 import { ethereum, Address } from '@graphprotocol/graph-ts';
-import { assert, clearStore, test } from 'matchstick-as/assembly/index';
-import { Index } from '../src/types/schema';
-import { newMockEvent } from 'matchstick-as/assembly/index';
-import { SetAUMScaledPerSecondsRate } from '../src/types/FeePool/FeePool';
 import { BigInt } from '@graphprotocol/graph-ts/index';
+import { assert, clearStore, test } from 'matchstick-as/assembly/index';
+import { newMockEvent } from 'matchstick-as/assembly/index';
+
+import { handleSetAUMFeeInBP } from '../mappings/phuture/feePool';
+import { SetAUMScaledPerSecondsRate } from '../types/FeePool/FeePool';
+import { Index } from '../types/schema';
 
 test('fee AUM test', () => {
-  let scaledPerSecondRateEvent = changetype<SetAUMScaledPerSecondsRate>(newMockEvent());
+  const scaledPerSecondRateEvent = changetype<SetAUMScaledPerSecondsRate>(
+    newMockEvent(),
+  );
 
   // parameters push from the newMockEvent must be pushed in this order:
   /*
@@ -33,23 +36,29 @@ test('fee AUM test', () => {
 */
 
   // accountParam is not used after but pushed in the 0 position
-  let accountParam = new ethereum.EventParam(
+  const accountParam = new ethereum.EventParam(
     'account',
-    ethereum.Value.fromAddress(Address.fromString('0x123456789ABCDEF123456789ABCDEF123456789A')),
+    ethereum.Value.fromAddress(
+      Address.fromString('0x123456789abcdef123456789abcdef123456789a'),
+    ),
   );
   scaledPerSecondRateEvent.parameters.push(accountParam);
-  let indexParam = new ethereum.EventParam(
+  const indexParam = new ethereum.EventParam(
     'index',
-    ethereum.Value.fromAddress(Address.fromString('0xa16081f360e3847006db660bae1c6d1b2e17ec2a')),
+    ethereum.Value.fromAddress(
+      Address.fromString('0xa16081f360e3847006db660bae1c6d1b2e17ec2a'),
+    ),
   );
   scaledPerSecondRateEvent.parameters.push(indexParam);
-  let AUMscaledPerSecondRate = new ethereum.EventParam(
+  const AUMscaledPerSecondRate = new ethereum.EventParam(
     'AUMscaledPerSecondRate',
-    ethereum.Value.fromSignedBigInt(BigInt.fromString('1000000000031725657458124183')),
+    ethereum.Value.fromSignedBigInt(
+      BigInt.fromString('1000000000031725657458124183'),
+    ),
   );
   scaledPerSecondRateEvent.parameters.push(AUMscaledPerSecondRate);
 
-  let index = new Index('0xa16081f360e3847006db660bae1c6d1b2e17ec2a');
+  const index = new Index('0xa16081f360e3847006db660bae1c6d1b2e17ec2a');
 
   // Store the index in the store, so that it can be accessed in the handler
   index.save();

@@ -1,7 +1,7 @@
 subgraphs/mvp/src/mappings/chainlink/aggregators/*.ts
 subgraphs/mvp/package-lock.json
 subgraphs/mvp/yarn.lock
-subgraphs/mvp/tests/.bin
+subgraphs/mvp/src/tests/.bin
 yarn-error.log
 yarn.lock
 subgraph.yaml

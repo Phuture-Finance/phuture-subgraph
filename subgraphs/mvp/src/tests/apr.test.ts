@@ -1,9 +1,21 @@
-import { assert, clearStore, newMockEvent, createMockedFunction, test } from 'matchstick-as/assembly/index';
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts/index';
+import {
+  assert,
+  clearStore,
+  newMockEvent,
+  createMockedFunction,
+  test,
+} from 'matchstick-as/assembly/index';
 import { logStore } from 'matchstick-as/assembly/store';
 
-import { FCashMinted as FCashMintedEvent, FCashRedeemed as FCashRedeemedEvent } from '../src/types/FRPVault/FRPVault';
-import { handleFCashMinted, handleFCashRedeemed } from '../src/mappings/frp/frp';
+import {
+  handleFCashMinted,
+  handleFCashRedeemed,
+} from '../src/mappings/frp/frp';
+import {
+  FCashMinted as FCashMintedEvent,
+  FCashRedeemed as FCashRedeemedEvent,
+} from '../src/types/FRPVault/FRPVault';
 
 class FCashEvent {
   position: Address;
@@ -14,7 +26,7 @@ class FCashEvent {
   isRedeem: boolean;
 }
 
-let eventList: FCashEvent[] = [
+const eventList: FCashEvent[] = [
   {
     position: Address.fromString('0x69c6b313506684f49c564b48bf0e4d41c0cb1a3e'),
     assetAmount: BigInt.fromI64(1000000000),
@@ -58,58 +70,88 @@ let eventList: FCashEvent[] = [
 ];
 
 test('Register fCash events', () => {
-  let frpVaultAddr = Address.fromString('0xf89aa2f1397e9a0622c8fc99ab1947e28b5ef876');
+  const frpVaultAddr = Address.fromString(
+    '0xf89aa2f1397e9a0622c8fc99ab1947e28b5ef876',
+  );
 
-  createMockedFunction(frpVaultAddr, 'totalAssets', 'totalAssets():(uint256)').returns([
-    ethereum.Value.fromSignedBigInt(BigInt.fromI64(1000000000)),
-  ]);
-  createMockedFunction(frpVaultAddr, 'totalSupply', 'totalSupply():(uint256)').returns([
+  createMockedFunction(
+    frpVaultAddr,
+    'totalAssets',
+    'totalAssets():(uint256)',
+  ).returns([ethereum.Value.fromSignedBigInt(BigInt.fromI64(1000000000))]);
+  createMockedFunction(
+    frpVaultAddr,
+    'totalSupply',
+    'totalSupply():(uint256)',
+  ).returns([
     ethereum.Value.fromSignedBigInt(BigInt.fromI64(1000000000000000000000)),
   ]);
-  createMockedFunction(frpVaultAddr, 'symbol', 'symbol():(string)').returns([ethereum.Value.fromString('USDC_VAULT')]);
-  createMockedFunction(frpVaultAddr, 'decimals', 'decimals():(uint8)').returns([ethereum.Value.fromI32(18)]);
+  createMockedFunction(frpVaultAddr, 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString('USDC_VAULT'),
+  ]);
+  createMockedFunction(frpVaultAddr, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromI32(18),
+  ]);
   createMockedFunction(frpVaultAddr, 'name', 'name():(string)').returns([
     ethereum.Value.fromString('USDC Notional Vault Mock'),
   ]);
 
   eventList.forEach((event: FCashEvent) => {
-    let frpVaultAddr = Address.fromString('0xf89aa2f1397e9a0622c8fc99ab1947e28b5ef876');
-
     // FCashBase address mock function to receive maturity.
-    createMockedFunction(event.position, 'getMaturity', 'getMaturity():(uint40)').returns([
-      ethereum.Value.fromSignedBigInt(event.maturity),
-    ]);
+    createMockedFunction(
+      event.position,
+      'getMaturity',
+      'getMaturity():(uint40)',
+    ).returns([ethereum.Value.fromSignedBigInt(event.maturity)]);
 
     if (event.isRedeem) {
-      let redeemEvent = changetype<FCashRedeemedEvent>(newMockEvent());
+      const redeemEvent = changetype<FCashRedeemedEvent>(newMockEvent());
       redeemEvent.address = frpVaultAddr;
       redeemEvent.logIndex = BigInt.fromI32(1);
       redeemEvent.block.timestamp = event.timestamp;
       redeemEvent.parameters.push(
-        new ethereum.EventParam('_fCashPosition', ethereum.Value.fromAddress(event.position)),
+        new ethereum.EventParam(
+          '_fCashPosition',
+          ethereum.Value.fromAddress(event.position),
+        ),
       );
       redeemEvent.parameters.push(
-        new ethereum.EventParam('_assetAmount', ethereum.Value.fromSignedBigInt(event.assetAmount)),
+        new ethereum.EventParam(
+          '_assetAmount',
+          ethereum.Value.fromSignedBigInt(event.assetAmount),
+        ),
       );
       redeemEvent.parameters.push(
-        new ethereum.EventParam('_fCashAmount', ethereum.Value.fromSignedBigInt(event.fCashAmount)),
+        new ethereum.EventParam(
+          '_fCashAmount',
+          ethereum.Value.fromSignedBigInt(event.fCashAmount),
+        ),
       );
 
       handleFCashRedeemed(redeemEvent);
       logStore();
     } else {
-      let mintedEvent = changetype<FCashMintedEvent>(newMockEvent());
+      const mintedEvent = changetype<FCashMintedEvent>(newMockEvent());
       mintedEvent.address = frpVaultAddr;
       mintedEvent.logIndex = BigInt.fromI32(1);
       mintedEvent.block.timestamp = event.timestamp;
       mintedEvent.parameters.push(
-        new ethereum.EventParam('_fCashPosition', ethereum.Value.fromAddress(event.position)),
+        new ethereum.EventParam(
+          '_fCashPosition',
+          ethereum.Value.fromAddress(event.position),
+        ),
       );
       mintedEvent.parameters.push(
-        new ethereum.EventParam('_assetAmount', ethereum.Value.fromSignedBigInt(event.assetAmount)),
+        new ethereum.EventParam(
+          '_assetAmount',
+          ethereum.Value.fromSignedBigInt(event.assetAmount),
+        ),
       );
       mintedEvent.parameters.push(
-        new ethereum.EventParam('_fCashAmount', ethereum.Value.fromSignedBigInt(event.fCashAmount)),
+        new ethereum.EventParam(
+          '_fCashAmount',
+          ethereum.Value.fromSignedBigInt(event.fCashAmount),
+        ),
       );
 
       handleFCashMinted(mintedEvent);
@@ -117,7 +159,12 @@ test('Register fCash events', () => {
     }
   });
 
-  assert.fieldEquals('FrpVault', frpVaultAddr.toHexString(), 'apr', '0.01599301177669391899135591347481267');
+  assert.fieldEquals(
+    'FrpVault',
+    frpVaultAddr.toHexString(),
+    'apr',
+    '0.01599301177669391899135591347481267',
+  );
 
   clearStore();
 });

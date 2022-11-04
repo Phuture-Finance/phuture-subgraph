@@ -1,7 +1,11 @@
-import { Vault } from '../../src/types/SVault/Vault';
-import { SVVault } from '../../types/schema';
 import { Address, BigInt } from '@graphprotocol/graph-ts';
+
+import { BNA_ADDRESS, ChainLinkAssetMap } from '../../../consts';
+import { SVVault } from '../../types/schema';
+import { Vault } from '../../types/SVault/Vault';
 import { feeInBP } from '../../utils/calc';
+
+import { loadOrCreateChainLink } from './ChainLink';
 
 export function loadOrCreateSVVault(addr: Address, ts: BigInt): SVVault {
   let id = addr.toHexString();
@@ -10,50 +14,64 @@ export function loadOrCreateSVVault(addr: Address, ts: BigInt): SVVault {
   if (!vault) {
     vault = new SVVault(id);
 
-    let frp = Vault.bind(addr);
+    let vaultContract = Vault.bind(addr);
 
-    let totalAssets = frp.try_totalAssets();
+    let totalAssets = vaultContract.try_totalAssets();
     if (!totalAssets.reverted) {
       vault.totalAssets = totalAssets.value;
     }
 
-    let bFeeBP = frp.try_BURNING_FEE_IN_BP();
-    if (!bFeeBP.reverted) {
-      vault.feeBurn = bFeeBP.value;
+    let burningFeeInBP = vaultContract.try_BURNING_FEE_IN_BP();
+    if (!burningFeeInBP.reverted) {
+      vault.feeBurn = burningFeeInBP.value;
     }
 
-    let mFeeBP = frp.try_MINTING_FEE_IN_BP();
-    if (!mFeeBP.reverted) {
-      vault.feeMint = mFeeBP.value;
+    let mintingFeeInBP = vaultContract.try_MINTING_FEE_IN_BP();
+    if (!mintingFeeInBP.reverted) {
+      vault.feeMint = mintingFeeInBP.value;
     }
 
-    let aum = frp.try_AUM_SCALED_PER_SECONDS_RATE();
-    if (!aum.reverted) {
-      vault.feeAUMPercent = feeInBP(aum.value);
+    let aumFee = vaultContract.try_AUM_SCALED_PER_SECONDS_RATE();
+    if (!aumFee.reverted) {
+      vault.feeAUMPercent = feeInBP(aumFee.value);
     }
 
-    let symbol = frp.try_symbol();
+    let symbol = vaultContract.try_symbol();
     if (!symbol.reverted) {
       vault.symbol = symbol.value;
     }
 
-    let decimals = frp.try_decimals();
+    let decimals = vaultContract.try_decimals();
     if (!decimals.reverted) {
       vault.decimals = BigInt.fromI32(decimals.value);
     }
 
-    let name = frp.try_name();
+    let name = vaultContract.try_name();
     if (!name.reverted) {
       vault.name = name.value;
     }
 
     vault.mint = [];
     vault.redeem = [];
-
     vault.created = ts;
+
+    vault.save();
+
+    // Attach base asset ChainLink aggregator to update vaults prices.
+    let aggregator = loadOrCreateChainLink(
+      Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
+    );
+
+    let vaults = aggregator.vaults;
+    if (vaults) {
+      vaults.push(vault.id);
+    } else {
+      vaults = [vault.id];
+    }
+    aggregator.vaults = vaults;
+
+    aggregator.save();
   }
 
-  vault.save();
-
-  return vault as SVVault;
+  return vault;
 }
