@@ -32,7 +32,7 @@ export function handleTransfer(event: Transfer): void {
       fromUser.balance = BigInt.zero();
     }
 
-    fromUser.balance = fromUser.balance.minus(event.params.amount);
+    fromUser.balance = fromUser.balance.minus(event.params.value);
 
     if (fromUser.balance.equals(BigInt.zero())) {
       indexBetting.betParticipants = indexBetting.betParticipants.minus(BigInt.fromI32(1));
@@ -53,7 +53,7 @@ export function handleTransfer(event: Transfer): void {
     if (toUser.balance.equals(BigInt.zero())) {
       indexBetting.betParticipants = indexBetting.betParticipants.plus(BigInt.fromI32(1));
     }
-    toUser.balance = toUser.balance.plus(event.params.amount);
+    toUser.balance = toUser.balance.plus(event.params.value);
     toUser.save();
   }
 

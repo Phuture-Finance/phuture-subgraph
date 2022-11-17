@@ -7,7 +7,7 @@ export function createTransfer(event: Transfer, transferType: string): void {
   transfer.indexBetting = event.address.toHexString();
   transfer.from = event.params.from.toHexString();
   transfer.to = event.params.to.toHexString();
-  transfer.amount = event.params.amount;
+  transfer.amount = event.params.value;
   transfer.type = transferType;
   transfer.timestamp = event.block.timestamp;
 
