@@ -83,7 +83,6 @@ export function handleAllIndexesTransfers(
     fromUIH.balance = fromUserIndex.balance;
     fromUIH.capitalization = fromUserIndex.capitalization;
     fromUIH.timestamp = event.block.timestamp;
-    fromUIH.logIndex = event.logIndex;
     fromUIH.totalSupply = index.totalSupply;
     fromUIH.save();
   }
@@ -108,19 +107,12 @@ export function handleAllIndexesTransfers(
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
+    // capitalization = balance * (marketCap / totalSupply)
     toUserIndex.capitalization = toUserIndex.balance
       .div(index.totalSupply.toBigDecimal())
       .times(index.marketCap);
-    // balance * (marketCap / totalSupply)
-    toUserIndex.capitalization = convertDecimals(
-      toUserIndex.balance,
-      index.decimals,
-    ).times(
-      index.marketCap.div(
-        convertTokenToDecimal(index.totalSupply, index.decimals),
-      ),
-    );
-    toUserIndex.investedCapital = toUserIndex.capitalization
+
+    toUserIndex.investedCapital = toUserIndex.investedCapital.plus(value.toBigDecimal().times(index.marketCap).div(index.totalSupply.toBigDecimal()));
 
     toUserIndex.save();
 
@@ -133,7 +125,6 @@ export function handleAllIndexesTransfers(
     toUIH.balance = toUserIndex.balance;
     toUIH.capitalization = toUserIndex.capitalization;
     toUIH.timestamp = tx.timestamp;
-    toUIH.logIndex = event.logIndex;
     toUIH.totalSupply = index.totalSupply;
     toUIH.save();
   }

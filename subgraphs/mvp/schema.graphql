@@ -136,7 +136,6 @@ type vToken @entity {
   tokenType: String!
   factory: String!
   platformTotalSupply: BigInt!
-  platformTotalSupplyDec: BigDecimal!
   capitalization: BigDecimal!
   "depositedQuantity"
   deposited: BigInt!
@@ -220,8 +219,6 @@ type DailyCapitalization @entity {
   totalSupply: BigInt!
   "raw timestamp of the specific day"
   timestamp: BigInt!
-  "log index value taken from event which triggered storing the metric"
-  logIndex: BigInt!
 }
 
 type UserIndexHistory @entity {
@@ -238,8 +235,6 @@ type UserIndexHistory @entity {
   "index total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 
-  "holds orders of transfers in transaction"
-  logIndex: BigInt!
   "timestamp matching the starting of day GMT"
   timestamp: BigInt!
 }
@@ -402,8 +397,6 @@ type SVDailyCapitalization @entity {
   totalSupply: BigInt!
   "raw timestamp of the specific day"
   timestamp: BigInt!
-  "log index value taken from event which triggered storing the metric"
-  logIndex: BigInt!
 }
 
 type UserSVHistory @entity {
@@ -420,8 +413,6 @@ type UserSVHistory @entity {
   "vault total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 
-  "holds orders of transfers in transaction"
-  logIndex: BigInt!
   "timestamp matching the starting of day GMT"
   timestamp: BigInt!
 }

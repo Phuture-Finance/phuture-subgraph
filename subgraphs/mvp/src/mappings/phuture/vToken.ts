@@ -105,17 +105,11 @@ function updateVToken(
 
   if (isInc) {
     vt.platformTotalSupply = vt.platformTotalSupply.plus(event.params.amount);
-    vt.platformTotalSupplyDec = vt.platformTotalSupplyDec.plus(
-      convertTokenToDecimal(event.params.amount, asset.decimals),
-    );
   } else {
     vt.platformTotalSupply = vt.platformTotalSupply.minus(event.params.amount);
-    vt.platformTotalSupplyDec = vt.platformTotalSupplyDec.minus(
-      convertTokenToDecimal(event.params.amount, asset.decimals),
-    );
   }
   vt.capitalization = asset.basePrice.times(
-    new BigDecimal(vt.platformTotalSupply),
+    new BigDecimal(vt.totalAmount), // TODO multiply with totalAmount
   );
 
   vt.save();

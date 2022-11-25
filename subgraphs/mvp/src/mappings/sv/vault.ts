@@ -152,7 +152,6 @@ function updateUserHistories(
   userIndexHistory.balance = balance;
   userIndexHistory.capitalization = cap;
   userIndexHistory.timestamp = ts;
-  userIndexHistory.logIndex = logIndex;
   userIndexHistory.totalSupply = fVault.totalSupply;
   userIndexHistory.save();
 }
