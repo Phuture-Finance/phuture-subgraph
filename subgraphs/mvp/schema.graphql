@@ -8,6 +8,22 @@ enum TransferType {
 }
 
 # ----------------------------------------------------------------
+#                             Common
+# ----------------------------------------------------------------
+
+type Transaction @entity {
+  id: ID! # txn hash
+  blockNumber: BigInt!
+  timestamp: BigInt!
+
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+
+  transfers: [Transfer!]!
+}
+
+# ----------------------------------------------------------------
 #                             Phuture Core
 # ----------------------------------------------------------------
 type Asset @entity {
@@ -239,18 +255,6 @@ type UserIndexHistory @entity {
   timestamp: BigInt!
 }
 
-type Transaction @entity {
-  id: ID! # txn hash
-  blockNumber: BigInt!
-  timestamp: BigInt!
-
-  value: BigInt!
-  gasUsed: BigInt!
-  gasPrice: BigInt!
-
-  transfers: [Transfer!]!
-}
-
 type Transfer @entity {
   id: ID! # Set to `${tx.id}-${transfer.id}`
   index: Index!
@@ -350,7 +354,7 @@ type UserVault @entity {
 type SVTransfer @entity {
   id: ID!
   vault: SVVault!
-  transaction: SVTransaction!
+  transaction: Transaction!
   type: TransferType!
 
   from: SVUser
@@ -358,16 +362,6 @@ type SVTransfer @entity {
   value: BigInt!
 
   timestamp: BigInt!
-}
-
-type SVTransaction @entity {
-  id: ID! # txn hash
-  blockNumber: BigInt!
-  timestamp: BigInt!
-
-  value: BigInt!
-  gasUsed: BigInt!
-  gasPrice: BigInt!
 }
 
 type SVDailyStat @entity {
