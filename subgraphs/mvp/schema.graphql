@@ -17,9 +17,6 @@ type Asset @entity {
   "Is this asset whitelisted"
   isWhitelisted: Boolean!
 
-  "Total number of tokens in existence"
-  totalSupply: BigInt!
-
   "Number of decimals this asset uses"
   decimals: BigInt!
 
@@ -29,24 +26,12 @@ type Asset @entity {
   "Name of the asset"
   name: String!
 
-  # "Number of indexes this asset belongs to"
-  # indexCount: BigInt!
-
   "Indexes this asset belongs to"
   indexes: [IndexAsset!]! @derivedFrom(field: "asset")
   _indexes: [ID!]!
 
-  "Base price of the asset on SushiSwap"
-  basePriceSushi: BigDecimal!
-
-  "Base price of the asset on Uniswap"
-  basePriceUni: BigDecimal!
-
   "Base price of the asset"
   basePrice: BigDecimal!
-
-  "Market capitalization of the asset"
-  marketCap: BigInt!
 
   "The vTokens this asset has"
   vTokens: [vToken!]! @derivedFrom(field: "asset")
@@ -57,12 +42,6 @@ type Asset @entity {
 
   "Amount of the asset in the vault in base units"
   vaultBaseReserve: BigDecimal!
-
-  # "Pairs where this asset is asset0"
-  # pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
-  #
-  # "Pairs where this asset is asset1"
-  # pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
 
   "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")

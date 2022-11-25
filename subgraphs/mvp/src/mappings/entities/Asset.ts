@@ -14,12 +14,10 @@ export function loadOrCreateAsset(address: Address): Asset {
   let asset = Asset.load(id);
   if (!asset) {
     asset = new Asset(id);
-    asset.marketCap = BigInt.zero();
     asset.basePrice = BigDecimal.zero();
     asset.isWhitelisted = false;
     asset.symbol = fetchTokenSymbol(address);
     asset.name = fetchTokenName(address);
-    asset.totalSupply = fetchTokenTotalSupply(address);
     asset.decimals = fetchTokenDecimals(address);
     asset.vaultReserve = BigDecimal.zero();
     asset.vaultBaseReserve = BigDecimal.zero();
@@ -92,19 +90,6 @@ export function fetchTokenName(tokenAddress: Address): string {
   }
 
   return nameValue;
-}
-
-export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
-  let contract = ERC20.bind(tokenAddress);
-
-  let totalSupplyValue = BigInt.zero();
-
-  let totalSupplyResult = contract.try_totalSupply();
-  if (!totalSupplyResult.reverted) {
-    totalSupplyValue = totalSupplyResult.value;
-  }
-
-  return totalSupplyValue;
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
