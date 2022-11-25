@@ -11,7 +11,6 @@ import {
     HourlyIndexStat,
     Index,
     MonthlyIndexStat,
-    YearlyIndexStat,
     VaultController,
     VaultControllerStat,
 } from '../../types/schema';
@@ -190,35 +189,6 @@ export function updateMonthlyIndexStat(
     indexStat.save();
 
     return indexStat as MonthlyIndexStat;
-}
-
-export function updateYearlyIndexStat(
-    index: Index,
-    ts: BigInt,
-): YearlyIndexStat {
-    let timestamp = ts.toI32();
-    let ID = timestamp / (86400 * 365);
-    let startTimestamp = ID * (86400 * 365);
-
-    let indexStat = YearlyIndexStat.load(
-        index.id.concat('-').concat(ID.toString()),
-    );
-    if (!indexStat) {
-        indexStat = new YearlyIndexStat(index.id.concat('-').concat(ID.toString()));
-        indexStat.date = startTimestamp;
-        indexStat.index = index.id;
-    }
-
-    indexStat.apy = index.apy;
-    indexStat.marketCap = index.marketCap;
-    indexStat.uniqueHolders = index.uniqueHolders;
-    indexStat.basePrice = index.basePrice; // index.basePrice;
-    indexStat.basePriceETH = index.basePriceETH;
-    indexStat.baseVolume = index.baseVolume; // index.baseVolume;
-
-    indexStat.save();
-
-    return indexStat as YearlyIndexStat;
 }
 
 export function updateDailyAssetStat(
