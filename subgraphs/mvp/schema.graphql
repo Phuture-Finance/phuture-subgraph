@@ -1,3 +1,15 @@
+# ----------------------------------------------------------------
+#                             Enums
+# ----------------------------------------------------------------
+enum TransferType {
+  Send
+  Mint
+  Burn
+}
+
+# ----------------------------------------------------------------
+#                             Phuture Core
+# ----------------------------------------------------------------
 type Asset @entity {
   "Address of the asset (hash)"
   id: ID!
@@ -270,12 +282,6 @@ type Transaction @entity {
   transfers: [Transfer!]!
 }
 
-enum TransferType {
-  Send
-  Mint
-  Burn
-}
-
 type Transfer @entity {
   id: ID! # Set to `${tx.id}-${transfer.id}`
   index: Index!
@@ -327,7 +333,7 @@ type DailyIndexStat @entity {
 }
 
 # ----------------------------------------------------------------
-#                             Saving Vault
+#                             Savings Vault
 # ----------------------------------------------------------------
 
 type SVVault @entity {
@@ -374,17 +380,11 @@ type UserVault @entity {
   capitalization: BigDecimal!
 }
 
-enum SVTransferType {
-  Send
-  Mint
-  Burn
-}
-
 type SVTransfer @entity {
   id: ID!
   vault: SVVault!
   transaction: SVTransaction!
-  type: SVTransferType!
+  type: TransferType!
 
   from: SVUser
   to: SVUser
