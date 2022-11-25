@@ -110,7 +110,6 @@ type IndexFactory @entity {
 type Index @entity {
   "Address (hash)"
   id: ID!
-  type: String!
 
   # used for other stats like market cap
   totalSupply: BigInt!

@@ -14,7 +14,6 @@ import {
 } from '../entities';
 
 export function handleIndexCreation(
-  type: string,
   event: ethereum.Event,
   indexAddress: Address,
   assets: Address[],
@@ -24,7 +23,6 @@ export function handleIndexCreation(
   let indexId = indexAddress.toHexString();
   let index = loadOrCreateIndex(indexAddress);
 
-  index.type = type;
   index.transaction = tx.id;
   index.created = tx.timestamp;
 
@@ -65,9 +63,7 @@ export function handleIndexCreation(
   }
   userIndex.save();
 
-  if (type == IndexManaged) {
-    ManagedIndex.create(indexAddress);
-  }
+  ManagedIndex.create(indexAddress);
 
   return index;
 }

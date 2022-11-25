@@ -16,7 +16,6 @@ export function handleManagedIndexCreated(event: ManagedIndexCreated): void {
   );
 
   let index = handleIndexCreation(
-    IndexManaged,
     event,
     event.params.index,
     event.params._assets,
