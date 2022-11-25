@@ -46,13 +46,17 @@ export function updateDailyCapitalisation(
     index: Index,
     ts: BigInt,
 ): DailyCapitalization {
-    let id = index.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
+    let timestamp = ts.toI32();
+    let ID = timestamp / 86400;
+    let startTimestamp = getStartingDayTimestamp(ts);
+
+    let id = index.id.concat('-').concat(startTimestamp.toString());
     let dailyCap = DailyCapitalization.load(id);
 
     if (!dailyCap) {
         dailyCap = new DailyCapitalization(id);
         dailyCap.index = index.id;
-        dailyCap.timestamp = ts; // TODO: this should probably be the start of the day
+        dailyCap.timestamp = startTimestamp;
     }
 
     dailyCap.basePrice = index.basePrice;
@@ -69,14 +73,14 @@ export function updateSVDailyCapitalisation(
     vault: SVVault,
     ts: BigInt,
 ): SVDailyCapitalization {
-    let startTimestamp = getStartingDayTimestamp(ts);
-    let id = vault.id.concat('-').concat(startTimestamp.toString());
+    let startingDay = getStartingDayTimestamp(ts);
+    let id = vault.id.concat('-').concat(startingDay.toString());
 
     let dailyCap = SVDailyCapitalization.load(id);
     if (!dailyCap) {
         dailyCap = new SVDailyCapitalization(id);
         dailyCap.vault = vault.id;
-        dailyCap.timestamp = startTimestamp;
+        dailyCap.timestamp = startingDay;
     }
 
     dailyCap.basePrice = vault.basePrice;
@@ -138,12 +142,13 @@ export function updateVaultControllerDailyStat(
 }
 
 export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
-    let id = index.id.concat('-').concat(getStartingDayTimestamp(ts).toString());
+    let startingDay = getStartingDayTimestamp(ts);
+    let id = index.id.concat('-').concat(startingDay.toString());
 
     let indexStat = DailyIndexStat.load(id);
     if (!indexStat) {
         indexStat = new DailyIndexStat(id);
-        indexStat.date = ts.toI32(); // TODO change this to the start of day.
+        indexStat.date = startingDay.toI32();
         indexStat.index = index.id;
     }
     indexStat.apy = index.apy;
