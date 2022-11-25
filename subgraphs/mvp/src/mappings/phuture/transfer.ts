@@ -59,14 +59,9 @@ export function handleAllIndexesTransfers(
     )
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
     // balance * (marketCap / totalSupply)
-    fromUserIndex.capitalization = convertDecimals(
-      fromUserIndex.balance,
-      index.decimals,
-    ).times(
-      index.marketCap.div(
-        convertTokenToDecimal(index.totalSupply, index.decimals),
-      ),
-    );
+    fromUserIndex.capitalization = fromUserIndex.balance
+        .div(index.totalSupply.toBigDecimal())
+        .times(index.marketCap);
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
