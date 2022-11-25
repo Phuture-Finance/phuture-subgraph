@@ -118,6 +118,7 @@ type Index @entity {
   indexFactory: IndexFactory!
 
   marketCap: BigDecimal!
+  uniqueHolders: BigInt!
   "price of the index in USD"
   basePrice: BigDecimal!
   "price of the index in ETH"
@@ -353,6 +354,7 @@ type HourlyIndexStat @entity {
   basePrice: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
   apy: BigDecimal!
 }
 
@@ -362,6 +364,7 @@ type DailyIndexStat @entity {
   index: Index!
 
   marketCap: BigDecimal!
+  uniqueHolders: BigInt!
   "Price of the index in USD"
   basePrice: BigDecimal!
   "Price of the index in chain native token"
@@ -381,6 +384,7 @@ type WeeklyIndexStat @entity {
   basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
   apy: BigDecimal!
 }
 
@@ -395,6 +399,7 @@ type MonthlyIndexStat @entity {
   basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
   apy: BigDecimal!
 }
 
@@ -409,6 +414,7 @@ type YearlyIndexStat @entity {
   basePriceETH: BigDecimal!
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
+  uniqueHolders: BigInt!
   apy: BigDecimal!
 }
 
@@ -437,6 +443,7 @@ type SVVault @entity {
   mint: [FCash!]!
   redeem: [FCash!]!
 
+  uniqueHolders: BigInt!
   marketCap: BigDecimal!
 
   apy: BigDecimal!
@@ -510,6 +517,7 @@ type SVDailyStat @entity {
 
   apy: BigDecimal!
   marketCap: BigDecimal!
+  uniqueHolders: BigInt!
   "price of the vault in USD"
   basePrice: BigDecimal!
   "price of the vault in ETH"

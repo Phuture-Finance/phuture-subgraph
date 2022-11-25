@@ -69,6 +69,10 @@ export function handleAllIndexesTransfers(
       ),
     );
 
+    if (fromUserIndex.balance == BigDecimal.zero()) {
+      index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
+    }
+
     fromUserIndex.save();
 
     let fromUIH = newUserIndexHistory(
@@ -115,6 +119,10 @@ export function handleAllIndexesTransfers(
       toUserIndex.user = to.toHexString();
       toUserIndex.balance = BigDecimal.zero();
       toUserIndex.investedCapital = BigDecimal.zero();
+    }
+
+    if (toUserIndex.balance == BigDecimal.zero()) {
+      index.uniqueHolders = index.uniqueHolders.plus(ONE_BI);
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
