@@ -348,9 +348,6 @@ type SVVault @entity {
   feeMint: BigInt!
   feeAUMPercent: BigDecimal!
 
-  mint: [FCash!]!
-  redeem: [FCash!]!
-
   uniqueHolders: BigInt!
   marketCap: BigDecimal!
 
@@ -359,17 +356,6 @@ type SVVault @entity {
   dailyStats: [SVDailyStat!]! @derivedFrom(field: "vault")
 
   created: BigInt!
-}
-
-type FCash @entity {
-  id: ID!
-  position: String!
-  assetAmount: BigInt!
-  amount: BigInt!
-  maturity: BigInt!
-  vault: SVVault!
-  timestamp: BigInt!
-  isRedeem: Boolean!
 }
 
 type SVUser @entity {

@@ -51,8 +51,6 @@ export function loadOrCreateSVVault(addr: Address, ts: BigInt): SVVault {
       vault.name = name.value;
     }
 
-    vault.mint = [];
-    vault.redeem = [];
     vault.created = ts;
 
     vault.save();

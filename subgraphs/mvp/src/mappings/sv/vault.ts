@@ -1,22 +1,15 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-import { FCash, SVTransfer, SVVault, UserVault } from '../../types/schema';
+import {  SVTransfer, SVVault, UserVault } from '../../types/schema';
 import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
 } from '../../types/SVault/Vault';
-import { convertDecimals, convertTokenToDecimal } from '../../utils/calc';
+import { convertDecimals } from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
 import { newUserSVHistory } from '../entities';
-
-let fCashDec = 8;
-let usdcDec = 6;
-
-let threeMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 3);
-let sixMonthSecond = BigInt.fromI32(60 * 60 * 24 * 30 * 6);
-let oneYearSecond = BigInt.fromI32(60 * 60 * 24 * 365);
 
 export function handleTransfer(event: TransferEvent): void {
   let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
@@ -140,79 +133,10 @@ export function handleTransfer(event: TransferEvent): void {
 export function handleFCashMinted(event: FCashMintedEvent): void {
   let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
-  let id = event.params._fCashPosition.toHexString().concat('-');
-  id = id.concat(event.block.timestamp.toString()).concat('-');
-  id = id.concat(event.logIndex.toString());
-
-  let fc = new FCash(id);
-
-  fc.vault = event.address.toHexString();
-  fc.position = event.params._fCashPosition.toHexString();
-  fc.amount = event.params._fCashAmount;
-  fc.assetAmount = event.params._assetAmount;
-  fc.timestamp = event.block.timestamp;
-  fc.isRedeem = false;
-  fc.save();
-
   updateVaultTotals(fVault);
   updateVaultPrice(fVault, event.block.timestamp);
 
   fVault.save();
-}
-
-export function calculateAPR(fCash: Array<string>, ts: BigInt): BigDecimal {
-  let threeMonth = [] as Array<FCash>;
-  let sixMonth = [] as Array<FCash>;
-
-  let arp = BigDecimal.zero();
-
-  for (let i = 0; i < fCash.length; i++) {
-    let fc = FCash.load(fCash[i]);
-    if (!fc) continue;
-
-    let delta = fc.maturity.minus(ts);
-    if (delta.lt(threeMonthSecond)) {
-      threeMonth.push(fc);
-    } else if (delta.lt(sixMonthSecond)) {
-      sixMonth.push(fc);
-    }
-  }
-
-  let totalAssetAmount = BigInt.zero();
-  let totalFCash = BigInt.zero();
-  for (let i = 0; i < threeMonth.length; i++) {
-    totalAssetAmount = totalAssetAmount.plus(threeMonth[i].assetAmount);
-    totalFCash = totalFCash.plus(threeMonth[i].amount);
-  }
-
-  if (!totalAssetAmount.isZero() && !totalFCash.isZero()) {
-    arp = arp.plus(
-      convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec))
-        .div(convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec)))
-        .minus(BigInt.fromI32(1).toBigDecimal())
-        .times(oneYearSecond.toBigDecimal())
-        .div(threeMonthSecond.toBigDecimal()),
-    );
-  }
-
-  totalAssetAmount = BigInt.zero();
-  totalFCash = BigInt.zero();
-  for (let i = 0; i < sixMonth.length; i++) {
-    totalAssetAmount = totalAssetAmount.plus(sixMonth[i].assetAmount);
-    totalFCash = totalFCash.plus(sixMonth[i].amount);
-  }
-
-  if (totalAssetAmount.isZero() || totalFCash.isZero()) {
-    return arp;
-  }
-
-  return arp.plus(
-    convertTokenToDecimal(totalFCash, BigInt.fromI32(fCashDec))
-      .div(convertTokenToDecimal(totalAssetAmount, BigInt.fromI32(usdcDec)))
-      .minus(BigInt.fromI32(1).toBigDecimal())
-      .times(oneYearSecond.toBigDecimal())
-      .div(sixMonthSecond.toBigDecimal()),
-  );
 }
 
 function updateUserHistories(
