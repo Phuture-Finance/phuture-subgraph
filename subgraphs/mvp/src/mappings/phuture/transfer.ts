@@ -55,13 +55,15 @@ export function handleAllIndexesTransfers(
     }
 
     fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
-        fromUserIndex.investedCapital.times(value.toBigDecimal()).div(fromUserIndex.balance)
-    )
+      fromUserIndex.investedCapital
+        .times(value.toBigDecimal())
+        .div(fromUserIndex.balance),
+    );
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
     // balance * (marketCap / totalSupply)
     fromUserIndex.capitalization = fromUserIndex.balance
-        .div(index.totalSupply.toBigDecimal())
-        .times(index.marketCap);
+      .div(index.totalSupply.toBigDecimal())
+      .times(index.marketCap);
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -107,7 +109,12 @@ export function handleAllIndexesTransfers(
       .div(index.totalSupply.toBigDecimal())
       .times(index.marketCap);
 
-    toUserIndex.investedCapital = toUserIndex.investedCapital.plus(value.toBigDecimal().times(index.marketCap).div(index.totalSupply.toBigDecimal()));
+    toUserIndex.investedCapital = toUserIndex.investedCapital.plus(
+      value
+        .toBigDecimal()
+        .times(index.marketCap)
+        .div(index.totalSupply.toBigDecimal()),
+    );
 
     toUserIndex.save();
 
