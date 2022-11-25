@@ -79,18 +79,5 @@ test('transfer', () => {
     '11112',
   );
 
-  assert.fieldEquals(
-    'DailyUserIndexHistory',
-    '0x89205a3a3b2a69de6dbf7f01ed13b2108b2cbeef-0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1649289600',
-    'avgBalance',
-    '49999.5',
-  );
-  assert.fieldEquals(
-    'DailyUserIndexHistory',
-    '0x89205a3a3b2a69de6dbf7f01ed13b2108bc0ffee-0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1649289600',
-    'avgBalance',
-    '50000.5',
-  );
-
   clearStore();
 });

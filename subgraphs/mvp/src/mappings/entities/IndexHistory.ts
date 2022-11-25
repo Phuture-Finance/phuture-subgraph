@@ -2,7 +2,6 @@ import { BigInt } from '@graphprotocol/graph-ts';
 
 import {
   UserIndexHistory,
-  DailyUserIndexHistory,
   DailyCapitalization,
   UserCapitalization,
 } from '../../types/schema';
@@ -28,30 +27,6 @@ export function newUserIndexHistory(
   userIndexHistory.save();
 
   return userIndexHistory;
-}
-
-export function loadOrCreateDaylyUserIndexHistory(
-  userID: string,
-  indexID: string,
-  timestamp: BigInt,
-): DailyUserIndexHistory {
-  let id = userID
-    .concat('-')
-    .concat(indexID)
-    .concat('-')
-    .concat(getStartingDayTimestamp(timestamp).toString());
-
-  let dailyUserIndexHistory = DailyUserIndexHistory.load(id);
-  if (!dailyUserIndexHistory) {
-    dailyUserIndexHistory = new DailyUserIndexHistory(id);
-    dailyUserIndexHistory.timestamp = getStartingDayTimestamp(timestamp);
-    dailyUserIndexHistory.user = userID;
-    dailyUserIndexHistory.index = indexID;
-
-    dailyUserIndexHistory.save();
-  }
-
-  return dailyUserIndexHistory;
 }
 
 export function newDailyCapitalization(

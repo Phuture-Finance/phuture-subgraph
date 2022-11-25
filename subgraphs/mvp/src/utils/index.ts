@@ -2,8 +2,7 @@ import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
 import { convertUSDToETH } from '../mappings/entities';
 import {
-  updateDailyCapitalisation,
-  updateDailyIndexStat,
+  updateDailyCapitalisation, updateDailyIndexStat,
   updateHourlyIndexStat,
   updateMonthlyIndexStat,
   updateWeeklyIndexStat,
@@ -12,38 +11,6 @@ import {
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
-
-// Deprecated.
-export function updateOldIndexBasePriceByIndex(index: Index, ts: BigInt): void {
-  if (index._assets.length == 0) return;
-
-  index.basePrice = BigDecimal.zero();
-  for (let i = 0; i < index._assets.length; i++) {
-    let asset = Asset.load(index._assets[i]);
-    if (!asset) continue;
-
-    let ia = IndexAsset.load(index.id.concat('-').concat(asset.id));
-    if (!ia) continue;
-
-    let indexBasePrice = asset.basePrice.times(
-      ia.weight.toBigDecimal().div(BigDecimal.fromString('255')),
-    );
-    index.basePrice = index.basePrice.plus(indexBasePrice);
-  }
-
-  index.marketCap = convertTokenToDecimal(
-    index.totalSupply,
-    index.decimals,
-  ).times(index.basePrice);
-
-  index.save();
-
-  updateHourlyIndexStat(index, ts);
-  updateDailyIndexStat(index, ts);
-  updateWeeklyIndexStat(index, ts);
-  updateMonthlyIndexStat(index, ts);
-  updateYearlyIndexStat(index, ts);
-}
 
 // Updating the index values after changing the base price.
 export function updateIndexBasePriceByAsset(asset: Asset, ts: BigInt): void {
@@ -111,6 +78,7 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
 
   updateDailyCapitalisation(index, ts);
 
+  updateHourlyIndexStat(index, ts);
   updateDailyIndexStat(index, ts);
   updateWeeklyIndexStat(index, ts);
   updateMonthlyIndexStat(index, ts);

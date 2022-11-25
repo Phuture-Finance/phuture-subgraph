@@ -8,7 +8,6 @@ import {
   loadOrCreateAccount,
   loadOrCreateTransaction,
   newUserIndexHistory,
-  loadOrCreateDaylyUserIndexHistory,
 } from '../entities';
 
 export function handleAllIndexesTransfers(
@@ -87,23 +86,6 @@ export function handleAllIndexesTransfers(
     fromUIH.logIndex = event.logIndex;
     fromUIH.totalSupply = index.totalSupply;
     fromUIH.save();
-
-    let fromDailyUIH = loadOrCreateDaylyUserIndexHistory(
-      fromUserIndex.user,
-      fromUserIndex.index,
-      tx.timestamp,
-    );
-    fromDailyUIH.total = fromDailyUIH.total.plus(fromUIH.balance);
-    fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(fromUIH.capitalization);
-    fromDailyUIH.number = fromDailyUIH.number.plus(
-      new BigDecimal(BigInt.fromI32(1)),
-    );
-    fromDailyUIH.avgBalance = fromDailyUIH.total.div(fromDailyUIH.number);
-    fromDailyUIH.avgCapitalization = fromDailyUIH.totalCap.div(
-      fromDailyUIH.number,
-    );
-    fromDailyUIH.totalSupply = index.totalSupply;
-    fromDailyUIH.save();
   }
 
   // Track index transfers to index from another index or minting.
@@ -154,21 +136,6 @@ export function handleAllIndexesTransfers(
     toUIH.logIndex = event.logIndex;
     toUIH.totalSupply = index.totalSupply;
     toUIH.save();
-
-    let toDailyUIH = loadOrCreateDaylyUserIndexHistory(
-      toUserIndex.user,
-      toUserIndex.index,
-      tx.timestamp,
-    );
-    toDailyUIH.total = toDailyUIH.total.plus(toUIH.balance);
-    toDailyUIH.totalCap = toDailyUIH.totalCap.plus(toUIH.capitalization);
-    toDailyUIH.number = toDailyUIH.number.plus(
-      new BigDecimal(BigInt.fromI32(1)),
-    );
-    toDailyUIH.avgBalance = toDailyUIH.total.div(toDailyUIH.number);
-    toDailyUIH.avgCapitalization = toDailyUIH.totalCap.div(toDailyUIH.number);
-    toDailyUIH.totalSupply = index.totalSupply;
-    toDailyUIH.save();
   }
 
   index.save();
