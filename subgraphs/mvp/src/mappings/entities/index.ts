@@ -4,7 +4,6 @@ export * from './BaseIndex';
 export * from './ChainLink';
 export * from './IndexAsset';
 export * from './IndexHistory';
-export * from './Orderer';
 export * from './SVault';
 export * from './SVHistory';
 export * from './Transaction';

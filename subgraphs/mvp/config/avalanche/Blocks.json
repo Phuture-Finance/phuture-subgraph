@@ -3,7 +3,6 @@
   "ChainlinkPriceOracleBlockNumber": 19400000,
   "ManagedIndexFactoryBlockNumber": 19400000,
   "ManagedVTokenFactoryBlockNumber": 19400000,
-  "OrdererBlockNumber": 19400000,
   "RegistryBlockNumber": 19400000,
   "SushiV2FactoryBlockNumber": 19400000
 }

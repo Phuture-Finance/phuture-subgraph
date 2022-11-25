@@ -81,40 +81,6 @@ type ChainLinkAggregator @entity {
   vaults: [SVVault!]!
 }
 
-# type Pair @entity {
-#   id: ID!
-#
-#   swap: Swap!
-#
-#   asset0: Asset!
-#   asset1: Asset!
-#
-#   totalSupply: BigInt!
-#
-#   asset0Reserve: BigDecimal!
-#   asset1Reserve: BigDecimal!
-# }
-
-# type SushiPair @entity {
-#   id: ID!
-#
-#   swap: Swap!
-#
-#   asset0: Asset!
-#   asset1: Asset!
-#
-#   totalSupply: BigInt!
-#
-#   asset0Reserve: BigDecimal!
-#   asset1Reserve: BigDecimal!
-# }
-
-# type DEX @entity {
-#   id: ID!
-#   router: String!
-#   type: String!
-# }
-
 type IndexFactory @entity {
   "Address (hash) of the factory"
   id: ID!
@@ -178,28 +144,6 @@ type Index @entity {
   weeklyStats: [WeeklyIndexStat!]! @derivedFrom(field: "index")
   monthlyStats: [MonthlyIndexStat!]! @derivedFrom(field: "index")
   yearlyStats: [YearlyIndexStat!]! @derivedFrom(field: "index")
-}
-
-type Order @entity {
-  "Address (hash)"
-  id: ID!
-  index: Index!
-  order_id: BigInt!
-  orderDetails: [OrderDetailsInfo!]! @derivedFrom(field: "order")
-}
-
-type OrderDetailsInfo @entity {
-  id: ID! # Set to `${order.id}-${asset.id}`
-  order: Order!
-  asset: Asset!
-  shares: BigInt!
-  side: String!
-}
-
-type LastOrderIndex @entity {
-  id: ID!
-  index: Index!
-  order: Order!
 }
 
 type vToken @entity {
@@ -278,6 +222,7 @@ type UserIndex @entity {
 
   balance: BigDecimal!
   capitalization: BigDecimal!
+  investedCapital: BigDecimal!
 }
 
 type UserCapitalization @entity {
@@ -754,22 +699,4 @@ type UniV3Pool @entity {
   totalValueLockedUSDUntracked: BigDecimal!
   # Fields used to help derived relationship
   liquidityProviderCount: BigInt! # used to detect new exchanges
-}
-
-type OrderComplete @entity {
-  id: ID!
-  timestamp: BigInt!
-  index: Index!
-  order: Order!
-
-  sellToken: Asset!
-  sellAmount: BigInt!
-  sellTokenPrice: BigDecimal!
-
-  buyToken: Asset!
-  buyAmount: BigInt!
-  buyTokenPrice: BigDecimal!
-
-  transactionFee: BigInt!
-  transactionGas: BigInt!
 }

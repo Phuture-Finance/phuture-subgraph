@@ -135,41 +135,6 @@ dataSources:
           handler: handleAssetAdded
       file: ./src/mappings/phuture/chainlink.ts
   {{/ChainlinkPriceOracle}}
-  # TODO: add new entity for CreditUpdate event, @entity Credit 1:1 to id(from address), index, governor, amount, dept
-
-  - kind: ethereum/contract
-    name: Orderer
-    network: {{network}}
-    source:
-      abi: Orderer
-      address: '{{Orderer}}'
-      startBlock: {{OrdererBlockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Asset
-        - Index
-        - Order
-        - OrderDetailsInfo
-      abis:
-        - name: Orderer
-          file: ../abis/Phuture/Orderer.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-      eventHandlers:
-        - event: PlaceOrder(address,uint256)
-          handler: handlerPlaceOrder
-        - event: UpdateOrder(uint256,address,uint256,bool)
-          handler: handlerUpdateOrder
-        - event: CompleteOrder(uint256,address,uint256,address,uint256)
-          handler: handlerCompleteOrder
-      file: ./src/mappings/phuture/Orderer.ts
 
   - kind: ethereum/contract
     name: FeePool
