@@ -468,23 +468,6 @@ type UserSVHistory @entity {
   timestamp: BigInt!
 }
 
-type DailyUserSVHistory @entity {
-  id: ID!
-
-  user: SVUser!
-  vault: SVVault!
-
-  total: BigDecimal!
-  totalCap: BigDecimal!
-
-  "vault total supply on the moment of the user balance calculation"
-  totalSupply: BigInt!
-  "timestamp matching the starting of day GMT"
-  timestamp: BigInt!
-  "holds orders of transfers in transaction"
-  logIndex: BigInt!
-}
-
 # ----------------------------------------------------------------
 #                               UniswapV3
 # ----------------------------------------------------------------

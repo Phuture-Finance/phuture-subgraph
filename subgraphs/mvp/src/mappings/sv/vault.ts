@@ -9,7 +9,7 @@ import { convertDecimals, convertTokenToDecimal } from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
-import { loadOrCreateDailyUserSVHistory, newUserSVHistory } from '../entities';
+import { newUserSVHistory } from '../entities';
 
 let fCashDec = 8;
 let usdcDec = 6;
@@ -231,14 +231,4 @@ function updateUserHistories(
   userIndexHistory.logIndex = logIndex;
   userIndexHistory.totalSupply = fVault.totalSupply;
   userIndexHistory.save();
-
-  let fromDailyUIH = loadOrCreateDailyUserSVHistory(user, fVault.id, ts);
-  fromDailyUIH.total = fromDailyUIH.total.plus(
-    userIndexHistory.balance.toBigDecimal(),
-  );
-  fromDailyUIH.totalCap = fromDailyUIH.totalCap.plus(
-    userIndexHistory.capitalization,
-  );
-  fromDailyUIH.totalSupply = fVault.totalSupply;
-  fromDailyUIH.save();
 }
