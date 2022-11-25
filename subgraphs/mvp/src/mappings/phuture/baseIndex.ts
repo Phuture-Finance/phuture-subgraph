@@ -63,6 +63,7 @@ export function handleIndexCreation(
     userIndex.index = indexAddress.toHexString();
     userIndex.user = event.transaction.from.toHexString();
     userIndex.balance = BigDecimal.zero();
+    userIndex.investedCapital = BigDecimal.zero();
   }
   userIndex.save();
 

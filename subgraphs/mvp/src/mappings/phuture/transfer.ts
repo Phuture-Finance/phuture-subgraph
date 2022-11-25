@@ -52,8 +52,12 @@ export function handleAllIndexesTransfers(
       fromUserIndex.index = event.address.toHexString();
       fromUserIndex.user = from.toHexString();
       fromUserIndex.balance = BigDecimal.zero();
+      fromUserIndex.investedCapital = BigDecimal.zero();
     }
 
+    fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
+        fromUserIndex.investedCapital.times(value.toBigDecimal()).div(fromUserIndex.balance)
+    )
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
     // balance * (marketCap / totalSupply)
     fromUserIndex.capitalization = convertDecimals(
@@ -114,6 +118,7 @@ export function handleAllIndexesTransfers(
       toUserIndex.index = event.address.toHexString();
       toUserIndex.user = to.toHexString();
       toUserIndex.balance = BigDecimal.zero();
+      toUserIndex.investedCapital = BigDecimal.zero();
     }
 
     if (toUserIndex.balance == BigDecimal.zero()) {
@@ -133,6 +138,7 @@ export function handleAllIndexesTransfers(
         convertTokenToDecimal(index.totalSupply, index.decimals),
       ),
     );
+    toUserIndex.investedCapital = toUserIndex.capitalization
 
     toUserIndex.save();
 
