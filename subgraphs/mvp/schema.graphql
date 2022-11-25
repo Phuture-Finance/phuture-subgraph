@@ -141,7 +141,6 @@ type Index @entity {
 
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
-  monthlyStats: [MonthlyIndexStat!]! @derivedFrom(field: "index")
 }
 
 type vToken @entity {
@@ -324,21 +323,6 @@ type DailyIndexStat @entity {
   "Price of the index in chain native token"
   basePriceETH: BigDecimal!
   baseVolume: BigDecimal!
-  apy: BigDecimal!
-}
-
-type MonthlyIndexStat @entity {
-  id: ID!
-  date: Int!
-  index: Index!
-
-  "price of the index in USD"
-  basePrice: BigDecimal!
-  "price of the index in ETH"
-  basePriceETH: BigDecimal!
-  marketCap: BigDecimal!
-  baseVolume: BigDecimal!
-  uniqueHolders: BigInt!
   apy: BigDecimal!
 }
 

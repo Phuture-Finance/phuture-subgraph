@@ -4,7 +4,6 @@ import { convertUSDToETH } from '../mappings/entities';
 import {
   updateDailyCapitalisation, updateDailyIndexStat,
   updateHourlyIndexStat,
-  updateMonthlyIndexStat,
 } from '../mappings/phuture/stats';
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
@@ -78,5 +77,4 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
 
   updateHourlyIndexStat(index, ts);
   updateDailyIndexStat(index, ts);
-  updateMonthlyIndexStat(index, ts);
 }

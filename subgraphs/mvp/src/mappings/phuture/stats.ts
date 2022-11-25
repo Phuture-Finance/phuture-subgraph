@@ -10,7 +10,6 @@ import {
     SVVault,
     HourlyIndexStat,
     Index,
-    MonthlyIndexStat,
     VaultController,
     VaultControllerStat,
 } from '../../types/schema';
@@ -158,37 +157,6 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
     indexStat.save();
 
     return indexStat as DailyIndexStat;
-}
-
-export function updateMonthlyIndexStat(
-    index: Index,
-    ts: BigInt,
-): MonthlyIndexStat {
-    let timestamp = ts.toI32();
-    let ID = timestamp / (86400 * 30);
-    let startTimestamp = ID * 86400 * 30;
-
-    let indexStat = MonthlyIndexStat.load(
-        index.id.concat('-').concat(ID.toString()),
-    );
-    if (!indexStat) {
-        indexStat = new MonthlyIndexStat(
-            index.id.concat('-').concat(ID.toString()),
-        );
-        indexStat.date = startTimestamp;
-        indexStat.index = index.id;
-    }
-
-    indexStat.apy = index.apy;
-    indexStat.marketCap = index.marketCap;
-    indexStat.uniqueHolders = index.uniqueHolders;
-    indexStat.basePrice = index.basePrice;
-    indexStat.basePriceETH = index.basePriceETH;
-    indexStat.baseVolume = index.baseVolume;
-
-    indexStat.save();
-
-    return indexStat as MonthlyIndexStat;
 }
 
 export function updateDailyAssetStat(
