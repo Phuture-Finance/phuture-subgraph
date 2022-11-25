@@ -321,21 +321,6 @@ type Transfer @entity {
   type: TransferType!
 }
 
-type Stat @entity {
-  # index factory address
-  id: ID!
-
-  "Total value of all indexes in base"
-  totalValueLocked: BigDecimal!
-}
-
-type DailyStat @entity {
-  id: ID!
-  date: Int!
-
-  totalValueLocked: BigDecimal!
-}
-
 type DailyAssetStat @entity {
   id: ID!
   date: Int!

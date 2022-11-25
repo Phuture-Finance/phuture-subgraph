@@ -15,7 +15,7 @@ import {
 import { convertTokenToDecimal } from '../../utils/calc';
 import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
 
-import { updateDailyAssetStat, updateStat } from './stats';
+import { updateDailyAssetStat } from './stats';
 
 export function handlerSetVaultController(event: SetVaultController): void {
   let vToken = vTokenEntity.load(event.address.toHexString());
@@ -134,15 +134,6 @@ function updateVToken(
   asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
 
   asset.save();
-
-  let stat = updateStat(event.block.timestamp);
-  stat.totalValueLocked = stat.totalValueLocked.plus(
-    convertTokenToDecimal(event.params.amount, asset.decimals).times(
-      asset.basePrice,
-    ),
-  );
-
-  stat.save();
 
   updateDailyAssetStat(event, asset);
 }

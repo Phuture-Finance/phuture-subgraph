@@ -17,7 +17,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Asset
-        - Stat
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json

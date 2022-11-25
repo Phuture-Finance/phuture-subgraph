@@ -13,8 +13,6 @@ import {
   loadOrCreateTransaction,
 } from '../entities';
 
-import { updateStat } from './stats';
-
 export function handleIndexCreation(
   type: string,
   event: ethereum.Event,
@@ -70,10 +68,6 @@ export function handleIndexCreation(
   if (type == IndexManaged) {
     ManagedIndex.create(indexAddress);
   }
-
-  let stat = updateStat(event.block.timestamp);
-  // stat.indexCount = stat.indexCount.plus(ONE_BI);
-  stat.save();
 
   return index;
 }
