@@ -5,8 +5,6 @@
   "ManagedIndexFactory": "0xb4e85a5BFCd5f247D4BDa1491F57921473dDcE2e",
   "ManagedVTokenFactory": "0x24aD48f31CAb5E35D0E9CDfa9213b5451f22FB92",
   "Registry": "0x8f971223B4Bd9649702F10d306e469e6dbe3E3E9",
-  "SushiV2Factory": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
-  "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
   "BaseNetworkAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
 
   "SVault": "0x6bAD6A9BcFdA3fd60Da6834aCe5F93B8cFed9598",
