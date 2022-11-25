@@ -225,15 +225,6 @@ type UserIndex @entity {
   investedCapital: BigDecimal!
 }
 
-type UserCapitalization @entity {
-  id: ID!
-
-  index: Index!
-  capitalization: BigDecimal!
-  timestamp: BigInt!
-  logIndex: BigInt!
-}
-
 type DailyCapitalization @entity {
   id: ID!
   "index referred to daily capitalisation metrics"

@@ -3,7 +3,6 @@ import { BigInt } from '@graphprotocol/graph-ts';
 import {
   UserIndexHistory,
   DailyCapitalization,
-  UserCapitalization,
 } from '../../types/schema';
 import { getStartingDayTimestamp } from '../../utils/timestamp';
 
@@ -47,27 +46,4 @@ export function newDailyCapitalization(
   }
 
   return dailyCap;
-}
-
-export function newUserCapitalization(
-  indexID: string,
-  timestamp: BigInt,
-  logIndex: BigInt,
-): UserCapitalization {
-  let id = indexID
-    .concat('-')
-    .concat(timestamp.toString())
-    .concat('-')
-    .concat(logIndex.toString());
-
-  let userCap = UserCapitalization.load(id);
-  if (!userCap) {
-    userCap = new UserCapitalization(id);
-    userCap.index = indexID;
-    userCap.timestamp = timestamp;
-
-    userCap.save();
-  }
-
-  return userCap;
 }
