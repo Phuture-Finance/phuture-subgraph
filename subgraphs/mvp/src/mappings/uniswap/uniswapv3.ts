@@ -2,7 +2,7 @@ import { log, Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts';
 
 import { UniswapPathPriceOracle } from '../../types/IndexRegistry/UniswapPathPriceOracle';
 import { UniswapV3PriceOracle } from '../../types/IndexRegistry/UniswapV3PriceOracle';
-import { UniV3PriceOracle, UniV3PathPriceOracle } from '../../types/schema';
+import {UniV3PriceOracle, UniV3PathPriceOracle, Index} from '../../types/schema';
 import {
   Burn as BurnEvent,
   Flash as FlashEvent,
@@ -12,30 +12,36 @@ import {
 } from '../../types/templates/Pool/Pool';
 import { exponentToBigDecimal } from '../../utils/calc';
 import { loadOrCreateAsset } from '../entities';
+import {updateDailyCapitalisation, updateDailyIndexStat, updateHourlyIndexStat} from "../phuture/stats";
 
 export function handleInitialize(event: Initialize): void {
   priceUpdate(event.address);
   pricePathUpdate(event.address);
+  updateIndexStats(event.block.timestamp);
 }
 
 export function handleMint(event: MintEvent): void {
   priceUpdate(event.address);
   pricePathUpdate(event.address);
+  updateIndexStats(event.block.timestamp);
 }
 
 export function handleBurn(event: BurnEvent): void {
   priceUpdate(event.address);
   pricePathUpdate(event.address);
+  updateIndexStats(event.block.timestamp);
 }
 
 export function handleFlash(event: FlashEvent): void {
   priceUpdate(event.address);
   pricePathUpdate(event.address);
+  updateIndexStats(event.block.timestamp);
 }
 
 export function handleSwap(event: SwapEvent): void {
   priceUpdate(event.address);
   pricePathUpdate(event.address);
+  updateIndexStats(event.block.timestamp);
 }
 
 export function priceUpdate(a: Address): void {
@@ -97,5 +103,14 @@ export function pricePathUpdate(a: Address): void {
       .div(new BigDecimal(uq.value))
       .times(exp);
     asset0.save();
+  }
+}
+
+export function updateIndexStats(timestamp: BigInt): void {
+  let index = Index.load("0x632806BF5c8f062932Dd121244c9fbe7becb8B48");
+  if (index) {
+    updateHourlyIndexStat(index, timestamp);
+    updateDailyIndexStat(index, timestamp);
+    updateDailyCapitalisation(index, timestamp);
   }
 }
