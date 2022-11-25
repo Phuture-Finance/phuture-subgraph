@@ -109,7 +109,7 @@ function updateVToken(
     vt.platformTotalSupply = vt.platformTotalSupply.minus(event.params.amount);
   }
   vt.capitalization = asset.basePrice.times(
-    new BigDecimal(vt.totalAmount), // TODO multiply with totalAmount
+    new BigDecimal(vt.totalAmount),
   );
 
   vt.save();
