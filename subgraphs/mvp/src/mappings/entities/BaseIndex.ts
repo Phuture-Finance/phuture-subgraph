@@ -11,7 +11,6 @@ export function loadOrCreateIndex(address: Address): Index {
 
     index.marketCap = BigDecimal.zero();
     index.baseVolume = BigDecimal.zero();
-    index.uniqueHolders = BigInt.zero();
     index.basePrice = BigDecimal.zero();
     index._assets = [];
 

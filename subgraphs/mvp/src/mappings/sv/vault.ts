@@ -56,10 +56,6 @@ export function handleTransfer(event: TransferEvent): void {
       ).times(fVault.basePrice);
     }
 
-    if (fromUser.balance.equals(BigInt.zero())) {
-      fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
-    }
-
     updateUserHistories(
       event.params.from.toHexString(),
       fromUser.balance,
@@ -83,10 +79,6 @@ export function handleTransfer(event: TransferEvent): void {
       toUser.vault = event.address.toHexString();
       toUser.user = event.params.to.toHexString();
       toUser.balance = BigInt.zero();
-    }
-
-    if (toUser.balance.equals(BigInt.zero())) {
-      fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
 
     toUser.balance = toUser.balance.plus(event.params.value);
