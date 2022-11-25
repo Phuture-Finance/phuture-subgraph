@@ -113,8 +113,6 @@ type Index @entity {
   basePrice: BigDecimal!
   "price of the index in ETH"
   basePriceETH: BigDecimal!
-  "deprecated"
-  baseVolume: BigDecimal!
 
   apy: BigDecimal!
 
@@ -126,8 +124,6 @@ type Index @entity {
 
   "When index was created"
   created: BigInt!
-  "Index Creation Category"
-  sector: BigInt!
 
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
@@ -290,7 +286,6 @@ type HourlyIndexStat @entity {
 
   basePrice: BigDecimal!
   marketCap: BigDecimal!
-  baseVolume: BigDecimal!
   uniqueHolders: BigInt!
   apy: BigDecimal!
 }
@@ -306,7 +301,6 @@ type DailyIndexStat @entity {
   basePrice: BigDecimal!
   "Price of the index in chain native token"
   basePriceETH: BigDecimal!
-  baseVolume: BigDecimal!
   apy: BigDecimal!
 }
 

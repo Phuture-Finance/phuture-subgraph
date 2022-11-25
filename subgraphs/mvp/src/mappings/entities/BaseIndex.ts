@@ -10,7 +10,6 @@ export function loadOrCreateIndex(address: Address): Index {
     index = new Index(address.toHexString());
 
     index.marketCap = BigDecimal.zero();
-    index.baseVolume = BigDecimal.zero();
     index.basePrice = BigDecimal.zero();
     index._assets = [];
 

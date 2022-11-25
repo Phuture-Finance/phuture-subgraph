@@ -36,7 +36,6 @@ export function updateHourlyIndexStat(
     indexStat.basePrice = index.basePrice;
     indexStat.marketCap = index.marketCap;
     indexStat.uniqueHolders = index.uniqueHolders;
-    indexStat.baseVolume = index.baseVolume;
 
     indexStat.save();
 
@@ -152,7 +151,6 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
     indexStat.uniqueHolders = index.uniqueHolders;
     indexStat.basePrice = index.basePrice;
     indexStat.basePriceETH = index.basePriceETH;
-    indexStat.baseVolume = index.baseVolume;
 
     indexStat.save();
 
