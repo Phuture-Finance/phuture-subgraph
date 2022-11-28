@@ -114,8 +114,6 @@ function updateVToken(
 
   vt.save();
 
-  asset.save();
-
   updateDailyAssetStat(event, asset);
 }
 
