@@ -1,6 +1,5 @@
 import { Address, BigDecimal, log } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
-
 import {
   Asset,
   Index,
@@ -12,9 +11,7 @@ import {
   UpdateDeposit,
   SetVaultController,
 } from '../../types/templates/vToken/vToken';
-import { convertTokenToDecimal } from '../../utils/calc';
 import { loadOrCreateIndexAsset, loadOrCreateVToken } from '../entities';
-
 import { updateDailyAssetStat } from './stats';
 
 export function handlerSetVaultController(event: SetVaultController): void {

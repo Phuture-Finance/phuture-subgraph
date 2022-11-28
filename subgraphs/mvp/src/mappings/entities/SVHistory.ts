@@ -1,7 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts/index';
 
 import { UserSVHistory } from '../../types/schema';
-import { getStartingDayTimestamp } from '../../utils/timestamp';
 
 export function newUserSVHistory(
   userId: string,
