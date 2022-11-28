@@ -8,6 +8,7 @@ import {
   loadOrCreateTransaction,
   newUserIndexHistory,
 } from '../entities';
+import {convertDecimals} from "../../utils/calc";
 
 export function handleAllIndexesTransfers(
   event: ethereum.Event,
@@ -59,10 +60,6 @@ export function handleAllIndexesTransfers(
         .div(fromUserIndex.balance),
     );
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
-    // balance * (marketCap / totalSupply)
-    fromUserIndex.capitalization = fromUserIndex.balance
-      .div(index.totalSupply.toBigDecimal())
-      .times(index.marketCap);
 
     if (fromUserIndex.balance == BigDecimal.zero()) {
       index.uniqueHolders = index.uniqueHolders.minus(ONE_BI);
@@ -77,7 +74,10 @@ export function handleAllIndexesTransfers(
       event.logIndex,
     );
     fromUIH.balance = fromUserIndex.balance;
-    fromUIH.capitalization = fromUserIndex.capitalization;
+    fromUIH.capitalization = convertDecimals(
+        fromUserIndex.balance,
+        index.decimals,
+    ).times(index.basePrice);
     fromUIH.timestamp = event.block.timestamp;
     fromUIH.totalSupply = index.totalSupply;
     fromUIH.save();
@@ -103,16 +103,12 @@ export function handleAllIndexesTransfers(
     }
 
     toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
-    // capitalization = balance * (marketCap / totalSupply)
-    toUserIndex.capitalization = toUserIndex.balance
-      .div(index.totalSupply.toBigDecimal())
-      .times(index.marketCap);
 
     toUserIndex.investedCapital = toUserIndex.investedCapital.plus(
-      value
-        .toBigDecimal()
-        .times(index.marketCap)
-        .div(index.totalSupply.toBigDecimal()),
+        convertDecimals(
+            value.toBigDecimal(),
+            index.decimals
+        ).times(index.basePrice)
     );
 
     toUserIndex.save();
@@ -124,7 +120,10 @@ export function handleAllIndexesTransfers(
       event.logIndex,
     );
     toUIH.balance = toUserIndex.balance;
-    toUIH.capitalization = toUserIndex.capitalization;
+    toUIH.capitalization = convertDecimals(
+        toUserIndex.balance,
+        index.decimals,
+    ).times(index.basePrice);
     toUIH.timestamp = tx.timestamp;
     toUIH.totalSupply = index.totalSupply;
     toUIH.save();

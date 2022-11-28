@@ -147,7 +147,6 @@ type vToken @entity {
   tokenType: String!
   factory: String!
   platformTotalSupply: BigInt!
-  capitalization: BigDecimal!
   "depositedQuantity"
   deposited: BigInt!
   "reserveQuantity - quantity of the asset stored in vToken address"
@@ -214,7 +213,6 @@ type UserIndex @entity {
   index: Index!
 
   balance: BigDecimal!
-  capitalization: BigDecimal!
   investedCapital: BigDecimal!
 }
 
@@ -329,7 +327,6 @@ type UserVault @entity {
   vault: SVVault!
 
   balance: BigInt!
-  capitalization: BigDecimal!
 }
 
 type SVTransfer @entity {

@@ -40,23 +40,20 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser.user = event.params.from.toHexString();
       fromUser.balance = BigInt.zero();
     }
-
     fromUser.balance = fromUser.balance.minus(event.params.value);
-    if (!fVault.totalSupply.isZero()) {
-      fromUser.capitalization = convertDecimals(
-        fromUser.balance.toBigDecimal(),
-        fVault.decimals,
-      ).times(fVault.basePrice);
-    }
 
     if (fromUser.balance.equals(BigInt.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
+    let capitalization =
+        convertDecimals(fromUser.balance.toBigDecimal(),
+            fVault.decimals,
+        ).times(fVault.basePrice);
     updateUserHistories(
       event.params.from.toHexString(),
       fromUser.balance,
-      fromUser.capitalization,
+      capitalization,
       fVault,
       event.block.timestamp,
       event.logIndex,
@@ -83,17 +80,15 @@ export function handleTransfer(event: TransferEvent): void {
     }
 
     toUser.balance = toUser.balance.plus(event.params.value);
-    if (!fVault.totalSupply.isZero()) {
-      toUser.capitalization = convertDecimals(
+
+    let capitalization = convertDecimals(
         toUser.balance.toBigDecimal(),
         fVault.decimals,
-      ).times(fVault.basePrice);
-    }
-
+    ).times(fVault.basePrice);
     updateUserHistories(
       event.params.to.toHexString(),
       toUser.balance,
-      toUser.capitalization,
+        capitalization,
       fVault,
       event.block.timestamp,
       event.logIndex,
