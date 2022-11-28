@@ -54,12 +54,6 @@ type Asset @entity {
   vTokens: [vToken!]! @derivedFrom(field: "asset")
   _vTokens: [ID!]!
 
-  "Amount of the asset in the vault"
-  vaultReserve: BigDecimal!
-
-  "Amount of the asset in the vault in base units"
-  vaultBaseReserve: BigDecimal!
-
   "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 
@@ -274,8 +268,6 @@ type DailyAssetStat @entity {
   date: Int!
   asset: Asset!
 
-  vaultReserve: BigDecimal!
-  vaultBaseReserve: BigDecimal!
   basePrice: BigDecimal!
 }
 

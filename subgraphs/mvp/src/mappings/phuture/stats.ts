@@ -180,9 +180,6 @@ export function updateDailyAssetStat(
         dailyAssetStat.asset = asset.id;
     }
 
-    dailyAssetStat.vaultReserve = asset.vaultReserve;
-    dailyAssetStat.vaultBaseReserve = asset.vaultBaseReserve;
-
     dailyAssetStat.save();
 
     return dailyAssetStat as DailyAssetStat;

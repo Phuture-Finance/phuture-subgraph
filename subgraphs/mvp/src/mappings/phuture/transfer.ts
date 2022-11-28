@@ -3,7 +3,6 @@ import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { ONE_BI } from '../../../../helpers';
 import { Index, Transfer, UserIndex } from '../../types/schema';
 import { updateIndexBasePriceByIndex } from '../../utils';
-import { convertDecimals, convertTokenToDecimal } from '../../utils/calc';
 import {
   loadOrCreateAccount,
   loadOrCreateTransaction,

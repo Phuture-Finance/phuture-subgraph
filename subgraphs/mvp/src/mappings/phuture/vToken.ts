@@ -114,19 +114,6 @@ function updateVToken(
 
   vt.save();
 
-  // Update asset reserve values.
-  if (isInc) {
-    asset.vaultReserve = asset.vaultReserve.plus(
-      convertTokenToDecimal(event.params.amount, asset.decimals),
-    );
-  } else {
-    asset.vaultReserve = asset.vaultReserve.minus(
-      convertTokenToDecimal(event.params.amount, asset.decimals),
-    );
-  }
-
-  asset.vaultBaseReserve = asset.vaultReserve.times(asset.basePrice);
-
   asset.save();
 
   updateDailyAssetStat(event, asset);

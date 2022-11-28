@@ -19,8 +19,6 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.symbol = fetchTokenSymbol(address);
     asset.name = fetchTokenName(address);
     asset.decimals = fetchTokenDecimals(address);
-    asset.vaultReserve = BigDecimal.zero();
-    asset.vaultBaseReserve = BigDecimal.zero();
     // asset.indexCount = BigInt.zero();
     asset._indexes = [];
 

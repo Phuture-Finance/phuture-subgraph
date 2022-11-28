@@ -1,7 +1,6 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
 
-import { IndexManaged, ONE_BI } from '../../../../helpers';
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
 import { ManagedIndex } from '../../types/templates';
 import { updateIndexBasePriceByIndex } from '../../utils';
