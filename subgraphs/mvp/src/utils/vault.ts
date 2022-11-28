@@ -3,10 +3,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts/index';
 
 import { SV_VIEW } from '../../consts';
 import { convertUSDToETH } from '../mappings/entities';
-import {
-  updateSVDailyCapitalisation,
-  updateSVDailyStat,
-} from '../mappings/phuture/stats';
+import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
 import { Vault } from '../types/SVault/Vault';
 import { SVView } from '../types/templates/AggregatorInterface/SVView';
@@ -42,7 +39,6 @@ export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
     fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
   }
 
-  updateSVDailyCapitalisation(fVault, ts);
   updateSVDailyStat(fVault, ts);
 }
 

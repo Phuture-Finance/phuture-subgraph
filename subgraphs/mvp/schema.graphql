@@ -353,25 +353,13 @@ type SVDailyStat @entity {
 
   apy: BigDecimal!
   marketCap: BigDecimal!
+  "total supply of saving vault"
+  totalSupply: BigInt!
   uniqueHolders: BigInt!
   "price of the vault in USD"
   basePrice: BigDecimal!
   "price of the vault in ETH"
   basePriceETH: BigDecimal!
-}
-
-type SVDailyCapitalization @entity {
-  id: ID!
-  "vault referred to daily capitalisation metrics"
-  vault: SVVault!
-  "capitalisation for the specific day"
-  capitalization: BigDecimal!
-  "price of the vault in the day"
-  basePrice: BigDecimal!
-  "total supply of saving vault"
-  totalSupply: BigInt!
-  "raw timestamp of the specific day"
-  timestamp: BigInt!
 }
 
 type UserSVHistory @entity {

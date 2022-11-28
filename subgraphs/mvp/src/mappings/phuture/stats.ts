@@ -4,7 +4,6 @@ import {
     Asset,
     DailyAssetStat,
     DailyIndexStat,
-    SVDailyCapitalization,
     SVDailyStat,
     SVVault,
     HourlyIndexStat,
@@ -41,30 +40,6 @@ export function updateHourlyIndexStat(
     return indexStat as HourlyIndexStat;
 }
 
-export function updateSVDailyCapitalisation(
-    vault: SVVault,
-    ts: BigInt,
-): SVDailyCapitalization {
-    let startingDay = getStartingDayTimestamp(ts);
-    let id = vault.id.concat('-').concat(startingDay.toString());
-
-    let dailyCap = SVDailyCapitalization.load(id);
-    if (!dailyCap) {
-        dailyCap = new SVDailyCapitalization(id);
-        dailyCap.vault = vault.id;
-        dailyCap.timestamp = startingDay;
-    }
-
-    dailyCap.basePrice = vault.basePrice;
-    dailyCap.totalSupply = vault.totalSupply;
-    dailyCap.capitalization = vault.basePrice.times(
-        convertTokenToDecimal(vault.totalSupply, vault.decimals),
-    );
-    dailyCap.save();
-
-    return dailyCap;
-}
-
 export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
     let startingDay = getStartingDayTimestamp(ts);
 
@@ -77,7 +52,10 @@ export function updateSVDailyStat(vault: SVVault, ts: BigInt): SVDailyStat {
         stat.vault = vault.id;
     }
 
-    stat.marketCap = vault.marketCap;
+    stat.marketCap = vault.basePrice.times(
+        convertTokenToDecimal(vault.totalSupply, vault.decimals),
+    );
+    stat.totalSupply = vault.totalSupply;
     stat.uniqueHolders = vault.uniqueHolders;
     stat.basePrice = vault.basePrice;
     stat.basePriceETH = vault.basePriceETH;
