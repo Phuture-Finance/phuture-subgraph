@@ -1,10 +1,7 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
 import { convertUSDToETH } from '../mappings/entities';
-import {
-  updateDailyCapitalisation, updateDailyIndexStat,
-  updateHourlyIndexStat,
-} from '../mappings/phuture/stats';
+import { updateDailyIndexStat, updateHourlyIndexStat } from '../mappings/phuture/stats';
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
@@ -72,8 +69,6 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
   index.marketCap = assetValue;
 
   index.save();
-
-  updateDailyCapitalisation(index, ts);
 
   updateHourlyIndexStat(index, ts);
   updateDailyIndexStat(index, ts);

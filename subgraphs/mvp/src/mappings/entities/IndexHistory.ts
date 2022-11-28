@@ -1,9 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts';
-
-import {
-  UserIndexHistory,
-  DailyCapitalization,
-} from '../../types/schema';
+import { UserIndexHistory } from '../../types/schema';
 import { getStartingDayTimestamp } from '../../utils/timestamp';
 
 export function newUserIndexHistory(
@@ -26,24 +22,4 @@ export function newUserIndexHistory(
   userIndexHistory.save();
 
   return userIndexHistory;
-}
-
-export function newDailyCapitalization(
-  indexID: string,
-  timestamp: BigInt,
-): DailyCapitalization {
-  let id = indexID
-    .concat('-')
-    .concat(getStartingDayTimestamp(timestamp).toString());
-
-  let dailyCap = DailyCapitalization.load(id);
-  if (!dailyCap) {
-    dailyCap = new DailyCapitalization(id);
-    dailyCap.index = indexID;
-    dailyCap.timestamp = timestamp;
-
-    dailyCap.save();
-  }
-
-  return dailyCap;
 }

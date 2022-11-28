@@ -12,7 +12,7 @@ import {
 } from '../../types/templates/Pool/Pool';
 import { exponentToBigDecimal } from '../../utils/calc';
 import { loadOrCreateAsset } from '../entities';
-import {updateDailyCapitalisation, updateDailyIndexStat, updateHourlyIndexStat} from "../phuture/stats";
+import { updateDailyIndexStat, updateHourlyIndexStat } from "../phuture/stats";
 
 export function handleInitialize(event: Initialize): void {
   priceUpdate(event.address);
@@ -111,6 +111,5 @@ export function updateIndexStats(timestamp: BigInt): void {
   if (index) {
     updateHourlyIndexStat(index, timestamp);
     updateDailyIndexStat(index, timestamp);
-    updateDailyCapitalisation(index, timestamp);
   }
 }

@@ -3,7 +3,6 @@ import {BigDecimal, BigInt, ethereum} from '@graphprotocol/graph-ts';
 import {
     Asset,
     DailyAssetStat,
-    DailyCapitalization,
     DailyIndexStat,
     SVDailyCapitalization,
     SVDailyStat,
@@ -40,33 +39,6 @@ export function updateHourlyIndexStat(
     indexStat.save();
 
     return indexStat as HourlyIndexStat;
-}
-
-export function updateDailyCapitalisation(
-    index: Index,
-    ts: BigInt,
-): DailyCapitalization {
-    let timestamp = ts.toI32();
-    let ID = timestamp / 86400;
-    let startTimestamp = getStartingDayTimestamp(ts);
-
-    let id = index.id.concat('-').concat(startTimestamp.toString());
-    let dailyCap = DailyCapitalization.load(id);
-
-    if (!dailyCap) {
-        dailyCap = new DailyCapitalization(id);
-        dailyCap.index = index.id;
-        dailyCap.timestamp = startTimestamp;
-    }
-
-    dailyCap.basePrice = index.basePrice;
-    dailyCap.totalSupply = index.totalSupply;
-    dailyCap.capitalization = index.basePrice.times(
-        convertTokenToDecimal(index.totalSupply, index.decimals),
-    );
-    dailyCap.save();
-
-    return dailyCap;
 }
 
 export function updateSVDailyCapitalisation(
@@ -152,7 +124,10 @@ export function updateDailyIndexStat(index: Index, ts: BigInt): DailyIndexStat {
         indexStat.index = index.id;
     }
     indexStat.apy = index.apy;
-    indexStat.marketCap = index.marketCap;
+    indexStat.marketCap = index.basePrice.times(
+        convertTokenToDecimal(index.totalSupply, index.decimals),
+    );
+    indexStat.totalSupply = index.totalSupply;
     indexStat.uniqueHolders = index.uniqueHolders;
     indexStat.basePrice = index.basePrice;
     indexStat.basePriceETH = index.basePriceETH;

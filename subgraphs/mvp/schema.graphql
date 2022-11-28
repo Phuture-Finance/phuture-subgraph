@@ -218,20 +218,6 @@ type UserIndex @entity {
   investedCapital: BigDecimal!
 }
 
-type DailyCapitalization @entity {
-  id: ID!
-  "index referred to daily capitalisation metrics"
-  index: Index!
-  "capitalisation for the specific day"
-  capitalization: BigDecimal!
-  "price of the index in the day"
-  basePrice: BigDecimal!
-  "total supply of the index in specific"
-  totalSupply: BigInt!
-  "raw timestamp of the specific day"
-  timestamp: BigInt!
-}
-
 type UserIndexHistory @entity {
   id: ID!
 
@@ -288,6 +274,8 @@ type DailyIndexStat @entity {
   index: Index!
 
   marketCap: BigDecimal!
+  "total supply of the index on a specific day"
+  totalSupply: BigInt!
   uniqueHolders: BigInt!
   "Price of the index in USD"
   basePrice: BigDecimal!
