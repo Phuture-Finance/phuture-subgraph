@@ -25,6 +25,8 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+        - event: BettingChallengeStarted(uint32,uint256,uint256)
+          handler: handleBettingChallengeStarted
       file: ./src/mappings/indexBetting.ts
 
   - kind: ethereum/contract

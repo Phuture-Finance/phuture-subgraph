@@ -4,6 +4,10 @@
 
 type IndexBetting @entity {
   id: ID!
+  frontRunningLockupDuration: BigInt!
+  challengeStart: BigInt!
+  challengeEnd: BigInt!
+  maxStakingAmount: BigInt!
   betParticipants: BigInt!
 }
 

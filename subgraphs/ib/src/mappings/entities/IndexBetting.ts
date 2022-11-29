@@ -1,5 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { IndexBetting } from '../../types/schema';
+import { IndexBetting as IndexBettingContract } from '../../types/IndexBetting/IndexBetting';
 
 export function loadOrCreateIndexBetting(addr: Address, ts: BigInt): IndexBetting {
   let id = addr.toHexString();
@@ -7,9 +8,15 @@ export function loadOrCreateIndexBetting(addr: Address, ts: BigInt): IndexBettin
   let indexBetting = IndexBetting.load(id);
   if (!indexBetting) {
     indexBetting = new IndexBetting(id);
-  }
 
-  indexBetting.save();
+    let indexBettingContract = IndexBettingContract.bind(addr);
+
+    let maxStakingAmount = indexBettingContract.try_maxStakingAmount();
+    if (!maxStakingAmount.reverted) {
+      indexBetting.maxStakingAmount = maxStakingAmount.value;
+    }
+    indexBetting.save();
+  }
 
   return indexBetting as IndexBetting;
 }

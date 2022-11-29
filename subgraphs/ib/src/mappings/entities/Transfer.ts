@@ -1,4 +1,3 @@
-import { Address } from '@graphprotocol/graph-ts';
 import { Transfer as TransferEntity, User } from '../../types/schema';
 import { Transfer } from '../../types/IndexBetting/IndexBetting';
 
