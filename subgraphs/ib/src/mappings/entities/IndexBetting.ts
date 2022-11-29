@@ -15,8 +15,9 @@ export function loadOrCreateIndexBetting(addr: Address, ts: BigInt): IndexBettin
     if (!maxStakingAmount.reverted) {
       indexBetting.maxStakingAmount = maxStakingAmount.value;
     }
-    indexBetting.save();
   }
+
+  indexBetting.save();
 
   return indexBetting as IndexBetting;
 }

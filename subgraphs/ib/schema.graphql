@@ -40,6 +40,5 @@ type PricesHourlyStat @entity {
 
   date: BigInt!
 
-  PDIBasePrice: BigInt!
   DPIBasePrice: BigInt!
 }

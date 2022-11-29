@@ -13,11 +13,6 @@ export function updatePricesHourlyStat(txHash: string, ts: BigInt): void {
     stat.date = startingHour;
   }
 
-  let indexHelper = IndexHelper.bind(Address.fromString(INDEX_HELPER));
-  let indexHelperResponse = indexHelper.try_totalEvaluation(Address.fromString(PDI));
-  if (!indexHelperResponse.reverted) {
-    stat.PDIBasePrice = indexHelperResponse.value.value1.times(BigInt.fromI32(100));
-  }
   let chainlink = Chainlink.bind(Address.fromString(DPI_PRICE_FEED));
   let chainlinkResponse = chainlink.try_latestRoundData();
   if (!chainlinkResponse.reverted) {
