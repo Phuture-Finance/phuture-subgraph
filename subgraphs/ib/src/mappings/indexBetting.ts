@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { loadOrCreateIndexBetting } from './entities/IndexBetting';
-import {BettingChallengeStarted, Transfer} from '../types/IndexBetting/IndexBetting';
+import {BettingChallengeStarted, Initialized, Transfer} from '../types/IndexBetting/IndexBetting';
 import { User } from '../types/schema';
 import { loadOrCreateUser } from './entities/Account';
 
@@ -68,4 +68,8 @@ export function handleBettingChallengeStarted(event: BettingChallengeStarted): v
   indexBetting.challengeStart = event.params.challengeStart;
   indexBetting.challengeEnd = event.params.challengeEnd;
   indexBetting.save();
+}
+
+export function handleInitialized(event: Initialized): void {
+  loadOrCreateIndexBetting(event.address, event.block.timestamp);
 }
