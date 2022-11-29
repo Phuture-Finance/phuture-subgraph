@@ -8,7 +8,7 @@ import { loadOrCreateUser } from './entities/Account';
 import { createTransfer } from './entities/Transfer';
 
 export function handleTransfer(event: Transfer): void {
-  let indexBetting = loadOrCreateIndexBetting(event.address, event.block.timestamp);
+  let indexBetting = loadOrCreateIndexBetting(event.address);
 
   loadOrCreateUser(event.params.from);
   loadOrCreateUser(event.params.to);
@@ -62,7 +62,7 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleBettingChallengeStarted(event: BettingChallengeStarted): void {
-  let indexBetting = loadOrCreateIndexBetting(event.address, event.block.timestamp);
+  let indexBetting = loadOrCreateIndexBetting(event.address);
 
   indexBetting.frontRunningLockupDuration = event.params.frontRunningLockupDuration;
   indexBetting.challengeStart = event.params.challengeStart;
@@ -71,5 +71,5 @@ export function handleBettingChallengeStarted(event: BettingChallengeStarted): v
 }
 
 export function handleInitialized(event: Initialized): void {
-  loadOrCreateIndexBetting(event.address, event.block.timestamp);
+  loadOrCreateIndexBetting(event.address);
 }
