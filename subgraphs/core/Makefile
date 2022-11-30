@@ -8,20 +8,20 @@ forward-ports-pprod:
 
 .PHONY: create
 create:
-	graph create -g http://localhost:8020 phuture/mvp
+	graph create -g http://localhost:8020 phuture/core
 
 .PHONY: deploy
 deploy:
-	graph deploy -g http://localhost:8020 -i http://localhost:5001 phuture/mvp
+	graph deploy -g http://localhost:8020 -i http://localhost:5001 phuture/core
 
 .PHONY: cdcreate
 cdcreate:
-	./graph create -g http://localhost:8020 phuture/mvp
+	./graph create -g http://localhost:8020 phuture/core
 
 .PHONY: cddeploy
 cddeploy:
-	./graph deploy -g http://localhost:8020 -i http://localhost:5001 phuture/mvp -l v0.0.1
+	./graph deploy -g http://localhost:8020 -i http://localhost:5001 phuture/core -l v0.0.1
 
 .PHONY: subgraphdeploy
 subgraphdeploy:
-	graph deploy -g http://localhost:8020 -i https://api.thegraph.com/ipfs/ phuture/mvp -l v0.0.1
+	graph deploy -g http://localhost:8020 -i https://api.thegraph.com/ipfs/ phuture/core -l v0.0.1

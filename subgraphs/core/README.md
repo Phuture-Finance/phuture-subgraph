@@ -1,4 +1,4 @@
-# MVP Subgraph
+# Core Subgraph
 
 ```bash
 # run pre codegen

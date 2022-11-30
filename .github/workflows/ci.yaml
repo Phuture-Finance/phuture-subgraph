@@ -35,17 +35,17 @@ jobs:
           node-version: '16.x'
 
       - name: Build1
-        run: cd ./repoPath/subgraphs/mvp && npm install --force && CONFIG_PATH=./mainnet/ npm run codegen
+        run: cd ./repoPath/subgraphs/core && npm install --force && CONFIG_PATH=./mainnet/ npm run codegen
 
       - name: Build2
-        run: cd ./repoPath && cp -r node_modules/matchstick-as/ subgraphs/mvp/node_modules/
+        run: cd ./repoPath && cp -r node_modules/matchstick-as/ subgraphs/core/node_modules/
 
       - name: Build3
         run:
-          cd ./repoPath/subgraphs/mvp && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
+          cd ./repoPath/subgraphs/core && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
 
           #      - name: Test
-          #        run: cd ./repoPath/subgraphs/mvp && ./graph test
+          #        run: cd ./repoPath/subgraphs/core && ./graph test
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

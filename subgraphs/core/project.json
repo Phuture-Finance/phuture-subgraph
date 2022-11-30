@@ -1,13 +1,13 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "subgraphs/mvp/src",
+  "sourceRoot": "subgraphs/core/src",
   "projectType": "application",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["subgraphs/mvp/**/*.ts"]
+        "lintFilePatterns": ["subgraphs/core/**/*.ts"]
       }
     }
   },

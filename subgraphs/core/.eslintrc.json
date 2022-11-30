@@ -5,7 +5,7 @@
     {
       "files": ["*.ts", "*.test.ts"],
       "parserOptions": {
-        "project": ["subgraphs/mvp/tsconfig.*?.json"]
+        "project": ["subgraphs/core/tsconfig.*?.json"]
       },
       "rules": {}
     }
