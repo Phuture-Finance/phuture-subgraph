@@ -1,7 +1,5 @@
 import {TypedMap} from "@graphprotocol/graph-ts/index";
 
-export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
 export const FACTORY_ADDRESS = '{{ManagedIndexFactory}}';
 
 export const UNI_ROUTER_ADDRESS = '{{UniswapV2Router}}';

@@ -10,7 +10,7 @@ import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
 import { newUserSVHistory } from '../entities';
-import {ZERO_ADDRESS} from "../../../consts";
+import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
 
 export function handleTransfer(event: TransferEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {

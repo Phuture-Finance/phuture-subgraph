@@ -9,7 +9,7 @@ import {
   updateVaultAPY,
 } from '../../utils/vault';
 import { calculateChainLinkPrice } from '../entities';
-import {ZERO_ADDRESS} from "../../../consts";
+import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let agg = ChainLinkAggregator.load(event.address.toHexString());

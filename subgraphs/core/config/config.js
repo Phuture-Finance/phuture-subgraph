@@ -1,4 +1,4 @@
-let defaultPath = './avalanche/';
+let defaultPath = './mainnet/';
 if (process.env.CONFIG_PATH != null) {
   defaultPath = process.env.CONFIG_PATH;
 }
@@ -30,7 +30,7 @@ let data = {
   SushiswapV2RouterBlockNumber: impBlocks.RegistryBlockNumber,
   UniswapV2FactoryBlockNumber: impBlocks.RegistryBlockNumber,
 
-  FeePoolBlockNumber: impBlocks.FeePoolBlockNumber,
+  FeePoolBlockNumber: impBlocks.RegistryBlockNumber,
   RebalancingCredit: '0xea51c983a2209d16a597d219d472204a9666972c',
 };
 
