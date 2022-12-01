@@ -28,7 +28,7 @@ type Transaction @entity {
 #                             Phuture Core
 # ----------------------------------------------------------------
 type Asset @entity {
-  "Address of the asset (hash)"
+  "Address of the asset"
   id: ID!
 
   "Is this asset whitelisted"
@@ -70,8 +70,10 @@ type ChainLink @entity {
 }
 
 type ChainLinkAggregator @entity {
+
   "Address of the ChainLink Aggregator"
   id: ID!
+  
   chainLink: ChainLink!
   asset: Asset!
   decimals: BigInt!
@@ -84,10 +86,11 @@ type ChainLinkAggregator @entity {
 }
 
 type IndexFactory @entity {
-  "Address (hash) of the factory"
+
+  "Address of the factory"
   id: ID!
 
-  "Type of the factory, e.g. 'managed'"
+  "Type of factory, e.g. 'managed'"
   type: String!
 
   "Address of the vTokenFactory of this factory"
@@ -98,83 +101,136 @@ type IndexFactory @entity {
 }
 
 type Index @entity {
-  "Address (hash)"
+
+  "Address of the index"
   id: ID!
 
-  # used for other stats like market cap
+  "Total number of units created of this index"
   totalSupply: BigInt!
-  # metadata
+
+  "Number of decimals the index token uses"
   decimals: BigInt!
+
+  "Symbol of the index token"
   symbol: String!
+
+  "Name of the index token"
   name: String!
 
+  "Data on the holders of the index"
   users: [UserIndex!]! @derivedFrom(field: "index")
+
+  "Assets currently held by the index"
   assets: [IndexAsset!] @derivedFrom(field: "index")
+
+  "All assets ever held by the index"
   _assets: [ID!]!
 
+  "All inactive assets of the index"
   _inactiveAssets: [ID!]!
+
+  "Current inactive assets of the index"
   inactiveAssets: [IndexAsset!] @derivedFrom(field: "inactiveIndex")
 
   transaction: Transaction!
   indexFactory: IndexFactory!
 
+  "Market capitalisation of the index in USD"
   marketCap: BigDecimal!
+
+  "Number of unique holders of the index"
   uniqueHolders: BigInt!
-  "price of the index in USD"
+  
+  "Price of the index in USD"
   basePrice: BigDecimal!
-  "price of the index in ETH"
+
+  "Price of the index in chain native token"
   basePriceETH: BigDecimal!
 
+  "Baseline APY of the index"
   apy: BigDecimal!
 
+  "Fee to burn units of the index"
   feeBurn: BigInt!
-  feeMint: BigInt!
 
+  "Fee to mint units of the index"
+  feeMint: BigInt!
+  
+  "Annual management fee of the index"
   "BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1"
   feeAUMPercent: BigDecimal!
 
-  "When index was created"
+  "Index creation date"
   created: BigInt!
 
+  "Hourly statistics of the index"
   hourlyStats: [HourlyIndexStat!]! @derivedFrom(field: "index")
+
+  "Daily statistics of the index"
   dailyStats: [DailyIndexStat!]! @derivedFrom(field: "index")
 }
 
 type vToken @entity {
-  "Address (hash)"
+
+  "Address of the vToken"
   id: ID!
+
+  "Underlying asset held by the vToken"
   asset: Asset!
+
   tokenType: String!
+
+  "Factory contract of the vToken"
   factory: String!
+
+  "Total number of vTokens created"
   platformTotalSupply: BigInt!
-  "depositedQuantity"
+
+  "Quantity of underlying asset deposited to the vToken controller"
   deposited: BigInt!
-  "reserveQuantity - quantity of the asset stored in vToken address"
+
+  "Quantity of the underlying asset stored in vToken address"
   assetReserve: BigInt!
-  "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
+
+  "Sum of assetReserve and deposited without taking earned interest into account"
   totalAmount: BigInt!
 
+  "Vault controller of the vToken"
   vaultController: VaultController
 
+  "Percentage of underlying asset deposited into the vToken controller"
   depositedPercentage: BigInt!
+
+  "Baseline yield on all the underlying assets in the vToken"
   apy: BigDecimal!
 }
 
 type VaultController @entity {
+
+  "Address of vault controller"
   id: ID!
 
+  "Stats on vToken held by the vault controller"
   vToken: vToken!
 
+  "Quantity of underlying asset deposited"
   deposit: BigInt!
+
+  "Timestamp of deposit"
   depositedAt: BigInt!
 
+  "Quantity of underlying asset withdrawn"
   withdraw: BigInt!
+
+  "Timestamp of withdrawal"
   withdrawnAt: BigInt!
 
   stats: [VaultControllerStat!]! @derivedFrom(field: "vaultController")
 }
 
 type VaultControllerStat @entity {
+  
+  "Set to {vaultController.id}-{date}"
   id: ID!
 
   vaultController: VaultController!
@@ -192,91 +248,148 @@ type VaultControllerStat @entity {
 }
 
 type IndexAsset @entity {
-  id: ID! # Set to `${index.id}-${asset.id}`
+
+  "Set to {index.id}-{asset.id}"
+  id: ID! 
+
+  "The index that includes this asset"
   index: Index
+
   inactiveIndex: Index
+
+  "Statistics on the asset"
   asset: Asset!
+
+  "Weight of the asset based on a range of 1 to 255, where 255 would be 100% weight"
   weight: BigInt!
+
+  "Total number of vTokens for this asset"
   shares: BigInt!
 }
 
 type User @entity {
+  
+  "Address of the user"
   id: ID!
 
+  "Indexes held by the user"
   indexes: [UserIndex!]! @derivedFrom(field: "user")
 }
 
 type UserIndex @entity {
+
+  "  "Set to {user.id}-{index.id}"
   id: ID!
 
+  "User address"
   user: User!
+
+  "Index address"
   index: Index!
 
+  "The user's balance of the given index"
   balance: BigDecimal!
+
+  "USD value of amount invested into the index"
   investedCapital: BigDecimal!
 }
 
 type UserIndexHistory @entity {
+  
+  "Set to {user.id}-{index.id}-{timestamp}-{txLogIndex}"
   id: ID!
 
-  "user account of the specific index holdings"
+  "User address"
   user: User!
+
+  "Index address"
   index: Index!
 
-  "shares of the index in user account"
+  "Number of units of the index held"
   balance: BigDecimal!
+
   "USD equivalent of the user index holdings"
   capitalization: BigDecimal!
+
   "index total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 
-  "timestamp matching the starting of day GMT"
+  "Timestamp matching the start of the day GMT"
   timestamp: BigInt!
 }
 
 type Transfer @entity {
+
   id: ID! # Set to `${tx.id}-${transfer.id}`
   index: Index!
 
   transaction: Transaction!
 
   from: Bytes
+
   to: Bytes
+
   value: BigInt!
 
   type: TransferType!
 }
 
 type DailyAssetStat @entity {
+
   id: ID!
+
+  "Timestamp of stat"
   date: Int!
+
   asset: Asset!
 
+  "Price in USD of the asset"
   basePrice: BigDecimal!
 }
 
 type HourlyIndexStat @entity {
+  
   id: ID!
+
+  "Timestamp of stat"
   date: Int!
+
   index: Index!
 
+  "Price of index in USD"
   basePrice: BigDecimal!
+
+  "Market capitalisation of the index in USD"
   marketCap: BigDecimal!
+
+  "Number of unique holders"
   uniqueHolders: BigInt!
+
+  "Baseline APY of the index"
   apy: BigDecimal!
 }
 
 type DailyIndexStat @entity {
+
   id: ID!
+
+  "Timestamp of stat"
   date: Int!
+
   index: Index!
 
+  "Market capitalisation of the index in USD"
   marketCap: BigDecimal!
-  "total supply of the index on a specific day"
+
+  "Total supply of the index"
   totalSupply: BigInt!
+
+  "Number of unique holders"
   uniqueHolders: BigInt!
+
   "Price of the index in USD"
   basePrice: BigDecimal!
+
   "Price of the index in chain native token"
   basePriceETH: BigDecimal!
   apy: BigDecimal!
@@ -287,30 +400,52 @@ type DailyIndexStat @entity {
 # ----------------------------------------------------------------
 
 type SVVault @entity {
-  "Address (hash)"
+
+  "Address of savings vault"
   id: ID!
+
+  "Total number of units of the savings vault"
   totalSupply: BigInt!
+
+  "USD value of assets held by the savings vault"
   totalAssets: BigInt!
+
+  "Number of decimals used by the savings vault"
   decimals: BigInt!
+
+  "Symbol of the savings vault"
   symbol: String!
+
+  "Name of the savings vault"
   name: String!
 
-  "price of the vault in USD"
+  "Price of the savings vault in USD"
   basePrice: BigDecimal!
-  "price of the vault in ETH"
+
+  "Price of the vault in chain native token"
   basePriceETH: BigDecimal!
 
+  "Fee to burn units of the index"
   feeBurn: BigInt!
+
+  "Fee to mint units of the index"
   feeMint: BigInt!
+
+  "Annual management fee of the savings vault"
   feeAUMPercent: BigDecimal!
 
+  "Number of unique holders of the savings vault"
   uniqueHolders: BigInt!
+
+  "Market capitalisation of the savings vault in USD"
   marketCap: BigDecimal!
 
+  "Current APY of the savings vault"
   apy: BigDecimal!
 
   dailyStats: [SVDailyStat!]! @derivedFrom(field: "vault")
 
+  "Date the savings vault was created"
   created: BigInt!
 }
 
@@ -355,7 +490,7 @@ type SVDailyStat @entity {
   uniqueHolders: BigInt!
   "price of the vault in USD"
   basePrice: BigDecimal!
-  "price of the vault in ETH"
+  "Price of the vault in chain native token"
   basePriceETH: BigDecimal!
 }
 
