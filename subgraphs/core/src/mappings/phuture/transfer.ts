@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import {Address, BigDecimal, BigInt, ethereum} from '@graphprotocol/graph-ts';
 
 import { ONE_BI } from '../../../../helpers';
 import { Index, Transfer, UserIndex } from '../../types/schema';
@@ -54,11 +54,13 @@ export function handleAllIndexesTransfers(
       fromUserIndex.investedCapital = BigDecimal.zero();
     }
 
-    fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
-      fromUserIndex.investedCapital
-        .times(value.toBigDecimal())
-        .div(fromUserIndex.balance),
-    );
+    if(fromUserIndex.balance.gt(BigDecimal.zero())) {
+      fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
+        fromUserIndex.investedCapital
+          .times(value.toBigDecimal())
+          .div(fromUserIndex.balance),
+      );
+    }
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
 
     if (fromUserIndex.balance == BigDecimal.zero()) {

@@ -9,6 +9,7 @@ import {
   updateVaultAPY,
 } from '../../utils/vault';
 import { calculateChainLinkPrice } from '../entities';
+import {ZERO_ADDRESS} from "../../../consts";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let agg = ChainLinkAggregator.load(event.address.toHexString());
@@ -31,6 +32,9 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
 
   if (agg.vaults) {
     for (let i = 0; i < agg.vaults.length; i++) {
+      if (agg.vaults[i] == ZERO_ADDRESS) {
+        return;
+      }
       let fVault = SVVault.load(agg.vaults[i]);
       if (fVault) {
         updateVaultTotals(fVault);

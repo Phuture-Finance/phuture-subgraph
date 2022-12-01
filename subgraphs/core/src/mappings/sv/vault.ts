@@ -10,8 +10,12 @@ import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
 import { newUserSVHistory } from '../entities';
+import {ZERO_ADDRESS} from "../../../consts";
 
 export function handleTransfer(event: TransferEvent): void {
+  if (event.address.toHexString() == ZERO_ADDRESS) {
+    return;
+  }
   let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
   loadOrCreateSVAccount(event.params.from);
@@ -126,6 +130,9 @@ export function handleTransfer(event: TransferEvent): void {
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
+  if (event.address.toHexString() == ZERO_ADDRESS) {
+    return;
+  }
   let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
   updateVaultTotals(fVault);

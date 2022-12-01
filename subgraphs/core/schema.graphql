@@ -73,7 +73,7 @@ type ChainLinkAggregator @entity {
 
   "Address of the ChainLink Aggregator"
   id: ID!
-  
+
   chainLink: ChainLink!
   asset: Asset!
   decimals: BigInt!
@@ -140,7 +140,7 @@ type Index @entity {
 
   "Number of unique holders of the index"
   uniqueHolders: BigInt!
-  
+
   "Price of the index in USD"
   basePrice: BigDecimal!
 
@@ -155,9 +155,11 @@ type Index @entity {
 
   "Fee to mint units of the index"
   feeMint: BigInt!
-  
-  "Annual management fee of the index"
-  "BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1"
+
+  """
+  Annual management fee of the index
+  BP = 10000 ; ((((aumFeeInBP / BP) / (1 - aumFeeInBP / BP)) / 1e27) ** 365) - 1
+  """
   feeAUMPercent: BigDecimal!
 
   "Index creation date"
@@ -229,7 +231,7 @@ type VaultController @entity {
 }
 
 type VaultControllerStat @entity {
-  
+
   "Set to {vaultController.id}-{date}"
   id: ID!
 
@@ -250,7 +252,7 @@ type VaultControllerStat @entity {
 type IndexAsset @entity {
 
   "Set to {index.id}-{asset.id}"
-  id: ID! 
+  id: ID!
 
   "The index that includes this asset"
   index: Index
@@ -268,7 +270,7 @@ type IndexAsset @entity {
 }
 
 type User @entity {
-  
+
   "Address of the user"
   id: ID!
 
@@ -278,7 +280,7 @@ type User @entity {
 
 type UserIndex @entity {
 
-  "  "Set to {user.id}-{index.id}"
+  "Set to {user.id}-{index.id}"
   id: ID!
 
   "User address"
@@ -295,7 +297,7 @@ type UserIndex @entity {
 }
 
 type UserIndexHistory @entity {
-  
+
   "Set to {user.id}-{index.id}-{timestamp}-{txLogIndex}"
   id: ID!
 
@@ -320,7 +322,8 @@ type UserIndexHistory @entity {
 
 type Transfer @entity {
 
-  id: ID! # Set to `${tx.id}-${transfer.id}`
+  "Set to ${tx.id}-${transfer.id}"
+  id: ID!
   index: Index!
 
   transaction: Transaction!
@@ -348,7 +351,7 @@ type DailyAssetStat @entity {
 }
 
 type HourlyIndexStat @entity {
-  
+
   id: ID!
 
   "Timestamp of stat"

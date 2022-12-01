@@ -1,7 +1,7 @@
 import { BigDecimal } from '@graphprotocol/graph-ts';
 import { Address, BigInt } from '@graphprotocol/graph-ts/index';
 
-import { SV_VIEW } from '../../consts';
+import {SV_VIEW, ZERO_ADDRESS} from '../../consts';
 import { convertUSDToETH } from '../mappings/entities';
 import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
@@ -14,6 +14,9 @@ import { convertTokenToDecimal } from './calc';
 const usdcDec = 6;
 
 export function updateVaultTotals(fVault: SVVault): void {
+  if (fVault.id == ZERO_ADDRESS) {
+    return;
+  }
   const vault = Vault.bind(Address.fromString(fVault.id));
 
   const totalSupply = vault.try_totalSupply();
@@ -32,6 +35,9 @@ export function updateVaultTotals(fVault: SVVault): void {
 }
 
 export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
+  if (fVault.id == ZERO_ADDRESS) {
+    return;
+  }
   if (fVault.decimals && !fVault.totalSupply.isZero()) {
     fVault.basePrice = fVault.totalAssets
       .toBigDecimal()
@@ -43,6 +49,9 @@ export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
 }
 
 export function updateVaultAPY(fVault: SVVault): void {
+  if (fVault.id == ZERO_ADDRESS) {
+    return;
+  }
   const view = SVView.bind(Address.fromString(SV_VIEW));
 
   const apy = view.try_getAPY(Address.fromString(fVault.id));
