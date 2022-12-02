@@ -180,8 +180,6 @@ type vToken @entity {
   "Underlying asset held by the vToken"
   asset: Asset!
 
-  tokenType: String!
-
   "Factory contract of the vToken"
   factory: String!
 

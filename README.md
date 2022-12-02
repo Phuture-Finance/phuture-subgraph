@@ -72,7 +72,6 @@ type vToken @entity {
   "Address (hash)"
   id: ID!
   asset: Asset!
-  tokenType: String!
   deposited: BigInt
 }
 ```
@@ -86,7 +85,6 @@ export class vToken extends Entity {
     this.set('id', Value.fromString(id));
 
     this.set('asset', Value.fromString(''));
-    this.set('tokenType', Value.fromString(''));
   }
 
   save(): void {
@@ -122,15 +120,6 @@ export class vToken extends Entity {
 
   set asset(value: string) {
     this.set('asset', Value.fromString(value));
-  }
-
-  get tokenType(): string {
-    let value = this.get('tokenType');
-    return value!.toString();
-  }
-
-  set tokenType(value: string) {
-    this.set('tokenType', Value.fromString(value));
   }
 
   get deposited(): BigInt | null {
@@ -225,12 +214,6 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 
   let vt = loadOrCreateVToken(event.params.vToken);
   vt.asset = event.params.asset.toHexString();
-
-  if (event.params.vTokenType == STATIC_TYPE_HASH) {
-    vt.tokenType = STATIC_TYPE;
-  } else if (event.params.vTokenType == DYNAMIC_TYPE_HASH) {
-    vt.tokenType = DYNAMIC_TYPE;
-  }
 
   vt.save();
 }

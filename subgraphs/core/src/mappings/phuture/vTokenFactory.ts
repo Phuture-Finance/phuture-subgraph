@@ -1,6 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-import { STATIC_TYPE } from '../../../../helpers';
 import { VTokenCreated as ManagedVTokenCreated } from '../../types/ManagedVTokenFactory/vTokenFactory';
 import { vToken as vTokenEntity } from '../../types/templates';
 import { loadOrCreateAsset, loadOrCreateVToken } from '../entities';
@@ -11,7 +10,6 @@ export function handleStaticVTokenCreated(event: ManagedVTokenCreated): void {
   let vToken = loadOrCreateVToken(event.params.vToken);
   vToken.asset = event.params.asset.toHexString();
   vToken.factory = event.address.toHexString();
-  vToken.tokenType = STATIC_TYPE;
 
   let assetAddress = Address.fromString(vToken.asset);
   let asset = loadOrCreateAsset(assetAddress);
