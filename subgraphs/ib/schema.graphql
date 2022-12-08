@@ -9,6 +9,7 @@ type IndexBetting @entity {
   challengeEnd: BigInt!
   maxStakingAmount: BigInt!
   betParticipants: BigInt!
+  PDIRewardRate: Int!
 }
 
 type User @entity {

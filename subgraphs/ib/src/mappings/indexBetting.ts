@@ -1,7 +1,13 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { loadOrCreateIndexBetting } from './entities/IndexBetting';
-import {BettingChallengeStarted, Initialized, Transfer} from '../types/IndexBetting/IndexBetting';
+import {
+  BettingChallengeSettled,
+  BettingChallengeStarted,
+  IndexBetting as IndexBettingContract,
+  Initialized,
+  Transfer
+} from '../types/IndexBetting/IndexBetting';
 import { User } from '../types/schema';
 import { loadOrCreateUser } from './entities/Account';
 
@@ -67,6 +73,19 @@ export function handleBettingChallengeStarted(event: BettingChallengeStarted): v
   indexBetting.frontRunningLockupDuration = event.params.frontRunningLockupDuration;
   indexBetting.challengeStart = event.params.challengeStart;
   indexBetting.challengeEnd = event.params.challengeEnd;
+  indexBetting.save();
+}
+
+export function handleBettingChallengeSettled(event: BettingChallengeSettled): void {
+  let indexBetting = loadOrCreateIndexBetting(event.address);
+
+  let indexBettingContract = IndexBettingContract.bind(event.address);
+
+  let PDIRewardRate = indexBettingContract.try_PDIRewardRate();
+  if (!PDIRewardRate.reverted) {
+    indexBetting.PDIRewardRate = PDIRewardRate.value;
+  }
+
   indexBetting.save();
 }
 

@@ -77,6 +77,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint16",
+        "name": "PDIRewardRate",
+        "type": "uint16"
+      }
+    ],
+    "name": "BettingChallengeSettled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "uint32",
         "name": "frontRunningLockupDuration",
         "type": "uint32"
