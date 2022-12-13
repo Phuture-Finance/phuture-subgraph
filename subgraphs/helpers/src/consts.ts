@@ -26,3 +26,5 @@ export const UNI_V3_ORACLE_ROLE = Bytes.fromHexString(
 export const UNI_V3_PATH_ORACLE_ROLE = Bytes.fromHexString(
     '95023b7bb0ba8cd791f7a72c9586613d786af77ed60f735edce7bc48cd0aff4d',
 );
+
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";

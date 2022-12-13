@@ -4,7 +4,7 @@ cd /app
 
 ls
 
-cd repoPath/subgraphs/mvp
+cd repoPath/subgraphs/core
 
 ls
 
