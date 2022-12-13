@@ -1,21 +1,20 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { vToken } from '../../types/schema';
+import { vToken as vTokenEntity } from '../../types/schema';
 
-export function loadOrCreateVToken(address: Address): vToken {
+export function loadOrCreateVToken(address: Address): vTokenEntity {
   let id = address.toHexString();
-  let vt = vToken.load(id);
-  if (!vt) {
-    vt = new vToken(id);
-    vt.deposited = BigInt.zero();
-    vt.platformTotalSupply = BigInt.zero();
+
+  let vToken = vTokenEntity.load(id);
+  if (!vToken) {
+    vToken = new vTokenEntity(id);
+
+    vToken.deposited = BigInt.zero();
+    vToken.platformTotalSupply = BigInt.zero();
+    vToken.depositedPercentage = BigInt.zero();
+
+    vToken.save();
   }
 
-  return vt as vToken;
-}
-
-export function loadVToken(address: Address | null): vToken | null {
-  if (!address) return null;
-
-  return vToken.load(address.toHexString());
+  return vToken;
 }

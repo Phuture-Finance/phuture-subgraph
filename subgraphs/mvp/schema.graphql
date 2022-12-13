@@ -1,95 +1,132 @@
 type Asset @entity {
-  "Address (hash)"
+  "Address of the asset (hash)"
   id: ID!
 
+  "Is this asset whitelisted"
   isWhitelisted: Boolean!
 
-  # used for other stats like marketcap
+  "Total number of tokens in existence"
   totalSupply: BigInt!
-  # mirrored from the smart contract
+
+  "Number of decimals this asset uses"
   decimals: BigInt!
+
+  "Symbol of the asset"
   symbol: String!
+
+  "Name of the asset"
   name: String!
 
-  indexCount: BigInt!
-  _indexes: [ID!]!
-  indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+  # "Number of indexes this asset belongs to"
+  # indexCount: BigInt!
 
+  "Indexes this asset belongs to"
+  indexes: [IndexAsset!]! @derivedFrom(field: "asset")
+  _indexes: [ID!]!
+
+  "Base price of the asset on SushiSwap"
   basePriceSushi: BigDecimal!
+
+  "Base price of the asset on Uniswap"
   basePriceUni: BigDecimal!
+
+  "Base price of the asset"
   basePrice: BigDecimal!
+
+  "Market capitalization of the asset"
   marketCap: BigInt!
 
-  _vTokens: [ID!]!
+  "The vTokens this asset has"
   vTokens: [vToken!]! @derivedFrom(field: "asset")
+  _vTokens: [ID!]!
 
+  "Amount of the asset in the vault"
   vaultReserve: BigDecimal!
+
+  "Amount of the asset in the vault in base units"
   vaultBaseReserve: BigDecimal!
 
-  pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
-  pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
+  # "Pairs where this asset is asset0"
+  # pairsAsAsset0: [Pair!]! @derivedFrom(field: "asset0")
+  #
+  # "Pairs where this asset is asset1"
+  # pairsAsAsset1: [Pair!]! @derivedFrom(field: "asset1")
 
+  "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
+
+  "Uniswap V3 price oracle for this asset"
+  oracle: UniV3PriceOracle
 }
 
-type Swap @entity {
+type ChainLink @entity {
+  "Address of the ChainLink Aggregator Proxy"
   id: ID!
 
-  pairs: [Pair!]! @derivedFrom(field: "swap")
+  "ChainLink Aggregator"
+  aggregator: ChainLinkAggregator!
 }
 
-type ChainLinkAgg @entity {
+type ChainLinkAggregator @entity {
+  "Address of the ChainLink Aggregator"
   id: ID!
+  chainLink: ChainLink!
   asset: Asset!
   decimals: BigInt!
   description: String!
   answer: BigInt!
   updatedAt: BigInt!
-  nextAgg: ChainLinkAgg
+  nextAgg: ChainLinkAggregator
+
+  vaults: [SVVault!]!
 }
 
-type Pair @entity {
-  id: ID!
+# type Pair @entity {
+#   id: ID!
+#
+#   swap: Swap!
+#
+#   asset0: Asset!
+#   asset1: Asset!
+#
+#   totalSupply: BigInt!
+#
+#   asset0Reserve: BigDecimal!
+#   asset1Reserve: BigDecimal!
+# }
 
-  swap: Swap!
+# type SushiPair @entity {
+#   id: ID!
+#
+#   swap: Swap!
+#
+#   asset0: Asset!
+#   asset1: Asset!
+#
+#   totalSupply: BigInt!
+#
+#   asset0Reserve: BigDecimal!
+#   asset1Reserve: BigDecimal!
+# }
 
-  asset0: Asset!
-  asset1: Asset!
-
-  totalSupply: BigInt!
-
-  asset0Reserve: BigDecimal!
-  asset1Reserve: BigDecimal!
-}
-
-type SushiPair @entity {
-  id: ID!
-
-  swap: Swap!
-
-  asset0: Asset!
-  asset1: Asset!
-
-  totalSupply: BigInt!
-
-  asset0Reserve: BigDecimal!
-  asset1Reserve: BigDecimal!
-}
-
-type DEX @entity {
-  id: ID!
-  router: String!
-  type: String!
-}
+# type DEX @entity {
+#   id: ID!
+#   router: String!
+#   type: String!
+# }
 
 type IndexFactory @entity {
   "Address (hash) of the factory"
   id: ID!
+
+  "Type of the factory, e.g. 'managed'"
   type: String!
 
+  "Address of the vTokenFactory of this factory"
   vTokenFactory: String!
 
-  indices: [Index!]! @derivedFrom(field: "indexFactory")
+  "Indexes created by this factory"
+  indexes: [Index!]! @derivedFrom(field: "indexFactory")
 }
 
 type Index @entity {
@@ -97,7 +134,7 @@ type Index @entity {
   id: ID!
   type: String!
 
-  # used for other stats like marketcap
+  # used for other stats like market cap
   totalSupply: BigInt!
   # metadata
   decimals: BigInt!
@@ -122,6 +159,8 @@ type Index @entity {
   basePriceETH: BigDecimal!
   "deprecated"
   baseVolume: BigDecimal!
+
+  apy: BigDecimal!
 
   feeBurn: BigInt!
   feeMint: BigInt!
@@ -178,6 +217,42 @@ type vToken @entity {
   assetReserve: BigInt!
   "totalAmount - is the sum of assetReserve and deposited without taking interests into account"
   totalAmount: BigInt!
+
+  vaultController: VaultController
+
+  depositedPercentage: BigInt!
+  apy: BigDecimal!
+}
+
+type VaultController @entity {
+  id: ID!
+
+  vToken: vToken!
+
+  deposit: BigInt!
+  depositedAt: BigInt!
+
+  withdraw: BigInt!
+  withdrawnAt: BigInt!
+
+  stats: [VaultControllerStat!]! @derivedFrom(field: "vaultController")
+}
+
+type VaultControllerStat @entity {
+  id: ID!
+
+  vaultController: VaultController!
+
+  deposit: BigInt!
+  depositedAt: BigInt!
+
+  withdraw: BigInt!
+  withdrawnAt: BigInt!
+
+  depositedPercentage: BigInt
+  apy: BigDecimal!
+
+  date: BigInt!
 }
 
 type IndexAsset @entity {
@@ -216,10 +291,17 @@ type UserCapitalization @entity {
 
 type DailyCapitalization @entity {
   id: ID!
-
+  "index referred to daily capitalisation metrics"
   index: Index!
+  "capitalisation for the specific day"
   capitalization: BigDecimal!
+  "price of the index in the day"
+  basePrice: BigDecimal!
+  "total supply of the index in specific"
+  totalSupply: BigInt!
+  "raw timestamp of the specific day"
   timestamp: BigInt!
+  "log index value taken from event which triggered storing the metric"
   logIndex: BigInt!
 }
 
@@ -298,7 +380,7 @@ type Stat @entity {
   # index factory address
   id: ID!
 
-  indexCount: BigInt!
+  "Total value of all indexes in base"
   totalValueLocked: BigDecimal!
 }
 
@@ -306,7 +388,6 @@ type DailyStat @entity {
   id: ID!
   date: Int!
 
-  indexCount: BigInt!
   totalValueLocked: BigDecimal!
 }
 
@@ -329,6 +410,7 @@ type HourlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type DailyIndexStat @entity {
@@ -338,11 +420,12 @@ type DailyIndexStat @entity {
 
   marketCap: BigDecimal!
   uniqueHolders: BigInt!
-  "price of the index in USD"
+  "Price of the index in USD"
   basePrice: BigDecimal!
-  "price of the index in ETH"
+  "Price of the index in chain native token"
   basePriceETH: BigDecimal!
   baseVolume: BigDecimal!
+  apy: BigDecimal!
 }
 
 type WeeklyIndexStat @entity {
@@ -357,6 +440,7 @@ type WeeklyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type MonthlyIndexStat @entity {
@@ -371,6 +455,7 @@ type MonthlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
 }
 
 type YearlyIndexStat @entity {
@@ -385,4 +470,306 @@ type YearlyIndexStat @entity {
   marketCap: BigDecimal!
   baseVolume: BigDecimal!
   uniqueHolders: BigInt!
+  apy: BigDecimal!
+}
+
+# ----------------------------------------------------------------
+#                             Saving Vault
+# ----------------------------------------------------------------
+
+type SVVault @entity {
+  "Address (hash)"
+  id: ID!
+  totalSupply: BigInt!
+  totalAssets: BigInt!
+  decimals: BigInt!
+  symbol: String!
+  name: String!
+
+  "price of the vault in USD"
+  basePrice: BigDecimal!
+  "price of the vault in ETH"
+  basePriceETH: BigDecimal!
+
+  feeBurn: BigInt!
+  feeMint: BigInt!
+  feeAUMPercent: BigDecimal!
+
+  mint: [FCash!]!
+  redeem: [FCash!]!
+
+  uniqueHolders: BigInt!
+  marketCap: BigDecimal!
+
+  apy: BigDecimal!
+
+  dailyStats: [SVDailyStat!]! @derivedFrom(field: "vault")
+
+  created: BigInt!
+}
+
+type FCash @entity {
+  id: ID!
+  position: String!
+  assetAmount: BigInt!
+  amount: BigInt!
+  maturity: BigInt!
+  vault: SVVault!
+  timestamp: BigInt!
+  isRedeem: Boolean!
+}
+
+type SVUser @entity {
+  id: ID!
+
+  vaults: [UserVault!]! @derivedFrom(field: "user")
+}
+
+type UserVault @entity {
+  id: ID!
+
+  user: SVUser!
+  vault: SVVault!
+
+  balance: BigInt!
+  capitalization: BigDecimal!
+}
+
+enum SVTransferType {
+  Send
+  Mint
+  Burn
+}
+
+type SVTransfer @entity {
+  id: ID!
+  vault: SVVault!
+  transaction: SVTransaction!
+  type: SVTransferType!
+
+  from: SVUser
+  to: SVUser
+  value: BigInt!
+
+  timestamp: BigInt!
+}
+
+type SVTransaction @entity {
+  id: ID! # txn hash
+  blockNumber: BigInt!
+  timestamp: BigInt!
+
+  value: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+}
+
+type SVDailyStat @entity {
+  id: ID!
+
+  date: BigInt!
+  vault: SVVault!
+
+  apy: BigDecimal!
+  marketCap: BigDecimal!
+  uniqueHolders: BigInt!
+  "price of the vault in USD"
+  basePrice: BigDecimal!
+  "price of the vault in ETH"
+  basePriceETH: BigDecimal!
+}
+
+type SVDailyCapitalization @entity {
+  id: ID!
+  "vault referred to daily capitalisation metrics"
+  vault: SVVault!
+  "capitalisation for the specific day"
+  capitalization: BigDecimal!
+  "price of the vault in the day"
+  basePrice: BigDecimal!
+  "total supply of saving vault"
+  totalSupply: BigInt!
+  "raw timestamp of the specific day"
+  timestamp: BigInt!
+  "log index value taken from event which triggered storing the metric"
+  logIndex: BigInt!
+}
+
+type UserSVHistory @entity {
+  id: ID!
+
+  "user account of the specific vault holdings"
+  user: SVUser!
+  vault: SVVault!
+
+  "shares of the vault in user account"
+  balance: BigInt!
+  "USD equivalent of the user vault holdings"
+  capitalization: BigDecimal!
+  "vault total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+}
+
+type DailyUserSVHistory @entity {
+  id: ID!
+
+  user: SVUser!
+  vault: SVVault!
+
+  total: BigDecimal!
+  totalCap: BigDecimal!
+
+  "vault total supply on the moment of the user balance calculation"
+  totalSupply: BigInt!
+  "timestamp matching the starting of day GMT"
+  timestamp: BigInt!
+  "holds orders of transfers in transaction"
+  logIndex: BigInt!
+}
+
+# ----------------------------------------------------------------
+#                               UniswapV3
+# ----------------------------------------------------------------
+
+# stores UniswapV3PriceOracle addresses
+type UniV3PriceOracle @entity {
+  id: ID!
+
+  priceOracle: String!
+
+  asset0: Asset!
+  asset1: Asset!
+}
+
+type UniV3PathPriceOracle @entity {
+  id: ID!
+
+  pathPriceOracle: String!
+
+  asset0: Asset!
+  asset1: Asset!
+}
+
+# stores for USD calculations
+type UniV3Bundle @entity {
+  id: ID!
+  # price of ETH in usd
+  ethPriceUSD: BigDecimal!
+}
+
+type UniV3Token @entity {
+  # token address
+  id: ID!
+  # token symbol
+  symbol: String!
+  # token name
+  name: String!
+  # token decimals
+  decimals: BigInt!
+  # token total supply
+  totalSupply: BigInt!
+  # volume in token units
+  volume: BigDecimal!
+  # volume in derived USD
+  volumeUSD: BigDecimal!
+  # volume in USD even on pools with less reliable USD values
+  untrackedVolumeUSD: BigDecimal!
+  # fees in USD
+  feesUSD: BigDecimal!
+  # transactions across all pools that include this token
+  txCount: BigInt!
+  # number of pools containing this token
+  poolCount: BigInt!
+  # liquidity across all pools in token units
+  totalValueLocked: BigDecimal!
+  # liquidity across all pools in derived USD
+  totalValueLockedUSD: BigDecimal!
+  # TVL derived in USD untracked
+  totalValueLockedUSDUntracked: BigDecimal!
+  # derived price in ETH
+  derivedETH: BigDecimal!
+}
+
+type UniV3Pool @entity {
+  # pool address
+  id: ID!
+  # creation
+  createdAtTimestamp: BigInt!
+  # block pool was created at
+  createdAtBlockNumber: BigInt!
+  # token0
+  token0: UniV3Token!
+  # token1
+  token1: UniV3Token!
+  # fee amount
+  feeTier: BigInt!
+  # in range liquidity
+  liquidity: BigInt!
+  # current price tracker
+  sqrtPrice: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal0X128: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal1X128: BigInt!
+  # token0 per token1
+  token0Price: BigDecimal!
+  # token1 per token0
+  token1Price: BigDecimal!
+  # current tick
+  tick: BigInt
+  # current observation index
+  observationIndex: BigInt!
+  # all time token0 swapped
+  volumeToken0: BigDecimal!
+  # all time token1 swapped
+  volumeToken1: BigDecimal!
+  # all time USD swapped
+  volumeUSD: BigDecimal!
+  # all time USD swapped, unfiltered for unreliable USD pools
+  untrackedVolumeUSD: BigDecimal!
+  # fees in USD
+  feesUSD: BigDecimal!
+  # all time number of transactions
+  txCount: BigInt!
+  # all time fees collected token0
+  collectedFeesToken0: BigDecimal!
+  # all time fees collected token1
+  collectedFeesToken1: BigDecimal!
+  # all time fees collected derived USD
+  collectedFeesUSD: BigDecimal!
+  # total token 0 across all ticks
+  totalValueLockedToken0: BigDecimal!
+  # total token 1 across all ticks
+  totalValueLockedToken1: BigDecimal!
+  # tvl derived ETH
+  totalValueLockedETH: BigDecimal!
+  # tvl USD
+  totalValueLockedUSD: BigDecimal!
+  # TVL derived in USD untracked
+  totalValueLockedUSDUntracked: BigDecimal!
+  # Fields used to help derived relationship
+  liquidityProviderCount: BigInt! # used to detect new exchanges
+}
+
+type OrderComplete @entity {
+  id: ID!
+  timestamp: BigInt!
+  index: Index!
+  order: Order!
+
+  sellToken: Asset!
+  sellAmount: BigInt!
+  sellTokenPrice: BigDecimal!
+
+  buyToken: Asset!
+  buyAmount: BigInt!
+  buyTokenPrice: BigDecimal!
+
+  transactionFee: BigInt!
+  transactionGas: BigInt!
 }

@@ -1,4 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
+
 import { Order, OrderDetailsInfo, LastOrderIndex } from '../../types/schema';
 
 export function loadOrCreateLastOrderIndex(id: Address): LastOrderIndex {
@@ -7,25 +8,28 @@ export function loadOrCreateLastOrderIndex(id: Address): LastOrderIndex {
     orderLink = new LastOrderIndex(id.toHexString());
   }
 
-  return orderLink as LastOrderIndex;
+  return orderLink;
 }
 
-export function loadOrCreateOrder(id: Address): Order {
-  let order = Order.load(id.toHexString());
+export function loadOrCreateOrder(id: string): Order {
+  let order = Order.load(id);
   if (!order) {
-    order = new Order(id.toHexString());
+    order = new Order(id);
   }
 
-  return order as Order;
+  return order;
 }
 
-export function loadOrCreateOrderDetails(order_id: BigInt, asset: Address): OrderDetailsInfo {
-  let id = order_id.toString().concat('-').concat(asset.toHexString());
+export function loadOrCreateOrderDetails(
+  orderId: BigInt,
+  asset: Address,
+): OrderDetailsInfo {
+  let id = orderId.toString().concat('-').concat(asset.toHexString());
 
   let orderDetails = OrderDetailsInfo.load(id);
   if (!orderDetails) {
     orderDetails = new OrderDetailsInfo(id);
   }
 
-  return orderDetails as OrderDetailsInfo;
+  return orderDetails;
 }

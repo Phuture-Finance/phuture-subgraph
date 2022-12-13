@@ -1,1 +1,8 @@
-{"UniswapV2FactoryBlockNumber":10000835,"ChainlinkPriceOracleBlockNumber":14787209,"ManagedIndexFactoryBlockNumber":14787258,"ManagedVTokenFactoryBlockNumber":14787246,"OrdererBlockNumber":14787234,"RegistryBlockNumber":14787194,"SushiV2FactoryBlockNumber":10794229}
+{
+  "ChainlinkPriceOracleBlockNumber": 15127000,
+  "ManagedIndexFactoryBlockNumber": 15127000,
+  "ManagedVTokenFactoryBlockNumber": 15127000,
+  "OrdererBlockNumber": 15127000,
+  "RegistryBlockNumber": 15127000,
+  "FrpVaultBlockNumber": 15127000
+}

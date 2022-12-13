@@ -1,15 +1,15 @@
 {
   "Base": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-  "ChainlinkPriceOracle": "0x1aFc60fFf505B191C56044C02cF57e3a7997871B",
-  "DynamicVTokenFactory": "",
+  "ChainlinkPriceOracle": "0x0EbdB1Af4a40f51Eb94eEdE7E94b843333D6CFE1",
   "FeePool": "0x68ecC6BBA5f538cD7Ba6011b3A52513A282036Ab",
   "ManagedIndexFactory": "0xb4e85a5BFCd5f247D4BDa1491F57921473dDcE2e",
   "ManagedVTokenFactory": "0x24aD48f31CAb5E35D0E9CDfa9213b5451f22FB92",
-  "Orderer": "0x777cB4fAB20A12283C33bdE065c5CA595Fd7f542",
+  "Orderer": "0x906996A52432b7B3727E791BF2287E19f0045BaA",
   "Registry": "0x8f971223B4Bd9649702F10d306e469e6dbe3E3E9",
   "SushiV2Factory": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
-  "TopNMarketCapCategories": "",
-  "TopNMarketCapIndexFactory": "",
   "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-  "WETH": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+  "BaseNetworkAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+
+  "SVault": "0x6bAD6A9BcFdA3fd60Da6834aCe5F93B8cFed9598",
+  "SVView": "0xE574beBdDB460e3E0588F1001D24441102339429"
 }

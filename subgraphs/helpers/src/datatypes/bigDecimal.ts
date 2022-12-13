@@ -7,7 +7,10 @@ export namespace bigDecimal {
     return BigDecimal.fromString(value.toString());
   }
 
-  export function fromBigInt(value: BigInt, decimals: number = DEFAULT_DECIMALS): BigDecimal {
+  export function fromBigInt(
+    value: BigInt,
+    decimals: number = DEFAULT_DECIMALS,
+  ): BigDecimal {
     let precision = BigInt.fromI32(10)
       .pow(<u8>decimals)
       .toBigDecimal();

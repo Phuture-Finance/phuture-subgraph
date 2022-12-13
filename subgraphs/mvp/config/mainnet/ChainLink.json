@@ -23,5 +23,40 @@
     "name": "RGT / ETH / USD",
     "address": "0xd291e7a03283640fdc51b121ac401383a46cc623",
     "aggregatorAddress": "0x1Ee7399b07E626A42D8D87Dc4A2a0C2D952C1BBB"
+  },
+  {
+    "name": "UNI / USD",
+    "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "aggregatorAddress": "0x553303d460ee0afb37edff9be42922d8ff63220e"
+  },
+  {
+    "name": "AAVE / USD",
+    "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+    "aggregatorAddress": "0x547a514d5e3769680ce22b2361c10ea13619e8a9"
+  },
+  {
+    "name": "LDO / ETH / USD",
+    "address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+    "aggregatorAddress": "0x4e844125952d32acdf339be976c98e22f6f318db"
+  },
+  {
+    "name": "COMP / USD",
+    "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+    "aggregatorAddress": "0xdbd020caef83efd542f4de03e3cf0c28a4428bd5"
+  },
+  {
+    "name": "YFI / USD",
+    "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+    "aggregatorAddress": "0xa027702dbb89fbd58938e4324ac03b58d812b0e1"
+  },
+  {
+    "name": "SUSHI / USD",
+    "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+    "aggregatorAddress": "0xcc70f09a6cc17553b2e31954cd36e4a2d89501f7"
+  },
+  {
+    "name": "ALCX / USD",
+    "address": "0xdbdb4d16eda451d0503b854cf79d55697f90c8df",
+    "aggregatorAddress": "0xc355e4c0b3ff4ed0b49eaacd55fe29b311f42976"
   }
 ]

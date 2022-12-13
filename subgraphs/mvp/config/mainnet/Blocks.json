@@ -1,11 +1,10 @@
 {
   "UniswapV2FactoryBlockNumber": 14832000,
   "ChainlinkPriceOracleBlockNumber": 14832000,
-  "DynamicVTokenFactoryBlockNumber": 0,
   "ManagedIndexFactoryBlockNumber": 14832000,
   "ManagedVTokenFactoryBlockNumber": 14832000,
-  "OrdererBlockNumber": 14832000,
+  "OrdererBlockNumber": 15301257,
   "RegistryBlockNumber": 14832000,
   "SushiV2FactoryBlockNumber": 14832000,
-  "TopNMarketCapIndexFactoryBlockNumber": 0
+  "SVaultBlockNumber": 15515672
 }

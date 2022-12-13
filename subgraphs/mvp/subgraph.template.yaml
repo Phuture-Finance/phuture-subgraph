@@ -21,10 +21,6 @@ dataSources:
       abis:
         - name: IndexRegistry
           file: ../abis/Phuture/IndexRegistry.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -35,6 +31,10 @@ dataSources:
           file: ../abis/Chainlink/ChainLink.json
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
+        - name: UniswapV3PriceOracle
+          file: ../abis/Uniswap/UniswapV3PriceOracle.json
+        - name: UniswapPathPriceOracle
+          file: ../abis/Uniswap/UniswapPathPriceOracle.json
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
@@ -116,7 +116,7 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - ChainLinkAgg
+        - ChainLinkAggregator
       abis:
         - name: ChainlinkPriceOracle
           file: ../abis/Phuture/ChainlinkPriceOracle.json
@@ -234,23 +234,26 @@ dataSources:
       file: ./src/mappings/uniswap/uniswap.ts
   {{/swapFactories}}
 
+  {{#SVault}}
   - kind: ethereum/contract
-    name: TrackedIndexFactory
+    name: SVault
     network: {{network}}
     source:
-      abi: TrackedIndexFactory
-      address: '{{TrackedIndexFactory}}'
-      startBlock: {{TrackedIndexFactoryBlockNumber}}
+      abi: Vault
+      address: '{{SVault}}'
+      startBlock: {{SVaultBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Index
-        - IndexAsset
+        - Asset
+        - Transfer
       abis:
-        - name: TrackedIndexFactory
-          file: ../abis/Phuture/TrackedIndexFactory.json
+        - name: Vault
+          file: ../abis/SV/Vault.json
+        - name: wfCashBase
+          file: ../abis/SV/wfCashBase.json
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
         - name: ERC20SymbolBytes
@@ -258,10 +261,16 @@ dataSources:
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
       eventHandlers:
-        - event: TrackedIndexCreated(address,address[])
-          handler: handleTrackedIndexCreated
-      file: ./src/mappings/phuture/TrackedIndexFactory.ts
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: FCashMinted(indexed address,uint256,uint256)
+          handler: handleFCashMinted
+      file: ./src/mappings/sv/vault.ts
+  {{/SVault}}
 
+#-------------------------------------------------------------------------------
+#                               Template section
+#-------------------------------------------------------------------------------
 templates:
   - kind: ethereum/contract
     name: Asset
@@ -320,69 +329,6 @@ templates:
           handler: handleUpdateAnatomy
 
   - kind: ethereum/contract
-    name: TrackedIndex
-    network: {{network}}
-    source:
-      abi: TrackedIndex
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TrackedIndex.ts
-      entities:
-        - Index
-        - Asset
-        - DailyIndexStat
-        - Debug
-      abis:
-        - name: IndexRegistry
-          file: ../abis/Phuture/IndexRegistry.json
-        - name: TrackedIndexFactory
-          file: ../abis/Phuture/TrackedIndexFactory.json
-        - name: TrackedIndex
-          file: ../abis/Phuture/TrackedIndex.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-      eventHandlers:
-        - event: UpdateAnatomy(address,uint8)
-          handler: handleUpdateAnatomy
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTrackedIndexTransfer
-
-  - kind: ethereum/contract
-    name: TopNMarketCapIndex
-    network: {{network}}
-    source:
-      abi: TopNMarketCapIndex
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/phuture/TopNMarketCapIndex.ts
-      entities:
-        - Index
-        - Asset
-        - DailyIndexStat
-      abis:
-        - name: IndexRegistry
-          file: ../abis/Phuture/IndexRegistry.json
-        - name: TopNMarketCapIndexFactory
-          file: ../abis/Phuture/TopNMarketCapIndexFactory.json
-        - name: TopNMarketCapIndex
-          file: ../abis/Phuture/TopNMarketCapIndex.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-      eventHandlers:
-        - event: UpdateAnatomy(address,uint8)
-          handler: handleUpdateAnatomy
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTopNMarketCapIndexTransfer
-
-  - kind: ethereum/contract
     name: AggregatorInterface
     network: {{network}}
     source:
@@ -393,68 +339,21 @@ templates:
       language: wasm/assemblyscript
       entities:
         - Asset
-        - ChainLinkAgg
+        - ChainLinkAggregator
+        - SVVault
       file: ./src/mappings/chainlink/aggregator.ts
       abis:
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
         - name: ChainLink
           file: ../abis/Chainlink/ChainLink.json
+        - name: SVView
+          file: ../abis/SV/View.json
+        - name: Vault
+          file: ../abis/SV/Vault.json
       eventHandlers:
         - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
           handler: handleAnswerUpdated
-
-  - kind: ethereum/contract
-    name: SushiswapPair
-    network: {{network}}
-    source:
-      abi: UniswapPair
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/sushiswap/pair.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: Sync(uint112,uint112)
-          handler: handleSync
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-
-  - kind: ethereum/contract
-    name: UniswapPair
-    network: {{network}}
-    source:
-      abi: UniswapPair
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/uniswap/pair.ts
-      entities:
-        - Asset
-        - Pair
-      abis:
-        - name: UniswapPair
-          file: ../abis/Uniswap/UniswapPair.json
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: Sync(uint112,uint112)
-          handler: handleSync
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
 
   - kind: ethereum/contract
     name: vToken
@@ -477,6 +376,8 @@ templates:
           handler: handlerUpdateDeposit
         - event: VTokenTransfer(indexed address,indexed address,uint256)
           handler: handlerVTokenTransfer
+        - event: SetVaultController(address)
+          handler: handlerSetVaultController
       file: ./src/mappings/phuture/vToken.ts
 
   - kind: ethereum/contract
@@ -493,6 +394,8 @@ templates:
       abis:
         - name: ERC20
           file: ../abis/ERC20/ERC20.json
+        - name: vToken
+          file: ../abis/Phuture/vToken.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -519,4 +422,36 @@ templates:
         - event: AssetRemoved(address)
           handler: handleAssetRemoved
 
-
+  - kind: ethereum/contract
+    name: Pool
+    network: {{network}}
+    source:
+      abi: Pool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/uniswap/uniswapv3.ts
+      entities:
+        - Pool
+        - Token
+      abis:
+        - name: Pool
+          file: ../abis/Uniswap/Pool.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: UniswapV3PriceOracle
+          file: ../abis/Uniswap/UniswapV3PriceOracle.json
+        - name: UniswapPathPriceOracle
+          file: ../abis/Uniswap/UniswapPathPriceOracle.json
+      eventHandlers:
+        - event: Initialize(uint160,int24)
+          handler: handleInitialize
+        - event: Swap(indexed address,indexed address,int256,int256,uint160,uint128,int24)
+          handler: handleSwap
+        - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
+          handler: handleBurn
+        - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleFlash

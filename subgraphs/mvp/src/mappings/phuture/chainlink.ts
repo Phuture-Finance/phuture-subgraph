@@ -1,24 +1,29 @@
 import { AssetAdded } from '../../types/ChainlinkPriceOracle/ChainlinkPriceOracle';
-import {calculateChainLinkPrice, loadOrCreateAsset, loadOrCreateChainLink} from "../entities";
-import { ChainLinkAgg } from "../../types/schema";
+import { ChainLinkAggregator } from '../../types/schema';
+import {
+  calculateChainLinkPrice,
+  loadOrCreateAsset,
+  loadOrCreateChainLink,
+} from '../entities';
 
 export function handleAssetAdded(event: AssetAdded): void {
-    let asset = loadOrCreateAsset(event.params._asset);
-    let prevAgg: ChainLinkAgg | null = null;
+  let asset = loadOrCreateAsset(event.params._asset);
+  let prevAggregator: ChainLinkAggregator | null = null;
 
-    for (let i = 0; i < event.params._aggregators.length; i++) {
-        let agg = loadOrCreateChainLink(event.params._aggregators[i]);
-        if (prevAgg != null) {
-            prevAgg.nextAgg = agg.id;
-            prevAgg.save();
-        }
-        prevAgg = agg;
+  for (let i = 0; i < event.params._aggregators.length; i++) {
+    let nextAggregator = loadOrCreateChainLink(event.params._aggregators[i]);
+    if (prevAggregator != null) {
+      prevAggregator.nextAgg = nextAggregator.id;
+      prevAggregator.save();
     }
 
-    let agg = loadOrCreateChainLink(event.params._aggregators[0]);
-    agg.asset = event.params._asset.toHexString();
-    agg.save();
+    prevAggregator = nextAggregator;
+  }
 
-    asset.basePrice = calculateChainLinkPrice(agg);
-    asset.save();
+  let aggregator = loadOrCreateChainLink(event.params._aggregators[0]);
+  aggregator.asset = event.params._asset.toHexString();
+  aggregator.save();
+
+  asset.basePrice = calculateChainLinkPrice(aggregator);
+  asset.save();
 }
