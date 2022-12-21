@@ -76,10 +76,6 @@ export function handleAllIndexesTransfers(
       event.logIndex,
     );
     fromUIH.balance = fromUserIndex.balance;
-    fromUIH.capitalization = convertDecimals(
-        fromUserIndex.balance,
-        index.decimals,
-    ).times(index.basePrice);
     fromUIH.timestamp = event.block.timestamp;
     fromUIH.totalSupply = index.totalSupply;
     fromUIH.save();
@@ -122,10 +118,6 @@ export function handleAllIndexesTransfers(
       event.logIndex,
     );
     toUIH.balance = toUserIndex.balance;
-    toUIH.capitalization = convertDecimals(
-        toUserIndex.balance,
-        index.decimals,
-    ).times(index.basePrice);
     toUIH.timestamp = tx.timestamp;
     toUIH.totalSupply = index.totalSupply;
     toUIH.save();

@@ -308,9 +308,6 @@ type UserIndexHistory @entity {
   "Number of units of the index held"
   balance: BigDecimal!
 
-  "USD equivalent of the user index holdings"
-  capitalization: BigDecimal!
-
   "index total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 
@@ -504,8 +501,6 @@ type UserSVHistory @entity {
 
   "shares of the vault in user account"
   balance: BigInt!
-  "USD equivalent of the user vault holdings"
-  capitalization: BigDecimal!
   "vault total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 

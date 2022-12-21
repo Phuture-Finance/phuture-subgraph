@@ -50,14 +50,9 @@ export function handleTransfer(event: TransferEvent): void {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
-    let capitalization =
-        convertDecimals(fromUser.balance.toBigDecimal(),
-            fVault.decimals,
-        ).times(fVault.basePrice);
     updateUserHistories(
       event.params.from.toHexString(),
       fromUser.balance,
-      capitalization,
       fVault,
       event.block.timestamp,
       event.logIndex,
@@ -85,14 +80,9 @@ export function handleTransfer(event: TransferEvent): void {
 
     toUser.balance = toUser.balance.plus(event.params.value);
 
-    let capitalization = convertDecimals(
-        toUser.balance.toBigDecimal(),
-        fVault.decimals,
-    ).times(fVault.basePrice);
     updateUserHistories(
       event.params.to.toHexString(),
       toUser.balance,
-        capitalization,
       fVault,
       event.block.timestamp,
       event.logIndex,
@@ -144,7 +134,6 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
 function updateUserHistories(
   user: string,
   balance: BigInt,
-  cap: BigDecimal,
   fVault: SVVault,
   ts: BigInt,
   logIndex: BigInt,
@@ -152,7 +141,6 @@ function updateUserHistories(
   let userIndexHistory = newUserSVHistory(user, fVault.id, ts, logIndex);
   userIndexHistory.user = user;
   userIndexHistory.balance = balance;
-  userIndexHistory.capitalization = cap;
   userIndexHistory.timestamp = ts;
   userIndexHistory.totalSupply = fVault.totalSupply;
   userIndexHistory.save();
