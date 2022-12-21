@@ -78,6 +78,7 @@ export function handleAllIndexesTransfers(
     fromUIH.balance = fromUserIndex.balance;
     fromUIH.timestamp = event.block.timestamp;
     fromUIH.totalSupply = index.totalSupply;
+    fromUIH.investedCapital = fromUserIndex.investedCapital;
     fromUIH.save();
   }
 
@@ -120,6 +121,7 @@ export function handleAllIndexesTransfers(
     toUIH.balance = toUserIndex.balance;
     toUIH.timestamp = tx.timestamp;
     toUIH.totalSupply = index.totalSupply;
+    toUIH.investedCapital = toUserIndex.investedCapital;
     toUIH.save();
   }
 

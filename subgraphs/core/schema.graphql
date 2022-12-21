@@ -311,6 +311,9 @@ type UserIndexHistory @entity {
   "index total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
 
+  "USD value of amount invested into the index"
+  investedCapital: BigDecimal!
+
   "Timestamp matching the start of the day GMT"
   timestamp: BigInt!
 }
@@ -460,6 +463,9 @@ type UserVault @entity {
   vault: SVVault!
 
   balance: BigInt!
+
+  "USD value of amount invested into the savings vault"
+  investedCapital: BigDecimal!
 }
 
 type SVTransfer @entity {
@@ -503,6 +509,8 @@ type UserSVHistory @entity {
   balance: BigInt!
   "vault total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
+  "USD value of amount invested into the savings vault"
+  investedCapital: BigDecimal!
 
   "timestamp matching the starting of day GMT"
   timestamp: BigInt!

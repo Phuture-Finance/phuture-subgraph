@@ -5,7 +5,7 @@ import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
 } from '../../types/SVault/Vault';
-import { convertDecimals } from '../../utils/calc';
+import {convertDecimals, convertTokenToDecimal} from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
@@ -44,21 +44,29 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser.user = event.params.from.toHexString();
       fromUser.balance = BigInt.zero();
     }
+    if(fromUser.balance.gt(BigInt.zero())) {
+      fromUser.investedCapital = fromUser.investedCapital.minus(
+          fromUser.investedCapital
+              .times(event.params.value.toBigDecimal())
+              .div(fromUser.balance.toBigDecimal())
+      )
+    }
     fromUser.balance = fromUser.balance.minus(event.params.value);
 
     if (fromUser.balance.equals(BigInt.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
+    fromUser.save();
+
     updateUserHistories(
       event.params.from.toHexString(),
       fromUser.balance,
+      fromUser.investedCapital,
       fVault,
       event.block.timestamp,
       event.logIndex,
     );
-
-    fromUser.save();
   }
 
   if (!event.params.to.equals(Address.zero())) {
@@ -78,17 +86,23 @@ export function handleTransfer(event: TransferEvent): void {
       fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
 
+    // value is 18 decimals
     toUser.balance = toUser.balance.plus(event.params.value);
+    let basePrice =  fVault.totalAssets.toBigDecimal()
+        .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)))
+    toUser.investedCapital = toUser.investedCapital.plus(
+        convertDecimals(event.params.value.toBigDecimal(), BigInt.fromI32(18)).times(basePrice)
+    )
+    toUser.save();
 
     updateUserHistories(
       event.params.to.toHexString(),
       toUser.balance,
+      toUser.investedCapital,
       fVault,
       event.block.timestamp,
       event.logIndex,
     );
-
-    toUser.save();
   }
 
   let trFrom = SVTransfer.load(event.params.from.toHexString());
@@ -134,6 +148,7 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
 function updateUserHistories(
   user: string,
   balance: BigInt,
+  investedCapital: BigDecimal,
   fVault: SVVault,
   ts: BigInt,
   logIndex: BigInt,
@@ -143,5 +158,6 @@ function updateUserHistories(
   userIndexHistory.balance = balance;
   userIndexHistory.timestamp = ts;
   userIndexHistory.totalSupply = fVault.totalSupply;
+  userIndexHistory.investedCapital = investedCapital;
   userIndexHistory.save();
 }
