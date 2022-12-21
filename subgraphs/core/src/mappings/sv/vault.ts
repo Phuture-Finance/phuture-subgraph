@@ -1,6 +1,6 @@
-import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import {  SVTransfer, SVVault, UserVault } from '../../types/schema';
+import {  SVTransfer, UserVault } from '../../types/schema';
 import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
@@ -9,8 +9,8 @@ import {convertDecimals, convertTokenToDecimal} from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
 import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
-import { newUserSVHistory } from '../entities';
 import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
+import {updateUserSVHistory} from "../phuture/stats";
 
 export function handleTransfer(event: TransferEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {
@@ -59,14 +59,7 @@ export function handleTransfer(event: TransferEvent): void {
 
     fromUser.save();
 
-    updateUserHistories(
-      event.params.from.toHexString(),
-      fromUser.balance,
-      fromUser.investedCapital,
-      fVault,
-      event.block.timestamp,
-      event.logIndex,
-    );
+    updateUserSVHistory(fromUser, fVault.id, fVault.totalSupply, event.block.timestamp);
   }
 
   if (!event.params.to.equals(Address.zero())) {
@@ -86,7 +79,6 @@ export function handleTransfer(event: TransferEvent): void {
       fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
 
-    // value is 18 decimals
     toUser.balance = toUser.balance.plus(event.params.value);
     let basePrice =  fVault.totalAssets.toBigDecimal()
         .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)))
@@ -95,14 +87,7 @@ export function handleTransfer(event: TransferEvent): void {
     )
     toUser.save();
 
-    updateUserHistories(
-      event.params.to.toHexString(),
-      toUser.balance,
-      toUser.investedCapital,
-      fVault,
-      event.block.timestamp,
-      event.logIndex,
-    );
+    updateUserSVHistory(toUser, fVault.id, fVault.totalSupply, event.block.timestamp);
   }
 
   let trFrom = SVTransfer.load(event.params.from.toHexString());
@@ -143,21 +128,4 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
   updateVaultPrice(fVault, event.block.timestamp);
 
   fVault.save();
-}
-
-function updateUserHistories(
-  user: string,
-  balance: BigInt,
-  investedCapital: BigDecimal,
-  fVault: SVVault,
-  ts: BigInt,
-  logIndex: BigInt,
-): void {
-  let userIndexHistory = newUserSVHistory(user, fVault.id, ts, logIndex);
-  userIndexHistory.user = user;
-  userIndexHistory.balance = balance;
-  userIndexHistory.timestamp = ts;
-  userIndexHistory.totalSupply = fVault.totalSupply;
-  userIndexHistory.investedCapital = investedCapital;
-  userIndexHistory.save();
 }

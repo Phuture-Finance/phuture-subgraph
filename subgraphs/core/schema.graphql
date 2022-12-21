@@ -315,7 +315,7 @@ type UserIndexHistory @entity {
   investedCapital: BigDecimal!
 
   "Timestamp matching the start of the day GMT"
-  timestamp: BigInt!
+  timestamp: Int!
 }
 
 type Transfer @entity {
@@ -513,7 +513,7 @@ type UserSVHistory @entity {
   investedCapital: BigDecimal!
 
   "timestamp matching the starting of day GMT"
-  timestamp: BigInt!
+  timestamp: Int!
 }
 
 # ----------------------------------------------------------------
