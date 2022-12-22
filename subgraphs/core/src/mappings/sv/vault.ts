@@ -46,11 +46,15 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser.investedCapital = BigDecimal.zero();
     }
     if(fromUser.balance.gt(BigDecimal.zero())) {
-      fromUser.investedCapital = fromUser.investedCapital.minus(
-          fromUser.investedCapital
-              .times(event.params.value.toBigDecimal())
-              .div(fromUser.balance)
-      )
+      if(event.params.value.toBigDecimal().ge(fromUser.balance)) {
+        fromUser.investedCapital = BigDecimal.zero();
+      } else {
+        fromUser.investedCapital = fromUser.investedCapital.minus(
+            fromUser.investedCapital
+                .times(event.params.value.toBigDecimal())
+                .div(fromUser.balance)
+        )
+      }
     }
     fromUser.balance = fromUser.balance.minus(event.params.value.toBigDecimal());
 
