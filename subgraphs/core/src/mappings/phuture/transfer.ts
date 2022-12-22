@@ -55,11 +55,15 @@ export function handleAllIndexesTransfers(
     }
 
     if (fromUserIndex.balance.gt(BigDecimal.zero())) {
-      fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
-          fromUserIndex.investedCapital
-              .times(value.toBigDecimal())
-              .div(fromUserIndex.balance),
-      );
+      if(value.toBigDecimal().ge(fromUserIndex.balance)) {
+        fromUserIndex.investedCapital = BigDecimal.zero();
+      } else {
+        fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
+            fromUserIndex.investedCapital
+                .times(value.toBigDecimal())
+                .div(fromUserIndex.balance),
+        );
+      }
     }
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
 
