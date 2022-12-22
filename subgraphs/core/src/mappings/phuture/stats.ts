@@ -148,8 +148,6 @@ export function updateUserIndexHistory(
     let dayStartTimestamp = dayID * 86400;
     let dayUserIndexHistoryId = userIndex.id
         .concat('-')
-        .concat(userIndex.index)
-        .concat('-')
         .concat(BigInt.fromI32(dayID).toString());
     let userIndexHistory = UserIndexHistory.load(dayUserIndexHistoryId);
     if(!userIndexHistory) {
@@ -177,8 +175,6 @@ export function updateUserSVHistory(
     let dayID = timestamp / 86400;
     let dayStartTimestamp = dayID * 86400;
     let dayUserSVHistoryId = userVault.id
-        .concat('-')
-        .concat(vaultId)
         .concat('-')
         .concat(BigInt.fromI32(dayID).toString());
     let userSVHistory = UserSVHistory.load(dayUserSVHistoryId);
