@@ -153,7 +153,7 @@ export function updateUserIndexHistory(
     if(!userIndexHistory) {
         userIndexHistory = new UserIndexHistory(dayUserIndexHistoryId);
         userIndexHistory.timestamp = dayStartTimestamp;
-        userIndexHistory.user = userIndex.id;
+        userIndexHistory.user = userIndex.user;
         userIndexHistory.index = userIndex.index;
     }
     userIndexHistory.balance = userIndex.balance;
@@ -181,7 +181,7 @@ export function updateUserSVHistory(
     if(!userSVHistory) {
         userSVHistory = new UserSVHistory(dayUserSVHistoryId);
         userSVHistory.timestamp = dayStartTimestamp;
-        userSVHistory.user = userVault.id;
+        userSVHistory.user = userVault.user;
         userSVHistory.vault = vaultId;
     }
     userSVHistory.balance = userVault.balance;

@@ -70,6 +70,7 @@ export function handleAllIndexesTransfers(
     fromUserIndex.save();
 
     updateUserIndexHistory(fromUserIndex, index.totalSupply, event.block.timestamp)
+  }
 
     // Track index transfers to index from another index or minting.
     if (!to.equals(Address.zero())) {
@@ -123,5 +124,5 @@ export function handleAllIndexesTransfers(
 
     tx.transfers = transfers.concat([transfer.id]);
     tx.save();
-  }
 }
+

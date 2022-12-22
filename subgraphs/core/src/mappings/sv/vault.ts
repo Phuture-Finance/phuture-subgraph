@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import {Address, BigDecimal, BigInt} from '@graphprotocol/graph-ts';
 
 import {  SVTransfer, UserVault } from '../../types/schema';
 import {
@@ -42,18 +42,19 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser = new UserVault(fromUserId);
       fromUser.vault = event.address.toHexString();
       fromUser.user = event.params.from.toHexString();
-      fromUser.balance = BigInt.zero();
+      fromUser.balance = BigDecimal.zero();
+      fromUser.investedCapital = BigDecimal.zero();
     }
-    if(fromUser.balance.gt(BigInt.zero())) {
+    if(fromUser.balance.gt(BigDecimal.zero())) {
       fromUser.investedCapital = fromUser.investedCapital.minus(
           fromUser.investedCapital
               .times(event.params.value.toBigDecimal())
-              .div(fromUser.balance.toBigDecimal())
+              .div(fromUser.balance)
       )
     }
-    fromUser.balance = fromUser.balance.minus(event.params.value);
+    fromUser.balance = fromUser.balance.minus(event.params.value.toBigDecimal());
 
-    if (fromUser.balance.equals(BigInt.zero())) {
+    if (fromUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
@@ -72,14 +73,15 @@ export function handleTransfer(event: TransferEvent): void {
       toUser = new UserVault(toUserId);
       toUser.vault = event.address.toHexString();
       toUser.user = event.params.to.toHexString();
-      toUser.balance = BigInt.zero();
+      toUser.balance = BigDecimal.zero();
+      toUser.investedCapital = BigDecimal.zero();
     }
 
-    if (toUser.balance.equals(BigInt.zero())) {
+    if (toUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
 
-    toUser.balance = toUser.balance.plus(event.params.value);
+    toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
     let basePrice =  fVault.totalAssets.toBigDecimal()
         .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)))
     toUser.investedCapital = toUser.investedCapital.plus(

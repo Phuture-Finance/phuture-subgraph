@@ -296,7 +296,7 @@ type UserIndex @entity {
 
 type UserIndexHistory @entity {
 
-  "Set to {user.id}-{index.id}-{timestamp}-{txLogIndex}"
+  "Set to {user.id}-{index.id}-{timestamp}"
   id: ID!
 
   "User address"
@@ -462,7 +462,7 @@ type UserVault @entity {
   user: SVUser!
   vault: SVVault!
 
-  balance: BigInt!
+  balance: BigDecimal!
 
   "USD value of amount invested into the savings vault"
   investedCapital: BigDecimal!
@@ -506,7 +506,7 @@ type UserSVHistory @entity {
   vault: SVVault!
 
   "shares of the vault in user account"
-  balance: BigInt!
+  balance: BigDecimal!
   "vault total supply on the moment of the user balance calculation"
   totalSupply: BigInt!
   "USD value of amount invested into the savings vault"
