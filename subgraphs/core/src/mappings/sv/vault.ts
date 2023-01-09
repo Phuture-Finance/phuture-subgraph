@@ -5,9 +5,9 @@ import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
 } from '../../types/SVault/Vault';
-import {convertDecimals, convertTokenToDecimal} from '../../utils/calc';
+import {convertDecimals} from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
-import { loadOrCreateSVAccount } from '../entities';
+import {loadOrCreateSVAccount} from '../entities';
 import { loadOrCreateSVVault } from '../entities';
 import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
 import {updateUserSVHistory} from "../phuture/stats";
@@ -31,6 +31,10 @@ export function handleTransfer(event: TransferEvent): void {
   } else {
     transferType = 'Send';
   }
+
+  updateVaultTotals(fVault);
+  updateVaultPrice(fVault, event.block.timestamp);
+  fVault.save();
 
   if (!event.params.from.equals(Address.zero())) {
     let fromUserId = event.params.from
@@ -84,17 +88,17 @@ export function handleTransfer(event: TransferEvent): void {
     if (toUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
-
     toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
-    let basePrice =  fVault.totalAssets.toBigDecimal()
-        .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)))
+
     toUser.investedCapital = toUser.investedCapital.plus(
-        convertDecimals(event.params.value.toBigDecimal(), BigInt.fromI32(18)).times(basePrice)
+        convertDecimals(event.params.value.toBigDecimal(), BigInt.fromI32(18)).times(fVault.basePrice)
     )
     toUser.save();
 
     updateUserSVHistory(toUser, fVault.id, fVault.totalSupply, event.block.timestamp);
   }
+
+  fVault.save();
 
   let trFrom = SVTransfer.load(event.params.from.toHexString());
   if (!trFrom) {
@@ -117,11 +121,6 @@ export function handleTransfer(event: TransferEvent): void {
     trTo.type = transferType;
     trTo.save();
   }
-
-  updateVaultTotals(fVault);
-  updateVaultPrice(fVault, event.block.timestamp);
-
-  fVault.save();
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
