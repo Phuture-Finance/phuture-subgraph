@@ -3,8 +3,6 @@ export * from './Asset';
 export * from './BaseIndex';
 export * from './ChainLink';
 export * from './IndexAsset';
-export * from './IndexHistory';
 export * from './SVault';
-export * from './SVHistory';
 export * from './Transaction';
 export * from './vToken';

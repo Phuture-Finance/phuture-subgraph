@@ -9,7 +9,7 @@ import {
     HourlyIndexStat,
     Index,
     VaultController,
-    VaultControllerStat,
+    VaultControllerStat, UserIndexHistory, UserIndex, SVUser, UserSVHistory, UserVault,
 } from '../../types/schema';
 import {convertTokenToDecimal} from '../../utils/calc';
 import {getStartingDayTimestamp} from '../../utils/timestamp';
@@ -136,4 +136,59 @@ export function updateDailyAssetStat(
     dailyAssetStat.save();
 
     return dailyAssetStat as DailyAssetStat;
+}
+
+export function updateUserIndexHistory(
+    userIndex: UserIndex,
+    totalSupply: BigInt,
+    blockTimestamp: BigInt,
+): UserIndexHistory {
+    let timestamp = blockTimestamp.toI32();
+    let dayID = timestamp / 86400;
+    let dayStartTimestamp = dayID * 86400;
+    let dayUserIndexHistoryId = userIndex.id
+        .concat('-')
+        .concat(BigInt.fromI32(dayID).toString());
+    let userIndexHistory = UserIndexHistory.load(dayUserIndexHistoryId);
+    if(!userIndexHistory) {
+        userIndexHistory = new UserIndexHistory(dayUserIndexHistoryId);
+        userIndexHistory.timestamp = dayStartTimestamp;
+        userIndexHistory.user = userIndex.user;
+        userIndexHistory.index = userIndex.index;
+    }
+    userIndexHistory.balance = userIndex.balance;
+    userIndexHistory.totalSupply = totalSupply;
+    userIndexHistory.investedCapital = userIndex.investedCapital;
+
+    userIndexHistory.save();
+
+    return userIndexHistory;
+}
+
+export function updateUserSVHistory(
+    userVault: UserVault,
+    vaultId: string,
+    totalSupply: BigInt,
+    blockTimestamp: BigInt,
+): UserSVHistory {
+    let timestamp = blockTimestamp.toI32();
+    let dayID = timestamp / 86400;
+    let dayStartTimestamp = dayID * 86400;
+    let dayUserSVHistoryId = userVault.id
+        .concat('-')
+        .concat(BigInt.fromI32(dayID).toString());
+    let userSVHistory = UserSVHistory.load(dayUserSVHistoryId);
+    if(!userSVHistory) {
+        userSVHistory = new UserSVHistory(dayUserSVHistoryId);
+        userSVHistory.timestamp = dayStartTimestamp;
+        userSVHistory.user = userVault.user;
+        userSVHistory.vault = vaultId;
+    }
+    userSVHistory.balance = userVault.balance;
+    userSVHistory.totalSupply = totalSupply;
+    userSVHistory.investedCapital = userVault.investedCapital;
+
+    userSVHistory.save();
+
+    return userSVHistory;
 }

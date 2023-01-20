@@ -6,9 +6,9 @@ import { updateIndexBasePriceByIndex } from '../../utils';
 import {
   loadOrCreateAccount,
   loadOrCreateTransaction,
-  newUserIndexHistory,
 } from '../entities';
 import {convertDecimals} from "../../utils/calc";
+import {updateUserIndexHistory} from "./stats";
 
 export function handleAllIndexesTransfers(
   event: ethereum.Event,
@@ -42,9 +42,9 @@ export function handleAllIndexesTransfers(
   // Track index transfers from index to another index or burning.
   if (!from.equals(Address.zero())) {
     let fromUserIndexId = from
-      .toHexString()
-      .concat('-')
-      .concat(event.address.toHexString());
+        .toHexString()
+        .concat('-')
+        .concat(event.address.toHexString());
     let fromUserIndex = UserIndex.load(fromUserIndexId);
     if (!fromUserIndex) {
       fromUserIndex = new UserIndex(fromUserIndexId);
@@ -54,12 +54,16 @@ export function handleAllIndexesTransfers(
       fromUserIndex.investedCapital = BigDecimal.zero();
     }
 
-    if(fromUserIndex.balance.gt(BigDecimal.zero())) {
-      fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
-        fromUserIndex.investedCapital
-          .times(value.toBigDecimal())
-          .div(fromUserIndex.balance),
-      );
+    if (fromUserIndex.balance.gt(BigDecimal.zero())) {
+      if(value.toBigDecimal().ge(fromUserIndex.balance)) {
+        fromUserIndex.investedCapital = BigDecimal.zero();
+      } else {
+        fromUserIndex.investedCapital = fromUserIndex.investedCapital.minus(
+            fromUserIndex.investedCapital
+                .times(value.toBigDecimal())
+                .div(fromUserIndex.balance),
+        );
+      }
     }
     fromUserIndex.balance = fromUserIndex.balance.minus(value.toBigDecimal());
 
@@ -69,85 +73,60 @@ export function handleAllIndexesTransfers(
 
     fromUserIndex.save();
 
-    let fromUIH = newUserIndexHistory(
-      fromUserIndex.user,
-      fromUserIndex.index,
-      tx.timestamp,
-      event.logIndex,
-    );
-    fromUIH.balance = fromUserIndex.balance;
-    fromUIH.capitalization = convertDecimals(
-        fromUserIndex.balance,
-        index.decimals,
-    ).times(index.basePrice);
-    fromUIH.timestamp = event.block.timestamp;
-    fromUIH.totalSupply = index.totalSupply;
-    fromUIH.save();
+    updateUserIndexHistory(fromUserIndex, index.totalSupply, event.block.timestamp)
   }
 
-  // Track index transfers to index from another index or minting.
-  if (!to.equals(Address.zero())) {
-    let toUserIndexId = to
-      .toHexString()
-      .concat('-')
-      .concat(event.address.toHexString());
-    let toUserIndex = UserIndex.load(toUserIndexId);
-    if (!toUserIndex) {
-      toUserIndex = new UserIndex(toUserIndexId);
-      toUserIndex.index = event.address.toHexString();
-      toUserIndex.user = to.toHexString();
-      toUserIndex.balance = BigDecimal.zero();
-      toUserIndex.investedCapital = BigDecimal.zero();
+    // Track index transfers to index from another index or minting.
+    if (!to.equals(Address.zero())) {
+      let toUserIndexId = to
+          .toHexString()
+          .concat('-')
+          .concat(event.address.toHexString());
+      let toUserIndex = UserIndex.load(toUserIndexId);
+      if (!toUserIndex) {
+        toUserIndex = new UserIndex(toUserIndexId);
+        toUserIndex.index = event.address.toHexString();
+        toUserIndex.user = to.toHexString();
+        toUserIndex.balance = BigDecimal.zero();
+        toUserIndex.investedCapital = BigDecimal.zero();
+      }
+
+      if (toUserIndex.balance == BigDecimal.zero()) {
+        index.uniqueHolders = index.uniqueHolders.plus(ONE_BI);
+      }
+
+      toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
+
+      toUserIndex.investedCapital = toUserIndex.investedCapital.plus(
+          convertDecimals(
+              value.toBigDecimal(),
+              index.decimals
+          ).times(index.basePrice)
+      );
+
+      toUserIndex.save();
+
+      updateUserIndexHistory(toUserIndex, index.totalSupply, event.block.timestamp)
     }
 
-    if (toUserIndex.balance == BigDecimal.zero()) {
-      index.uniqueHolders = index.uniqueHolders.plus(ONE_BI);
-    }
+    index.save();
 
-    toUserIndex.balance = toUserIndex.balance.plus(value.toBigDecimal());
-
-    toUserIndex.investedCapital = toUserIndex.investedCapital.plus(
-        convertDecimals(
-            value.toBigDecimal(),
-            index.decimals
-        ).times(index.basePrice)
+    let transfer = new Transfer(
+        event.transaction.hash
+            .toHexString()
+            .concat('-')
+            .concat(event.logIndex.toString()),
     );
 
-    toUserIndex.save();
+    transfer.index = event.address.toHexString();
+    transfer.transaction = tx.id;
+    transfer.type = transferType;
+    transfer.from = from;
+    transfer.to = to;
+    transfer.value = value;
+    transfer.save();
 
-    let toUIH = newUserIndexHistory(
-      toUserIndex.user,
-      toUserIndex.index,
-      tx.timestamp,
-      event.logIndex,
-    );
-    toUIH.balance = toUserIndex.balance;
-    toUIH.capitalization = convertDecimals(
-        toUserIndex.balance,
-        index.decimals,
-    ).times(index.basePrice);
-    toUIH.timestamp = tx.timestamp;
-    toUIH.totalSupply = index.totalSupply;
-    toUIH.save();
-  }
-
-  index.save();
-
-  let transfer = new Transfer(
-    event.transaction.hash
-      .toHexString()
-      .concat('-')
-      .concat(event.logIndex.toString()),
-  );
-
-  transfer.index = event.address.toHexString();
-  transfer.transaction = tx.id;
-  transfer.type = transferType;
-  transfer.from = from;
-  transfer.to = to;
-  transfer.value = value;
-  transfer.save();
-
-  tx.transfers = transfers.concat([transfer.id]);
-  tx.save();
+    tx.transfers = transfers.concat([transfer.id]);
+    tx.save();
 }
+

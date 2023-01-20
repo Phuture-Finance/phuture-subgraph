@@ -1,16 +1,16 @@
-import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import {Address, BigDecimal, BigInt} from '@graphprotocol/graph-ts';
 
-import {  SVTransfer, SVVault, UserVault } from '../../types/schema';
+import {  SVTransfer, UserVault } from '../../types/schema';
 import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
 } from '../../types/SVault/Vault';
-import { convertDecimals } from '../../utils/calc';
+import {convertDecimals} from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
-import { loadOrCreateSVAccount } from '../entities';
+import {loadOrCreateSVAccount} from '../entities';
 import { loadOrCreateSVVault } from '../entities';
-import { newUserSVHistory } from '../entities';
 import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
+import {updateUserSVHistory} from "../phuture/stats";
 
 export function handleTransfer(event: TransferEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {
@@ -32,6 +32,10 @@ export function handleTransfer(event: TransferEvent): void {
     transferType = 'Send';
   }
 
+  updateVaultTotals(fVault);
+  updateVaultPrice(fVault, event.block.timestamp);
+  fVault.save();
+
   if (!event.params.from.equals(Address.zero())) {
     let fromUserId = event.params.from
       .toHexString()
@@ -42,28 +46,29 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser = new UserVault(fromUserId);
       fromUser.vault = event.address.toHexString();
       fromUser.user = event.params.from.toHexString();
-      fromUser.balance = BigInt.zero();
+      fromUser.balance = BigDecimal.zero();
+      fromUser.investedCapital = BigDecimal.zero();
     }
-    fromUser.balance = fromUser.balance.minus(event.params.value);
+    if(fromUser.balance.gt(BigDecimal.zero())) {
+      if(event.params.value.toBigDecimal().ge(fromUser.balance)) {
+        fromUser.investedCapital = BigDecimal.zero();
+      } else {
+        fromUser.investedCapital = fromUser.investedCapital.minus(
+            fromUser.investedCapital
+                .times(event.params.value.toBigDecimal())
+                .div(fromUser.balance)
+        )
+      }
+    }
+    fromUser.balance = fromUser.balance.minus(event.params.value.toBigDecimal());
 
-    if (fromUser.balance.equals(BigInt.zero())) {
+    if (fromUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
-    let capitalization =
-        convertDecimals(fromUser.balance.toBigDecimal(),
-            fVault.decimals,
-        ).times(fVault.basePrice);
-    updateUserHistories(
-      event.params.from.toHexString(),
-      fromUser.balance,
-      capitalization,
-      fVault,
-      event.block.timestamp,
-      event.logIndex,
-    );
-
     fromUser.save();
+
+    updateUserSVHistory(fromUser, fVault.id, fVault.totalSupply, event.block.timestamp);
   }
 
   if (!event.params.to.equals(Address.zero())) {
@@ -76,30 +81,24 @@ export function handleTransfer(event: TransferEvent): void {
       toUser = new UserVault(toUserId);
       toUser.vault = event.address.toHexString();
       toUser.user = event.params.to.toHexString();
-      toUser.balance = BigInt.zero();
+      toUser.balance = BigDecimal.zero();
+      toUser.investedCapital = BigDecimal.zero();
     }
 
-    if (toUser.balance.equals(BigInt.zero())) {
+    if (toUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
+    toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
 
-    toUser.balance = toUser.balance.plus(event.params.value);
-
-    let capitalization = convertDecimals(
-        toUser.balance.toBigDecimal(),
-        fVault.decimals,
-    ).times(fVault.basePrice);
-    updateUserHistories(
-      event.params.to.toHexString(),
-      toUser.balance,
-        capitalization,
-      fVault,
-      event.block.timestamp,
-      event.logIndex,
-    );
-
+    toUser.investedCapital = toUser.investedCapital.plus(
+        convertDecimals(event.params.value.toBigDecimal(), BigInt.fromI32(18)).times(fVault.basePrice)
+    )
     toUser.save();
+
+    updateUserSVHistory(toUser, fVault.id, fVault.totalSupply, event.block.timestamp);
   }
+
+  fVault.save();
 
   let trFrom = SVTransfer.load(event.params.from.toHexString());
   if (!trFrom) {
@@ -122,11 +121,6 @@ export function handleTransfer(event: TransferEvent): void {
     trTo.type = transferType;
     trTo.save();
   }
-
-  updateVaultTotals(fVault);
-  updateVaultPrice(fVault, event.block.timestamp);
-
-  fVault.save();
 }
 
 export function handleFCashMinted(event: FCashMintedEvent): void {
@@ -139,21 +133,4 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
   updateVaultPrice(fVault, event.block.timestamp);
 
   fVault.save();
-}
-
-function updateUserHistories(
-  user: string,
-  balance: BigInt,
-  cap: BigDecimal,
-  fVault: SVVault,
-  ts: BigInt,
-  logIndex: BigInt,
-): void {
-  let userIndexHistory = newUserSVHistory(user, fVault.id, ts, logIndex);
-  userIndexHistory.user = user;
-  userIndexHistory.balance = balance;
-  userIndexHistory.capitalization = cap;
-  userIndexHistory.timestamp = ts;
-  userIndexHistory.totalSupply = fVault.totalSupply;
-  userIndexHistory.save();
 }
