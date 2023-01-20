@@ -10,7 +10,7 @@ services:
       - pdata:/var/lib/postgresql/data
 
   ipfs:
-    image: ipfs/go-ipfs:v0.4.23
+    image: ipfs/kubo:latest
     ports:
       - '5001:5001'
 
@@ -31,39 +31,11 @@ services:
       postgres_pass: letmein
       postgres_db: postgres
       ipfs: 'ipfs:5001'
-      ethereum: 'mainnet:https://chain.frp.phuture.finance'
-      ELASTICSEARCH_URL: http://elastic:9200
+      ethereum: 'mainnet:http://host.docker.internal:8545'
       GRAPH_LOG: debug
-
-  elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
-    restart: always
-    container_name: elastic
-    environment:
-      - node.name=elastic
-      - discovery.type=single-node
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - '9200'
-      - '9300'
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.16.3
-    container_name: kibana
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://elastic:9200
-      ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
 volumes:
-  data01:
-    driver: local
   pdata:
     driver: local

@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------
+#                             Index Betting
+# ----------------------------------------------------------------
+
+type IndexBetting @entity {
+  id: ID!
+  frontRunningLockupDuration: BigInt!
+  challengeStart: BigInt!
+  challengeEnd: BigInt!
+  maxStakingAmount: BigInt!
+  betParticipants: BigInt!
+  PDIRewardRate: Int!
+}
+
+type User @entity {
+  id: ID!
+  indexBetting: IndexBetting!
+  balance: BigInt!
+}
+
+enum IndexBettingTransferType {
+  Send
+  Mint
+  Burn
+}
+
+type Transfer @entity {
+  id: ID!
+  indexBetting: IndexBetting!
+  type: IndexBettingTransferType!
+
+  from: User
+  to: User
+  amount: BigInt!
+
+  timestamp: BigInt!
+}
+
+type PricesHourlyStat @entity {
+  id: ID!
+
+  date: BigInt!
+
+  DPIBasePrice: BigInt!
+}

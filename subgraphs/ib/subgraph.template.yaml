@@ -1,0 +1,59 @@
+specVersion: 0.0.3
+description: Phuture Index Betting
+repository: https://github.com/Phuture-Finance/phuture-subgraph
+schema:
+   file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: IndexBetting
+    network: {{network}}
+    source:
+      abi: IndexBetting
+      address: '{{IndexBetting}}'
+      startBlock: {{IndexBettingBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - IndexBetting
+        - User
+        - Transfer
+      abis:
+        - name: IndexBetting
+          file: ../abis/IndexBetting/IndexBetting.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: BettingChallengeStarted(uint32,uint256,uint256)
+          handler: handleBettingChallengeStarted
+        - event: BettingChallengeSettled(uint16)
+          handler: handleBettingChallengeSettled
+        - event: Initialized(uint8)
+          handler: handleInitialized
+      file: ./src/mappings/indexBetting.ts
+
+  - kind: ethereum/contract
+    name: UniswapV2Pool
+    network: {{network}}
+    source:
+      abi: UniswapPair
+      address: '{{UniswapPair}}'
+      startBlock: {{UniswapPairBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - PricesDailyStat
+      abis:
+        - name: IndexHelper
+          file: ../abis/Phuture/IndexHelper.json
+        - name: UniswapPair
+          file: ../abis/Uniswap/UniswapPair.json
+        - name: Chainlink
+          file: ../abis/Chainlink/ChainLink.json
+      eventHandlers:
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: handleSwap
+      file: ./src/mappings/swap.ts

@@ -3,56 +3,24 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_targetDepositPercentageInBP",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "percentageInBPPerStep",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "stepDuration",
-        "type": "uint256"
-      }
+      { "indexed": false, "internalType": "uint256", "name": "_targetDepositPercentageInBP", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "percentageInBPPerStep", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "stepDuration", "type": "uint256" }
     ],
     "name": "SetDepositInfo",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "vaultController",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "vaultController", "type": "address" }],
     "name": "SetVaultController",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "depositedAmount",
-        "type": "uint256"
-      }
+      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "depositedAmount", "type": "uint256" }
     ],
     "name": "UpdateDeposit",
     "type": "event"
@@ -60,24 +28,9 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
+      { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "VTokenTransfer",
     "type": "event"
@@ -90,9 +43,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_account", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_account", "type": "address" }],
     "name": "assetBalanceOf",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -108,11 +59,7 @@
       {
         "components": [
           { "internalType": "uint256", "name": "maxShares", "type": "uint256" },
-          {
-            "internalType": "uint256",
-            "name": "amountInAsset",
-            "type": "uint256"
-          }
+          { "internalType": "uint256", "name": "amountInAsset", "type": "uint256" }
         ],
         "internalType": "struct IvToken.AssetData",
         "name": "",
@@ -123,29 +70,21 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_account", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_account", "type": "address" }],
     "name": "balanceOf",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_recipient", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_recipient", "type": "address" }],
     "name": "burn",
-    "outputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_recipient", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_recipient", "type": "address" }],
     "name": "burnFor",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "nonpayable",
@@ -176,9 +115,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_account", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_account", "type": "address" }],
     "name": "lastAssetBalanceOf",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -194,25 +131,19 @@
   {
     "inputs": [],
     "name": "mint",
-    "outputs": [
-      { "internalType": "uint256", "name": "shares", "type": "uint256" }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "shares", "type": "uint256" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_recipient", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_recipient", "type": "address" }],
     "name": "mintFor",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
+    "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }],
     "name": "mintableShares",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -233,13 +164,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_vaultController",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_vaultController", "type": "address" }],
     "name": "setController",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -247,16 +172,8 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint16",
-        "name": "_targetDepositPercentageInBP",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_percentageInBPPerStep",
-        "type": "uint16"
-      },
+      { "internalType": "uint16", "name": "_targetDepositPercentageInBP", "type": "uint16" },
+      { "internalType": "uint16", "name": "_percentageInBPPerStep", "type": "uint16" },
       { "internalType": "uint256", "name": "_stepDuration", "type": "uint256" }
     ],
     "name": "setDepositInfo",
@@ -285,21 +202,13 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }
-    ],
+    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
     "name": "supportsInterface",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
-  {
-    "inputs": [],
-    "name": "sync",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
+  { "inputs": [], "name": "sync", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
   {
     "inputs": [],
     "name": "targetDepositPercentageInBP",
@@ -352,13 +261,7 @@
     "stateMutability": "nonpayable",
     "type": "function"
   },
-  {
-    "inputs": [],
-    "name": "updateDeposit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
+  { "inputs": [], "name": "updateDeposit", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
   {
     "inputs": [],
     "name": "vaultController",
@@ -373,11 +276,5 @@
     "stateMutability": "view",
     "type": "function"
   },
-  {
-    "inputs": [],
-    "name": "withdrawAll",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+  { "inputs": [], "name": "withdrawAll", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
 ]

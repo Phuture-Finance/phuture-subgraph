@@ -3,16 +3,8 @@
     "inputs": [
       { "internalType": "address", "name": "_registry", "type": "address" },
       { "internalType": "address", "name": "_base", "type": "address" },
-      {
-        "internalType": "address",
-        "name": "_baseAggregator",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_maxUpdateInterval",
-        "type": "uint256"
-      }
+      { "internalType": "address", "name": "_baseAggregator", "type": "address" },
+      { "internalType": "uint256", "name": "_maxUpdateInterval", "type": "uint256" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -20,18 +12,8 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_asset",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address[]",
-        "name": "_aggregators",
-        "type": "address[]"
-      }
+      { "indexed": false, "internalType": "address", "name": "_asset", "type": "address" },
+      { "indexed": false, "internalType": "address[]", "name": "_aggregators", "type": "address[]" }
     ],
     "name": "AssetAdded",
     "type": "event"
@@ -39,18 +21,8 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_account",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_maxUpdateInterval",
-        "type": "uint256"
-      }
+      { "indexed": false, "internalType": "address", "name": "_account", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "_maxUpdateInterval", "type": "uint256" }
     ],
     "name": "SetMaxUpdateInterval",
     "type": "event"
@@ -58,11 +30,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "_asset", "type": "address" },
-      {
-        "internalType": "address[]",
-        "name": "_assetAggregators",
-        "type": "address[]"
-      }
+      { "internalType": "address[]", "name": "_assetAggregators", "type": "address[]" }
     ],
     "name": "addAsset",
     "outputs": [],
@@ -72,11 +40,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "_asset", "type": "address" },
-      {
-        "internalType": "address",
-        "name": "_assetAggregator",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_assetAggregator", "type": "address" }
     ],
     "name": "addAsset",
     "outputs": [],
@@ -98,31 +62,21 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_asset", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "_asset", "type": "address" }],
     "name": "refreshedAssetPerBaseInUQ",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_maxUpdateInterval",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [{ "internalType": "uint256", "name": "_maxUpdateInterval", "type": "uint256" }],
     "name": "setMaxUpdateInterval",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }
-    ],
+    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
     "name": "supportsInterface",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
