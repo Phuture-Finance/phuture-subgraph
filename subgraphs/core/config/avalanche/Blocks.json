@@ -5,5 +5,7 @@
   "ManagedVTokenFactoryBlockNumber": 19403158,
   "RegistryBlockNumber": 19400000,
   "SushiV2FactoryBlockNumber": 19400000,
-  "SVaultBlockNumber": 24000102
+  "SVaultBlockNumber": 24000102,
+  "SVViewV1BlockNumber": 24000102,
+  "SVViewV2BlockNumber": 24000102
 }

@@ -38,7 +38,7 @@ export function handleAnswerUpdated(event: AnswerUpdated): void {
       let fVault = SVVault.load(agg.vaults[i]);
       if (fVault) {
         updateVaultTotals(fVault);
-        updateVaultAPY(fVault);
+        updateVaultAPY(fVault, event.block.number);
         updateVaultPrice(fVault, event.block.timestamp);
 
         fVault.save();
