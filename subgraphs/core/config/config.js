@@ -19,6 +19,7 @@ let data = {
       return a.toLowerCase();
     }),
   ),
+  FeePoolBlockNumber: impBlocks.RegistryBlockNumber,
 };
 
 module.exports = {
