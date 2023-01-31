@@ -1,0 +1,29 @@
+specVersion: 0.0.3
+description: Phuture
+repository: https://github.com/Phuture-Finance/phuture-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: OmniIndex
+    network: {{network}}
+    source:
+      abi: OmniInterface
+      address: '{{OmniIndex}}'
+      startBlock: {{OmniIndexBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - OmniIndex
+        - User
+        - Message
+      abis:
+        - name: OmniInterface
+          file: ../abis/OmniIndex/OmniInterface.json
+      eventHandlers:
+        - event: MessageFailed(uint16,bytes,uint64,address,uint256)
+          handler: handleMessageFailed
+
+      file: ./src/mappings/OmniIndex.ts

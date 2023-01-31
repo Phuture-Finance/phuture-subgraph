@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------
+#                             Enums
+# ----------------------------------------------------------------
+
+enum MessageStatus {
+  Success
+  Failed
+}
+
+# ----------------------------------------------------------------
+#                             OmniIndex
+# ----------------------------------------------------------------
+
+type OmniIndex @entity {
+  "Address of the index"
+  id: ID!
+}
+#this is probably going to be a vault and not an OmniIndex
+type User @entity {
+  "Set to {user.id}-{index.id}"
+  id: ID!
+  "Index address"
+  index: OmniIndex!
+
+  messages: [Message!]! @derivedFrom(field: "user")
+}
+
+type Message @entity {
+  id: ID!
+  user: User!
+  status: MessageStatus
+  srcChainId: BigInt!
+  srcAddress: Bytes!
+  nonce: BigInt!
+  assetAmount: BigInt!
+}
+
+# ----------------------------------------------------------------
+# A single OmniIndex can have many local and many remote vaults
+# However a vault that exists on AVAX is not relevant to the OmniIndex that exists on ETH
+# When I deploy on Avalanche or any other network, I will have to specify a list of vaults that are relevant to the OmniIndex.
