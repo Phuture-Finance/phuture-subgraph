@@ -6,6 +6,7 @@
   "scripts": {
     "build": "lerna run build --stream",
     "codegen": "lerna run codegen --stream",
+    "format": "prettier --write .",
     "lint": "lerna run lint --stream",
     "lint:fix": "lerna run lint:fix --stream"
   },

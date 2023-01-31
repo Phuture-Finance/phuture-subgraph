@@ -11,7 +11,6 @@ let data = {
   ...impAddr,
   ...impBlocks,
   ...network,
-
 };
 
 module.exports = {

@@ -1,7 +1,5 @@
 {
-  "packages": [
-    "subgraphs/**"
-  ],
+  "packages": ["subgraphs/**"],
   "useWorkspaces": true,
   "version": "independent"
 }
