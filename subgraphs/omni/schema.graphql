@@ -25,9 +25,19 @@ type User @entity {
   messages: [Message!]! @derivedFrom(field: "user")
 }
 
+type MessageRouter @entity {
+   "Address of the message router"
+   id: ID!
+   "Index address"
+   index: OmniIndex!
+
+   messages: [Message!]! @derivedFrom(field: "messageRouter")
+}
+
 type Message @entity {
   id: ID!
   user: User!
+  messageRouter: MessageRouter!
   status: MessageStatus
   srcChainId: BigInt!
   srcAddress: Bytes!

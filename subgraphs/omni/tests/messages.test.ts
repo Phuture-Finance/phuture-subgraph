@@ -7,7 +7,7 @@ import {
 } from 'matchstick-as';
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { Message } from '../src/types/schema';
-import { handleMessageFailed } from '../src/mappings/OmniIndex';
+import { handleBurningMessageFailed } from '../src/mappings/OmniIndex';
 import { MessageFailed } from '../src/types/OmniIndex/OmniInterface';
 
 test('transfer', () => {
@@ -65,7 +65,7 @@ test('transfer', () => {
 
   message.save();
 
-  handleMessageFailed(messageFailedEvent);
+  handleBurningMessageFailed(messageFailedEvent);
 
   logStore();
 

@@ -5,12 +5,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: OmniIndex
+    name: MessageRouter
     network: {{network}}
     source:
-      abi: OmniInterface
-      address: '{{OmniIndex}}'
-      startBlock: {{OmniIndexBlockNumber}}
+      abi: MessageRouter
+      address: '{{MessageRouter}}'
+      startBlock: {{MessageRouterBlockNumber}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -20,10 +20,10 @@ dataSources:
         - User
         - Message
       abis:
-        - name: OmniInterface
-          file: ../abis/OmniIndex/OmniInterface.json
+        - name: MessageRouter
+          file: ../abis/OmniIndex/MessageRouter.json
       eventHandlers:
-        - event: MessageFailed(uint16,bytes,uint64,address,uint256)
-          handler: handleMessageFailed
+        - event: BurningMessage(uint16,bytes,uint64,address,uint256,bool,bytes)
+          handler: handleBurningMessageFailed
 
       file: ./src/mappings/OmniIndex.ts
