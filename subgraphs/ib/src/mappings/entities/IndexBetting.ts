@@ -1,6 +1,7 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { IndexBetting } from '../../types/schema';
+import { Address } from '@graphprotocol/graph-ts';
+
 import { IndexBetting as IndexBettingContract } from '../../types/IndexBetting/IndexBetting';
+import { IndexBetting } from '../../types/schema';
 
 export function loadOrCreateIndexBetting(addr: Address): IndexBetting {
   let id = addr.toHexString();

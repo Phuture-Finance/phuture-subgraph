@@ -1,16 +1,16 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { loadOrCreateIndexBetting } from './entities/IndexBetting';
 import {
   BettingChallengeSettled,
   BettingChallengeStarted,
   IndexBetting as IndexBettingContract,
   Initialized,
-  Transfer
+  Transfer,
 } from '../types/IndexBetting/IndexBetting';
 import { User } from '../types/schema';
-import { loadOrCreateUser } from './entities/Account';
 
+import { loadOrCreateUser } from './entities/Account';
+import { loadOrCreateIndexBetting } from './entities/IndexBetting';
 import { createTransfer } from './entities/Transfer';
 
 export function handleTransfer(event: Transfer): void {
@@ -41,7 +41,9 @@ export function handleTransfer(event: Transfer): void {
     fromUser.balance = fromUser.balance.minus(event.params.value);
 
     if (fromUser.balance.equals(BigInt.zero())) {
-      indexBetting.betParticipants = indexBetting.betParticipants.minus(BigInt.fromI32(1));
+      indexBetting.betParticipants = indexBetting.betParticipants.minus(
+        BigInt.fromI32(1),
+      );
     }
     fromUser.save();
   }
@@ -57,7 +59,9 @@ export function handleTransfer(event: Transfer): void {
     }
 
     if (toUser.balance.equals(BigInt.zero())) {
-      indexBetting.betParticipants = indexBetting.betParticipants.plus(BigInt.fromI32(1));
+      indexBetting.betParticipants = indexBetting.betParticipants.plus(
+        BigInt.fromI32(1),
+      );
     }
     toUser.balance = toUser.balance.plus(event.params.value);
     toUser.save();
@@ -67,16 +71,21 @@ export function handleTransfer(event: Transfer): void {
   indexBetting.save();
 }
 
-export function handleBettingChallengeStarted(event: BettingChallengeStarted): void {
+export function handleBettingChallengeStarted(
+  event: BettingChallengeStarted,
+): void {
   let indexBetting = loadOrCreateIndexBetting(event.address);
 
-  indexBetting.frontRunningLockupDuration = event.params.frontRunningLockupDuration;
+  indexBetting.frontRunningLockupDuration =
+    event.params.frontRunningLockupDuration;
   indexBetting.challengeStart = event.params.challengeStart;
   indexBetting.challengeEnd = event.params.challengeEnd;
   indexBetting.save();
 }
 
-export function handleBettingChallengeSettled(event: BettingChallengeSettled): void {
+export function handleBettingChallengeSettled(
+  event: BettingChallengeSettled,
+): void {
   let indexBetting = loadOrCreateIndexBetting(event.address);
 
   let indexBettingContract = IndexBettingContract.bind(event.address);

@@ -1,6 +1,10 @@
 {
   "root": true,
-  "ignorePatterns": ["**/*"],
+  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "parserOptions": {
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
   "plugins": ["import", "unused-imports", "prettier", "@zapper-fi"],
   "rules": {
     "@zapper-fi/ethereum-address": 2,
@@ -12,8 +16,6 @@
     "@typescript-eslint/member-delimiter-style": 0,
     "@typescript-eslint/no-empty-function": 0,
     "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/no-floating-promises": 2,
-    "@typescript-eslint/no-misused-promises": 2,
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-var-requires": 0,
@@ -73,12 +75,10 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
       "rules": {}
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
       "rules": {}
     },
     {

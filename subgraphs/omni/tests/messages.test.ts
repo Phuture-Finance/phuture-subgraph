@@ -1,3 +1,4 @@
+import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import {
   newMockEvent,
   assert,
@@ -5,13 +6,13 @@ import {
   test,
   logStore,
 } from 'matchstick-as';
-import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
-import { Message } from '../src/types/schema';
+
 import { handleBurningMessageFailed } from '../src/mappings/OmniIndex';
 import { MessageFailed } from '../src/types/OmniIndex/OmniInterface';
+import { Message } from '../src/types/schema';
 
 test('transfer', () => {
-  const user = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7';
+  const user = '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7';
   const srcChainid = BigInt.fromI32(1);
   const srcAddress = Bytes.fromHexString(
     '0x89205a3a3b2a69de6dbf7f01ed13b2108b2cbeef',

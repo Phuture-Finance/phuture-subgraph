@@ -2,7 +2,11 @@ import { log, Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts';
 
 import { UniswapPathPriceOracle } from '../../types/IndexRegistry/UniswapPathPriceOracle';
 import { UniswapV3PriceOracle } from '../../types/IndexRegistry/UniswapV3PriceOracle';
-import {UniV3PriceOracle, UniV3PathPriceOracle, Index} from '../../types/schema';
+import {
+  UniV3PriceOracle,
+  UniV3PathPriceOracle,
+  Index,
+} from '../../types/schema';
 import {
   Burn as BurnEvent,
   Flash as FlashEvent,
@@ -12,7 +16,7 @@ import {
 } from '../../types/templates/Pool/Pool';
 import { exponentToBigDecimal } from '../../utils/calc';
 import { loadOrCreateAsset } from '../entities';
-import { updateDailyIndexStat, updateHourlyIndexStat } from "../phuture/stats";
+import { updateDailyIndexStat, updateHourlyIndexStat } from '../phuture/stats';
 
 export function handleInitialize(event: Initialize): void {
   priceUpdate(event.address);
@@ -107,7 +111,7 @@ export function pricePathUpdate(a: Address): void {
 }
 
 export function updateIndexStats(timestamp: BigInt): void {
-  let index = Index.load("0x632806BF5c8f062932Dd121244c9fbe7becb8B48");
+  let index = Index.load('0x632806bf5c8f062932dd121244c9fbe7becb8b48');
   if (index) {
     updateHourlyIndexStat(index, timestamp);
     updateDailyIndexStat(index, timestamp);
