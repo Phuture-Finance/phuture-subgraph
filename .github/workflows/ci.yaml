@@ -2,67 +2,26 @@ name: CI
 
 on:
   push:
-    branches:
-      - develop
-
-env:
-  AWS_REGION: eu-west-2
-  ECR_REPOSITORY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com/graph-node
-  ECS_SERVICE: arn:aws:ecs:eu-west-2:350549900615:service/prod-cluster/prod-service-graph
-  ECS_CLUSTER: arn:aws:ecs:eu-west-2:350549900615:cluster/prod-cluster
-  ECS_TASK_DEFINITION: ./repoPath/.aws/task-definition.json
-  CONTAINER_NAME: prod-graph-node
-  IMAGE_TAG: latest
-
-permissions:
-  id-token: write
-  contents: read # This is required for actions/checkout@v2
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [14.x, 16.x]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node }}
+      - uses: actions/setup-node@v2
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          path: './repoPath/'
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.x'
-
-      - name: Build1
-        run: cd ./repoPath/subgraphs/core && npm install --force && CONFIG_PATH=./mainnet/ npm run codegen
-
-      - name: Build2
-        run: cd ./repoPath && cp -r node_modules/matchstick-as/ subgraphs/core/node_modules/
-
-      - name: Build3
-        run:
-          cd ./repoPath/subgraphs/core && ln -s ../../node_modules/@graphprotocol/graph-cli/bin/graph .
-
-          #      - name: Test
-          #        run: cd ./repoPath/subgraphs/core && ./graph test
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::350549900615:role/deploy
-          role-session-name: OIDCSession
-
-      - name: Login to AWS ECR (OpenID connect is used)
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push the deploy image to Amazon ECR
-        env:
-          ECR_REGISTRY: 350549900615.dkr.ecr.eu-west-2.amazonaws.com
-          ECR_REPOSITORY: subgraph-deploy
-          IMAGE_TAG: latest
-        run: |
-          docker build -f ./repoPath/Dockerfile.deploy -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      - run: npm i
+      - run: npm codegen
+      - run: npm build
