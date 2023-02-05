@@ -10,17 +10,16 @@ jobs:
   ci:
     strategy:
       matrix:
-        node: [14.x, 16.x]
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
+      - name: Setup Node 16
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '16.x'
           cache: 'npm'
       - run: npm i
       - run: npm codegen
