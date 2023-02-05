@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '16.x'
           cache: 'npm'
-      - run: npm -g install npm
+      - run: npm config set registry http://registry.npmjs.org
       - run: npm install
       - run: npm codegen
       - run: npm build
