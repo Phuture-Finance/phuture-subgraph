@@ -22,8 +22,8 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-      - run: npm update --force
-      - run: npm audit fix --force
-      - run: npm install
+      - name: Install Node dependencies
+        run: |
+          npm ci
       - run: npm codegen
       - run: npm build
