@@ -25,5 +25,5 @@ jobs:
       - name: Install Node dependencies
         run: |
           npm ci
-      - run: npm codegen
-      - run: npm build
+      - run: npm run codegen
+      - run: npm run build
