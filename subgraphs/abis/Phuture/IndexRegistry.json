@@ -3,24 +3,56 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "previousAdmin", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "newAdmin", "type": "address" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "previousAdmin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAdmin",
+        "type": "address"
+      }
     ],
     "name": "AdminChanged",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "beacon", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beacon",
+        "type": "address"
+      }
+    ],
     "name": "BeaconUpgraded",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "indexed": true, "internalType": "bytes32", "name": "previousAdminRole", "type": "bytes32" },
-      { "indexed": true, "internalType": "bytes32", "name": "newAdminRole", "type": "bytes32" }
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
     ],
     "name": "RoleAdminChanged",
     "type": "event"
@@ -28,9 +60,24 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "sender", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
     ],
     "name": "RoleGranted",
     "type": "event"
@@ -38,9 +85,24 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "sender", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
     ],
     "name": "RoleRevoked",
     "type": "event"
@@ -48,8 +110,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "feePool", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "feePool",
+        "type": "address"
+      }
     ],
     "name": "SetFeePool",
     "type": "event"
@@ -57,8 +129,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "indexLogic", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "indexLogic",
+        "type": "address"
+      }
     ],
     "name": "SetIndexLogic",
     "type": "event"
@@ -66,8 +148,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "maxComponents", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "maxComponents",
+        "type": "uint256"
+      }
     ],
     "name": "SetMaxComponents",
     "type": "event"
@@ -75,8 +167,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "string", "name": "name", "type": "string" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
     ],
     "name": "SetName",
     "type": "event"
@@ -84,8 +186,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "orderer", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "orderer",
+        "type": "address"
+      }
     ],
     "name": "SetOrderer",
     "type": "event"
@@ -93,8 +205,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
-      { "indexed": false, "internalType": "address", "name": "priceOracle", "type": "address" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "priceOracle",
+        "type": "address"
+      }
     ],
     "name": "SetPriceOracle",
     "type": "event"
@@ -102,8 +224,18 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": false, "internalType": "address", "name": "index", "type": "address" },
-      { "indexed": false, "internalType": "string", "name": "name", "type": "string" }
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "index",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
     ],
     "name": "SetSymbol",
     "type": "event"
@@ -111,15 +243,32 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "internalType": "address", "name": "asset", "type": "address" },
-      { "indexed": false, "internalType": "uint256", "name": "marketCap", "type": "uint256" }
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "marketCap",
+        "type": "uint256"
+      }
     ],
     "name": "UpdateAsset",
     "type": "event"
   },
   {
     "anonymous": false,
-    "inputs": [{ "indexed": true, "internalType": "address", "name": "implementation", "type": "address" }],
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
     "name": "Upgraded",
     "type": "event"
   },
@@ -148,7 +297,9 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "role", "type": "bytes32" }],
+    "inputs": [
+      { "internalType": "bytes32", "name": "role", "type": "bytes32" }
+    ],
     "name": "getRoleAdmin",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "view",
@@ -213,11 +364,21 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address[]", "name": "_assets", "type": "address[]" }],
+    "inputs": [
+      { "internalType": "address[]", "name": "_assets", "type": "address[]" }
+    ],
     "name": "marketCapsOf",
     "outputs": [
-      { "internalType": "uint256[]", "name": "_marketCaps", "type": "uint256[]" },
-      { "internalType": "uint256", "name": "_totalMarketCap", "type": "uint256" }
+      {
+        "internalType": "uint256[]",
+        "name": "_marketCaps",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalMarketCap",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -276,7 +437,9 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_asset", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "_asset", "type": "address" }
+    ],
     "name": "removeAsset",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -303,14 +466,18 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_feePool", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "_feePool", "type": "address" }
+    ],
     "name": "setFeePool",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_indexLogic", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "_indexLogic", "type": "address" }
+    ],
     "name": "setIndexLogic",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -337,21 +504,27 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "_maxComponents", "type": "uint256" }],
+    "inputs": [
+      { "internalType": "uint256", "name": "_maxComponents", "type": "uint256" }
+    ],
     "name": "setMaxComponents",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_orderer", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "_orderer", "type": "address" }
+    ],
     "name": "setOrderer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "_priceOracle", "type": "address" }],
+    "inputs": [
+      { "internalType": "address", "name": "_priceOracle", "type": "address" }
+    ],
     "name": "setPriceOracle",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -368,7 +541,9 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }],
+    "inputs": [
+      { "internalType": "bytes4", "name": "_interfaceId", "type": "bytes4" }
+    ],
     "name": "supportsInterface",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
@@ -399,7 +574,13 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "newImplementation", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      }
+    ],
     "name": "upgradeTo",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -407,7 +588,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newImplementation", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
       { "internalType": "bytes", "name": "data", "type": "bytes" }
     ],
     "name": "upgradeToAndCall",

@@ -1,0 +1,13 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*", "src/types/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.test.ts"],
+      "parserOptions": {
+        "project": ["subgraphs/ib/tsconfig.*?.json"]
+      },
+      "rules": {}
+    }
+  ]
+}

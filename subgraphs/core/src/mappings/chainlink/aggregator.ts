@@ -1,4 +1,5 @@
 import { log } from '@graphprotocol/graph-ts';
+import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
 
 import { Asset, ChainLinkAggregator, SVVault } from '../../types/schema';
 import { AnswerUpdated } from '../../types/templates/AggregatorInterface/AggregatorInterface';
@@ -9,7 +10,6 @@ import {
   updateVaultAPY,
 } from '../../utils/vault';
 import { calculateChainLinkPrice } from '../entities';
-import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
 
 export function handleAnswerUpdated(event: AnswerUpdated): void {
   let agg = ChainLinkAggregator.load(event.address.toHexString());

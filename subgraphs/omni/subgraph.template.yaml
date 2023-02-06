@@ -1,0 +1,29 @@
+specVersion: 0.0.3
+description: Phuture
+repository: https://github.com/Phuture-Finance/phuture-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MessageRouter
+    network: {{network}}
+    source:
+      abi: MessageRouter
+      address: '{{MessageRouter}}'
+      startBlock: {{MessageRouterBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - OmniIndex
+        - User
+        - Message
+      abis:
+        - name: MessageRouter
+          file: ../abis/OmniIndex/MessageRouter.json
+      eventHandlers:
+        - event: BurningMessage(uint16,bytes,uint64,address,uint256,bool,bytes)
+          handler: handleBurningMessageFailed
+
+      file: ./src/mappings/OmniIndex.ts

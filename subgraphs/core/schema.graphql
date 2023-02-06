@@ -70,7 +70,6 @@ type ChainLink @entity {
 }
 
 type ChainLinkAggregator @entity {
-
   "Address of the ChainLink Aggregator"
   id: ID!
 
@@ -86,7 +85,6 @@ type ChainLinkAggregator @entity {
 }
 
 type IndexFactory @entity {
-
   "Address of the factory"
   id: ID!
 
@@ -101,7 +99,6 @@ type IndexFactory @entity {
 }
 
 type Index @entity {
-
   "Address of the index"
   id: ID!
 
@@ -173,7 +170,6 @@ type Index @entity {
 }
 
 type vToken @entity {
-
   "Address of the vToken"
   id: ID!
 
@@ -206,7 +202,6 @@ type vToken @entity {
 }
 
 type VaultController @entity {
-
   "Address of vault controller"
   id: ID!
 
@@ -229,7 +224,6 @@ type VaultController @entity {
 }
 
 type VaultControllerStat @entity {
-
   "Set to {vaultController.id}-{date}"
   id: ID!
 
@@ -248,7 +242,6 @@ type VaultControllerStat @entity {
 }
 
 type IndexAsset @entity {
-
   "Set to {index.id}-{asset.id}"
   id: ID!
 
@@ -268,7 +261,6 @@ type IndexAsset @entity {
 }
 
 type User @entity {
-
   "Address of the user"
   id: ID!
 
@@ -277,7 +269,6 @@ type User @entity {
 }
 
 type UserIndex @entity {
-
   "Set to {user.id}-{index.id}"
   id: ID!
 
@@ -295,7 +286,6 @@ type UserIndex @entity {
 }
 
 type UserIndexHistory @entity {
-
   "Set to {user.id}-{index.id}-{timestamp}"
   id: ID!
 
@@ -319,7 +309,6 @@ type UserIndexHistory @entity {
 }
 
 type Transfer @entity {
-
   "Set to ${tx.id}-${transfer.id}"
   id: ID!
   index: Index!
@@ -336,7 +325,6 @@ type Transfer @entity {
 }
 
 type DailyAssetStat @entity {
-
   id: ID!
 
   "Timestamp of stat"
@@ -349,7 +337,6 @@ type DailyAssetStat @entity {
 }
 
 type HourlyIndexStat @entity {
-
   id: ID!
 
   "Timestamp of stat"
@@ -371,7 +358,6 @@ type HourlyIndexStat @entity {
 }
 
 type DailyIndexStat @entity {
-
   id: ID!
 
   "Timestamp of stat"
@@ -401,7 +387,6 @@ type DailyIndexStat @entity {
 # ----------------------------------------------------------------
 
 type SVVault @entity {
-
   "Address of savings vault"
   id: ID!
 

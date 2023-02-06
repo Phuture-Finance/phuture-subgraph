@@ -1,7 +1,10 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
 import { convertUSDToETH } from '../mappings/entities';
-import { updateDailyIndexStat, updateHourlyIndexStat } from '../mappings/phuture/stats';
+import {
+  updateDailyIndexStat,
+  updateHourlyIndexStat,
+} from '../mappings/phuture/stats';
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';

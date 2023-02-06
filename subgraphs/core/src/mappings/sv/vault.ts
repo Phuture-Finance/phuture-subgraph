@@ -1,16 +1,16 @@
-import {Address, BigDecimal, BigInt} from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
 
-import {  SVTransfer, UserVault } from '../../types/schema';
+import { SVTransfer, UserVault } from '../../types/schema';
 import {
   FCashMinted as FCashMintedEvent,
   Transfer as TransferEvent,
 } from '../../types/SVault/Vault';
-import {convertDecimals} from '../../utils/calc';
+import { convertDecimals } from '../../utils/calc';
 import { updateVaultTotals, updateVaultPrice } from '../../utils/vault';
-import {loadOrCreateSVAccount} from '../entities';
+import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
-import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
-import {updateUserSVHistory} from "../phuture/stats";
+import { updateUserSVHistory } from '../phuture/stats';
 
 export function handleTransfer(event: TransferEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {
@@ -49,18 +49,20 @@ export function handleTransfer(event: TransferEvent): void {
       fromUser.balance = BigDecimal.zero();
       fromUser.investedCapital = BigDecimal.zero();
     }
-    if(fromUser.balance.gt(BigDecimal.zero())) {
-      if(event.params.value.toBigDecimal().ge(fromUser.balance)) {
+    if (fromUser.balance.gt(BigDecimal.zero())) {
+      if (event.params.value.toBigDecimal().ge(fromUser.balance)) {
         fromUser.investedCapital = BigDecimal.zero();
       } else {
         fromUser.investedCapital = fromUser.investedCapital.minus(
-            fromUser.investedCapital
-                .times(event.params.value.toBigDecimal())
-                .div(fromUser.balance)
-        )
+          fromUser.investedCapital
+            .times(event.params.value.toBigDecimal())
+            .div(fromUser.balance),
+        );
       }
     }
-    fromUser.balance = fromUser.balance.minus(event.params.value.toBigDecimal());
+    fromUser.balance = fromUser.balance.minus(
+      event.params.value.toBigDecimal(),
+    );
 
     if (fromUser.balance.equals(BigDecimal.zero())) {
       fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
@@ -68,7 +70,12 @@ export function handleTransfer(event: TransferEvent): void {
 
     fromUser.save();
 
-    updateUserSVHistory(fromUser, fVault.id, fVault.totalSupply, event.block.timestamp);
+    updateUserSVHistory(
+      fromUser,
+      fVault.id,
+      fVault.totalSupply,
+      event.block.timestamp,
+    );
   }
 
   if (!event.params.to.equals(Address.zero())) {
@@ -91,11 +98,19 @@ export function handleTransfer(event: TransferEvent): void {
     toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
 
     toUser.investedCapital = toUser.investedCapital.plus(
-        convertDecimals(event.params.value.toBigDecimal(), BigInt.fromI32(18)).times(fVault.basePrice)
-    )
+      convertDecimals(
+        event.params.value.toBigDecimal(),
+        BigInt.fromI32(18),
+      ).times(fVault.basePrice),
+    );
     toUser.save();
 
-    updateUserSVHistory(toUser, fVault.id, fVault.totalSupply, event.block.timestamp);
+    updateUserSVHistory(
+      toUser,
+      fVault.id,
+      fVault.totalSupply,
+      event.block.timestamp,
+    );
   }
 
   fVault.save();

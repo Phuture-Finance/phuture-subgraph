@@ -6,8 +6,9 @@
   "scripts": {
     "build": "lerna run build --stream",
     "codegen": "lerna run codegen --stream",
-    "lint": "lerna run lint --stream",
-    "lint:fix": "lerna run lint:fix --stream"
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "workspaces": [
     "subgraphs/**"

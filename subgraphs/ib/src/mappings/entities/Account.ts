@@ -1,4 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts';
+
 import { User } from '../../types/schema';
 
 export function loadOrCreateUser(address: Address): void {

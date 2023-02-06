@@ -1,7 +1,8 @@
 import { BigDecimal } from '@graphprotocol/graph-ts';
 import { Address, BigInt } from '@graphprotocol/graph-ts/index';
+import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
 
-import {SV_VIEW} from '../../consts';
+import { SV_VIEW } from '../../consts';
 import { convertUSDToETH } from '../mappings/entities';
 import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
@@ -9,7 +10,6 @@ import { Vault } from '../types/SVault/Vault';
 import { SVView } from '../types/templates/AggregatorInterface/SVView';
 
 import { convertTokenToDecimal } from './calc';
-import {ZERO_ADDRESS} from "@phuture/subgraph-helpers";
 
 // TODO: use decimals from the contract.
 const usdcDec = 6;
