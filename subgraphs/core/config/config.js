@@ -1,4 +1,4 @@
-let defaultPath = './avalanche/';
+let defaultPath = './mainnet/';
 if (process.env.CONFIG_PATH != null) {
   defaultPath = process.env.CONFIG_PATH;
 }

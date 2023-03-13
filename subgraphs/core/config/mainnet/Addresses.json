@@ -1,5 +1,5 @@
 {
-  "Base": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "Base": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
   "ChainlinkPriceOracle": "0x0EbdB1Af4a40f51Eb94eEdE7E94b843333D6CFE1",
   "FeePool": "0x68ecC6BBA5f538cD7Ba6011b3A52513A282036Ab",
   "ManagedIndexFactory": "0xb4e85a5BFCd5f247D4BDa1491F57921473dDcE2e",
