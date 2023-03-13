@@ -1,7 +1,7 @@
 import { BigDecimal } from '@graphprotocol/graph-ts';
 import { Address, BigInt } from '@graphprotocol/graph-ts/index';
 
-import {SV_VIEW} from '../../consts';
+import {SV_VIEW, SV_VIEW_BLOCK_NUM, SV_VIEW_V2, SV_VIEW_V2_BLOCK_NUM} from '../../consts';
 import { convertUSDToETH } from '../mappings/entities';
 import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
@@ -49,15 +49,24 @@ export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
   updateSVDailyStat(fVault, ts);
 }
 
-export function updateVaultAPY(fVault: SVVault): void {
+export function updateVaultAPY(fVault: SVVault, blockNumber: BigInt): void {
   if (fVault.id == ZERO_ADDRESS) {
     return;
   }
-  const view = SVView.bind(Address.fromString(SV_VIEW));
+  const viewV2BlockNum = BigInt.fromString(SV_VIEW_V2_BLOCK_NUM);
 
-  const apy = view.try_getAPY(Address.fromString(fVault.id));
+  if(blockNumber.ge(BigInt.fromString(SV_VIEW_BLOCK_NUM)) && blockNumber.lt(viewV2BlockNum)) {
+    setVaultAPY(fVault, SV_VIEW);
+  } else if (blockNumber.ge(viewV2BlockNum)) {
+    setVaultAPY(fVault, SV_VIEW_V2);
+  }
+}
+
+function setVaultAPY(vault: SVVault, SVViewAddress: string): void{
+  const view = SVView.bind(Address.fromString(SVViewAddress));
+  const apy = view.try_getAPY(Address.fromString(vault.id));
   if (!apy.reverted) {
-    fVault.apy = apy.value
+    vault.apy = apy.value
       .toBigDecimal()
       .div(BigDecimal.fromString('10_000_000'));
   }
