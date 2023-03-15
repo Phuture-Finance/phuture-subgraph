@@ -56,9 +56,6 @@ type Asset @entity {
 
   "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
-
-  "Uniswap V3 price oracle for this asset"
-  oracle: UniV3PriceOracle
 }
 
 type ChainLink @entity {
@@ -514,27 +511,4 @@ type UserSVHistory @entity {
 
   "timestamp matching the starting of day GMT"
   timestamp: Int!
-}
-
-# ----------------------------------------------------------------
-#                               UniswapV3
-# ----------------------------------------------------------------
-
-# stores UniswapV3PriceOracle addresses
-type UniV3PriceOracle @entity {
-  id: ID!
-
-  priceOracle: String!
-
-  asset0: Asset!
-  asset1: Asset!
-}
-
-type UniV3PathPriceOracle @entity {
-  id: ID!
-
-  pathPriceOracle: String!
-
-  asset0: Asset!
-  asset1: Asset!
 }
