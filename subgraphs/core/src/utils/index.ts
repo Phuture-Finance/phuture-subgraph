@@ -1,21 +1,15 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
 import { convertUSDToETH } from '../mappings/entities';
-import { updateDailyIndexStat, updateHourlyIndexStat } from '../mappings/phuture/stats';
+import {
+  updateDailyIndexStat,
+  updateHourlyIndexStat,
+} from '../mappings/phuture/stats';
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
 
-// Updating the index values after changing the base price.
-export function updateIndexBasePriceByAsset(asset: Asset, ts: BigInt): void {
-  for (let i = 0; i < asset._indexes.length; i++) {
-    let index = Index.load(asset._indexes[i]);
-    if (index) {
-      updateIndexBasePriceByIndex(index, ts);
-    }
-  }
-}
-
+// TODO combine this somehow with the blockHandler
 export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
   if (index._assets.length == 0 || index.totalSupply.isZero()) return;
 
