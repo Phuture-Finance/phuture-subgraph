@@ -1,106 +1,51 @@
+import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
+import { Index, SVVault } from '../types/schema';
 import {
-  Address,
-  BigDecimal,
-  BigInt,
-  ethereum,
-  log,
-} from '@graphprotocol/graph-ts';
-import { Index, Asset, IndexAsset, vToken } from '../types/schema';
-import { PhuturePriceOracle } from '../types/PhuturePriceOracle/PhuturePriceOracle';
-import { convertTokenToDecimal, exponentToBigDecimal } from '../utils/calc';
-import { convertUSDToETH } from './entities';
-import { updateDailyIndexStat, updateHourlyIndexStat } from './phuture/stats';
+  BASE_ADDRESS,
+  ChainLinkAssetMap,
+  MANAGED_INDEX_FACTORY,
+} from '../../consts';
+import { IndexFactory } from '../types/schema';
+import { updateAllIndexPrices } from '../utils';
+import {
+  updateVaultAPY,
+  updateVaultPrice,
+  updateVaultTotals,
+} from '../utils/vault';
+import { USV } from '../../consts';
+import { AggregatorInterface } from '../types/PhuturePriceOracle/AggregatorInterface';
+import { convertTokenToDecimal } from '../utils/calc';
+import { getBasePrice } from '../utils/pricing';
 
 export function handleBlockUpdatePrices(block: ethereum.Block): void {
-  // TODO: query every nBlocks
-  let phuturePriceOracleContract = PhuturePriceOracle.bind(
-    Address.fromString(''),
-  ); // TODO return address from constants
-  let index = Index.load(''); // TODO: fetch the index from the constants
-  if (!index) {
-    log.error('Index not found', ['PDI']); // Index name
-    return;
-  }
+  // Update prices only every 10 blocks
+  if (!block.number.mod(BigInt.fromI32(10)).equals(BigInt.fromI32(0))) return;
 
-  const assets = index._assets;
-  if (assets.length == 0) {
-    log.error('Index has no assets', ['PDI']); // Index name
-    return;
-  }
+  // Load all the indexes
+  let indexFactory = IndexFactory.load(MANAGED_INDEX_FACTORY);
+  if (!indexFactory) return;
+  let indexes = indexFactory.indexes;
+  if (indexes.length == 0) return;
 
-  let totalAssets = BigDecimal.zero();
-
-  // APY * assetQuantityInUSD / totalCapitalizationInUSD * depositedAssetQuantity / totalAssetQuantity
-
-  // TODO: just fetch the price of USC/USD and use that one.
-  // TODO: also use this to update the USV marketCap and basePrice
-
-  index.basePrice = BigDecimal.zero();
-  index.apy = BigDecimal.zero();
-
-  for (let i = 0; i < assets.length; i++) {
-    let asset = Asset.load(assets[i]);
-    if (!asset) continue;
-
-    let indexAsset = IndexAsset.load(index.id.concat('-').concat(asset.id));
-    if (!indexAsset) continue;
-
-    let assetPriceInUQ = phuturePriceOracleContract.try_lastAssetPerBaseInUQ(
-      Address.fromString(asset.id),
-    );
-    if (!assetPriceInUQ.reverted) {
-      let Q112 = new BigDecimal(
-        BigInt.fromString('5192296858534827628530496329220096'),
-      );
-
-      // Update the base price of the asset
-      asset.basePrice = Q112.times(exponentToBigDecimal(asset.decimals))
-        .times(exponentToBigDecimal(BigInt.fromI32(6))) // TODO: setup 6, not harcode
-        .div(new BigDecimal(assetPriceInUQ.value));
-
-      // TOD0: handle conversion from USDC to USD
+  // Update index and asset prices
+  for (let i = 0; i < indexes.length; i++) {
+    let index = Index.load(indexes[i]);
+    if (!index) {
+      log.error('Index not found', [indexes[i]]);
+      continue;
     }
-
-    asset.save();
-
-    // TOD0 save the asset here
-
-    let reserve = BigInt.fromI32(0);
-    for (let j = 0; j < asset._vTokens.length; j++) {
-      let vt = vToken.load(asset._vTokens[j]);
-      if (vt && !vt.platformTotalSupply.isZero()) {
-        reserve = indexAsset.shares
-          .times(vt.totalAmount)
-          .div(vt.platformTotalSupply);
-
-        if (index.marketCap.notEqual(BigDecimal.zero())) {
-          // Index_APY = sum(i => APY_of_utilized_i * Q_constituent_i / totalMarketCap)
-
-          let assetQuantityInUSD = convertTokenToDecimal(
-            vt.totalAmount,
-            asset.decimals,
-          ).times(asset.basePrice);
-          // Index_APY = sum(i => APY_i * Q_utilized / totalMarketCap)
-          index.apy = index.apy.plus(
-            vt.apy.times(assetQuantityInUSD.div(index.marketCap)),
-          );
-        }
-      }
-    }
-
-    totalAssets = totalAssets.plus(
-      convertTokenToDecimal(reserve, asset.decimals).times(asset.basePrice),
-    );
+    updateAllIndexPrices(index, block.timestamp);
   }
 
-  index.basePrice = totalAssets
-    .times(exponentToBigDecimal(index.decimals))
-    .div(index.totalSupply.toBigDecimal());
-  index.basePriceETH = convertUSDToETH(index.basePrice);
-  index.marketCap = totalAssets;
+  // Update USV related pricing
+  let usdcSavingsVault = SVVault.load(USV);
+  if (usdcSavingsVault) {
+    let basePrice = getBasePrice();
 
-  index.save();
+    updateVaultTotals(usdcSavingsVault, basePrice);
+    updateVaultAPY(usdcSavingsVault, block.number);
+    updateVaultPrice(usdcSavingsVault, basePrice, block.timestamp);
 
-  updateHourlyIndexStat(index, block.timestamp);
-  updateDailyIndexStat(index, block.timestamp);
+    usdcSavingsVault.save();
+  }
 }

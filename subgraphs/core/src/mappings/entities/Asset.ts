@@ -4,6 +4,15 @@ import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
+import { PhuturePriceOracle } from '../../types/PhuturePriceOracle/PhuturePriceOracle';
+import {
+  BASE_ADDRESS,
+  ChainLinkAssetMap,
+  PHUTURE_PRICE_ORACLE,
+} from '../../../consts';
+import { AggregatorInterface } from '../../types/PhuturePriceOracle/AggregatorInterface';
+import { convertTokenToDecimal } from '../../utils/calc';
+import { getAssetPrice, getBasePrice } from '../../utils/pricing';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();
@@ -18,8 +27,16 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.decimals = fetchTokenDecimals(address);
     asset._indexes = [];
 
-    // TODO: instead of this just fetch the price from the phuture price oracle contract.
+    let basePrice = getBasePrice();
 
+    let assetPrice = getAssetPrice(
+      PhuturePriceOracle.bind(Address.fromString(PHUTURE_PRICE_ORACLE)),
+      asset,
+      basePrice,
+    );
+    if (assetPrice.notEqual(BigDecimal.zero())) {
+      asset.basePrice = assetPrice;
+    }
     asset.save();
   }
 

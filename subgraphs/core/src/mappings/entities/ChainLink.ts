@@ -1,17 +1,15 @@
-import { BigDecimal } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { AggregatorInterface } from '../../types/PhuturePriceOracle/AggregatorInterface';
+import { BNA_ADDRESS, ChainLinkAssetMap } from '../../../consts';
+import { convertTokenToDecimal } from '../../utils/calc';
 
 export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
-  // TODO: see where this is being used to convert USDC to ETH and implement it. Also move to another file.
-  // let aggregator = loadOrCreateChainLink(
-  //   Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
-  // );
-  // if (!aggregator.asset) {
-  //   aggregator.asset = BNA_ADDRESS;
-  //   aggregator.save();
-  // }
-  //
-  // return usdPrice.div(
-  //   convertTokenToDecimal(aggregator.answer, aggregator.decimals),
-  // );
-  return BigDecimal.zero();
+  let networkAssetPriceAggregatorContract = AggregatorInterface.bind(
+    Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
+  );
+  let networkAssetPrice = convertTokenToDecimal(
+    networkAssetPriceAggregatorContract.latestAnswer(),
+    BigInt.fromI32(8), // Either hardcode or call decimals() on the contract.
+  );
+  return usdPrice.div(networkAssetPrice);
 }

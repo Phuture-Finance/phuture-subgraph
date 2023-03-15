@@ -11,30 +11,32 @@ import { loadOrCreateSVAccount } from '../entities';
 import { loadOrCreateSVVault } from '../entities';
 import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
 import { updateUserSVHistory } from '../phuture/stats';
+import { getBasePrice } from '../../utils/pricing';
 
 export function handleTransfer(event: TransferEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {
     return;
   }
-  let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
+  let svVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
   loadOrCreateSVAccount(event.params.from);
   loadOrCreateSVAccount(event.params.to);
 
   let transferType: string;
   if (event.params.from.equals(Address.zero())) {
-    fVault.totalSupply = fVault.totalSupply.plus(event.params.value);
+    svVault.totalSupply = svVault.totalSupply.plus(event.params.value);
     transferType = 'Mint';
   } else if (event.params.to.equals(Address.zero())) {
-    fVault.totalSupply = fVault.totalSupply.minus(event.params.value);
+    svVault.totalSupply = svVault.totalSupply.minus(event.params.value);
     transferType = 'Burn';
   } else {
     transferType = 'Send';
   }
 
-  updateVaultTotals(fVault);
-  updateVaultPrice(fVault, event.block.timestamp);
-  fVault.save();
+  let basePrice = getBasePrice();
+  updateVaultTotals(svVault, basePrice);
+  updateVaultPrice(svVault, basePrice, event.block.timestamp);
+  svVault.save();
 
   if (!event.params.from.equals(Address.zero())) {
     let fromUserId = event.params.from
@@ -65,15 +67,15 @@ export function handleTransfer(event: TransferEvent): void {
     );
 
     if (fromUser.balance.equals(BigDecimal.zero())) {
-      fVault.uniqueHolders = fVault.uniqueHolders.minus(BigInt.fromI32(1));
+      svVault.uniqueHolders = svVault.uniqueHolders.minus(BigInt.fromI32(1));
     }
 
     fromUser.save();
 
     updateUserSVHistory(
       fromUser,
-      fVault.id,
-      fVault.totalSupply,
+      svVault.id,
+      svVault.totalSupply,
       event.block.timestamp,
     );
   }
@@ -93,7 +95,7 @@ export function handleTransfer(event: TransferEvent): void {
     }
 
     if (toUser.balance.equals(BigDecimal.zero())) {
-      fVault.uniqueHolders = fVault.uniqueHolders.plus(BigInt.fromI32(1));
+      svVault.uniqueHolders = svVault.uniqueHolders.plus(BigInt.fromI32(1));
     }
     toUser.balance = toUser.balance.plus(event.params.value.toBigDecimal());
 
@@ -101,19 +103,19 @@ export function handleTransfer(event: TransferEvent): void {
       convertDecimals(
         event.params.value.toBigDecimal(),
         BigInt.fromI32(18),
-      ).times(fVault.basePrice),
+      ).times(svVault.basePrice),
     );
     toUser.save();
 
     updateUserSVHistory(
       toUser,
-      fVault.id,
-      fVault.totalSupply,
+      svVault.id,
+      svVault.totalSupply,
       event.block.timestamp,
     );
   }
 
-  fVault.save();
+  svVault.save();
 
   let trFrom = SVTransfer.load(event.params.from.toHexString());
   if (!trFrom) {
@@ -142,10 +144,10 @@ export function handleFCashMinted(event: FCashMintedEvent): void {
   if (event.address.toHexString() == ZERO_ADDRESS) {
     return;
   }
-  let fVault = loadOrCreateSVVault(event.address, event.block.timestamp);
+  let svVault = loadOrCreateSVVault(event.address, event.block.timestamp);
 
-  updateVaultTotals(fVault);
-  updateVaultPrice(fVault, event.block.timestamp);
-
-  fVault.save();
+  let basePrice = getBasePrice();
+  updateVaultTotals(svVault, basePrice);
+  updateVaultPrice(svVault, basePrice, event.block.timestamp);
+  svVault.save();
 }

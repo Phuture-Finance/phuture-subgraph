@@ -19,44 +19,52 @@ import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
 // TODO: use decimals from the contract.
 const usdcDec = 6;
 
-export function updateVaultTotals(fVault: SVVault): void {
-  if (fVault.id == ZERO_ADDRESS) {
+export function updateVaultTotals(
+  svVault: SVVault,
+  basePrice: BigDecimal,
+): void {
+  if (svVault.id == ZERO_ADDRESS) {
     return;
   }
-  const vault = Vault.bind(Address.fromString(fVault.id));
+  const vault = Vault.bind(Address.fromString(svVault.id));
 
   const totalSupply = vault.try_totalSupply();
   if (!totalSupply.reverted) {
-    fVault.totalSupply = totalSupply.value;
+    svVault.totalSupply = totalSupply.value;
   }
 
   const totalAssets = vault.try_totalAssets();
   if (!totalAssets.reverted) {
-    fVault.totalAssets = totalAssets.value;
-    fVault.marketCap = convertTokenToDecimal(
-      totalAssets.value,
-      BigInt.fromI32(usdcDec),
+    svVault.totalAssets = totalAssets.value;
+    svVault.marketCap = basePrice.times(
+      convertTokenToDecimal(totalAssets.value, BigInt.fromI32(usdcDec)),
     );
   }
 }
 
-export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
-  if (fVault.id == ZERO_ADDRESS) {
+export function updateVaultPrice(
+  svVault: SVVault,
+  basePrice: BigDecimal,
+  ts: BigInt,
+): void {
+  if (svVault.id == ZERO_ADDRESS) {
     return;
   }
 
-  if (fVault.decimals && !fVault.totalSupply.isZero()) {
-    fVault.basePrice = fVault.totalAssets
-      .toBigDecimal()
-      .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
-    fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
+  if (svVault.decimals && !svVault.totalSupply.isZero()) {
+    svVault.basePrice = basePrice.times(
+      svVault.totalAssets
+        .toBigDecimal()
+        .div(convertTokenToDecimal(svVault.totalSupply, BigInt.fromI32(12))),
+    );
+    svVault.basePriceETH = convertUSDToETH(svVault.basePrice);
   }
 
-  updateSVDailyStat(fVault, ts);
+  updateSVDailyStat(svVault, ts);
 }
 
-export function updateVaultAPY(fVault: SVVault, blockNumber: BigInt): void {
-  if (fVault.id == ZERO_ADDRESS) {
+export function updateVaultAPY(svVault: SVVault, blockNumber: BigInt): void {
+  if (svVault.id == ZERO_ADDRESS) {
     return;
   }
   const viewV2BlockNum = BigInt.fromString(SV_VIEW_V2_BLOCK_NUM);
@@ -65,9 +73,9 @@ export function updateVaultAPY(fVault: SVVault, blockNumber: BigInt): void {
     blockNumber.ge(BigInt.fromString(SV_VIEW_BLOCK_NUM)) &&
     blockNumber.lt(viewV2BlockNum)
   ) {
-    setVaultAPY(fVault, SV_VIEW);
+    setVaultAPY(svVault, SV_VIEW);
   } else if (blockNumber.ge(viewV2BlockNum)) {
-    setVaultAPY(fVault, SV_VIEW_V2);
+    setVaultAPY(svVault, SV_VIEW_V2);
   }
 }
 
