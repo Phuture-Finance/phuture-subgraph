@@ -30,10 +30,6 @@ dataSources:
           file: ../abis/Chainlink/ChainLink.json
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
-        - name: UniswapV3PriceOracle
-          file: ../abis/Uniswap/UniswapV3PriceOracle.json
-        - name: UniswapPathPriceOracle
-          file: ../abis/Uniswap/UniswapPathPriceOracle.json
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
