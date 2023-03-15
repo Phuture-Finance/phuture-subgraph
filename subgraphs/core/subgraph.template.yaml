@@ -26,10 +26,6 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: UpdateAsset(indexed address,uint256)
           handler: handleUpdateAsset
@@ -186,6 +182,8 @@ dataSources:
       abis:
         - name: PhuturePriceOracle
           file: ../abis/Phuture/PhuturePriceOracle.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       blockHandlers:
         - handler: handleBlockUpdatePrices
       file: ./src/mappings/blockHandlers.ts
@@ -240,10 +238,6 @@ templates:
           file: ../abis/Phuture/ManagedIndexFactory.json
         - name: ManagedIndex
           file: ../abis/Phuture/ManagedIndex.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleManagedIndexTransfer
