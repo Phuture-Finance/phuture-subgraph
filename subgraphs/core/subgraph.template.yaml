@@ -166,38 +166,6 @@ dataSources:
           handler: handleSetAUMFeeInBP
       file: ./src/mappings/phuture/feePool.ts
 
-  {{#swapFactories}}
-  - kind: ethereum/contract
-    name: {{{name}}}
-    network: {{network}}
-    source:
-      abi: UniswapFactory
-      address: '{{{factoryAddress}}}'
-      startBlock: {{{startBlock}}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Pair
-        - Asset
-      abis:
-        - name: UniswapFactory
-          file: ../abis/Uniswap/UniswapFactory.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-      eventHandlers:
-        - event: PairCreated(indexed address,indexed address,address,uint256)
-          handler: handleNewPair
-      file: ./src/mappings/uniswap/uniswap.ts
-  {{/swapFactories}}
-
   {{#SVault}}
   - kind: ethereum/contract
     name: SVault
@@ -231,6 +199,31 @@ dataSources:
           handler: handleFCashMinted
       file: ./src/mappings/sv/vault.ts
   {{/SVault}}
+
+  #-------------------------------------------------------------------------------
+  #                               Block Handlers
+  #-------------------------------------------------------------------------------
+
+  - kind: ethereum/contract
+    name: PhuturePriceOracle
+    network: {{network}}
+    source:
+      abi: PhuturePriceOracle
+      address: '{{PhuturePriceOracle}}'
+      startBlock: {{PhuturePriceOracleBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Index
+        - Asset
+      abis:
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
+      blockHandlers:
+        - handler: handleBlockUpdatePrices
+      file: ./src/mappings/blockHandlers.ts
 
 #-------------------------------------------------------------------------------
 #                               Template section
