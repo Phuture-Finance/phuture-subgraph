@@ -102,39 +102,6 @@ dataSources:
           handler: handleStaticVTokenCreated
       file: ./src/mappings/phuture/vTokenFactory.ts
 
-  {{#ChainlinkPriceOracle}}
-  - kind: ethereum/contract
-    name: ChainlinkPriceOracle
-    network: {{network}}
-    source:
-      abi: ChainlinkPriceOracle
-      address: '{{ChainlinkPriceOracle}}'
-      startBlock: {{ChainlinkPriceOracleBlockNumber}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - ChainLinkAggregator
-      abis:
-        - name: ChainlinkPriceOracle
-          file: ../abis/Phuture/ChainlinkPriceOracle.json
-        - name: ERC20
-          file: ../abis/ERC20/ERC20.json
-        - name: ERC20SymbolBytes
-          file: ../abis/ERC20/ERC20SymbolBytes.json
-        - name: ERC20NameBytes
-          file: ../abis/ERC20/ERC20NameBytes.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-      eventHandlers:
-        - event: AssetAdded(address,address[])
-          handler: handleAssetAdded
-      file: ./src/mappings/phuture/chainlink.ts
-  {{/ChainlinkPriceOracle}}
-
   - kind: ethereum/contract
     name: FeePool
     network: {{network}}
@@ -192,6 +159,8 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: SVView
+          file: ../abis/SV/View.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -284,33 +253,6 @@ templates:
           handler: handleManagedIndexTransfer
         - event: UpdateAnatomy(address,uint8)
           handler: handleUpdateAnatomy
-
-  - kind: ethereum/contract
-    name: AggregatorInterface
-    network: {{network}}
-    source:
-      abi: AggregatorInterface
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Asset
-        - ChainLinkAggregator
-        - SVVault
-      file: ./src/mappings/chainlink/aggregator.ts
-      abis:
-        - name: AggregatorInterface
-          file: ../abis/Chainlink/AggregatorInterface.json
-        - name: ChainLink
-          file: ../abis/Chainlink/ChainLink.json
-        - name: SVView
-          file: ../abis/SV/View.json
-        - name: Vault
-          file: ../abis/SV/Vault.json
-      eventHandlers:
-        - event: AnswerUpdated(indexed int256,indexed uint256,uint256)
-          handler: handleAnswerUpdated
 
   - kind: ethereum/contract
     name: vToken

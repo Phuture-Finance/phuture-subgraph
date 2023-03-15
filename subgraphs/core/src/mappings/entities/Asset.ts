@@ -1,12 +1,9 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-import { ChainLinkAssetMap } from '../../../consts';
 import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
-
-import { calculateChainLinkPrice, loadOrCreateChainLink } from './ChainLink';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();

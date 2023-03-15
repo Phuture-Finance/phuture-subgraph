@@ -2,22 +2,16 @@ import { BigDecimal } from '@graphprotocol/graph-ts';
 import { Address, BigInt } from '@graphprotocol/graph-ts/index';
 
 import {
-  BASE_ADDRESS,
-  ChainLinkAssetMap,
   SV_VIEW,
   SV_VIEW_BLOCK_NUM,
   SV_VIEW_V2,
   SV_VIEW_V2_BLOCK_NUM,
 } from '../../consts';
-import {
-  calculateChainLinkPrice,
-  convertUSDToETH,
-  loadOrCreateChainLink,
-} from '../mappings/entities';
+import { convertUSDToETH } from '../mappings/entities';
 import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
 import { Vault } from '../types/SVault/Vault';
-import { SVView } from '../types/templates/AggregatorInterface/SVView';
+import { SVView } from '../types/SVault/SVView';
 
 import { convertTokenToDecimal } from './calc';
 import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
@@ -36,17 +30,12 @@ export function updateVaultTotals(fVault: SVVault): void {
     fVault.totalSupply = totalSupply.value;
   }
 
-  let basePrice = calculateChainLinkPrice(
-    loadOrCreateChainLink(
-      Address.fromString(ChainLinkAssetMap.mustGet(BASE_ADDRESS)),
-    ),
-  );
-
   const totalAssets = vault.try_totalAssets();
   if (!totalAssets.reverted) {
     fVault.totalAssets = totalAssets.value;
-    fVault.marketCap = basePrice.times(
-      convertTokenToDecimal(totalAssets.value, BigInt.fromI32(usdcDec)),
+    fVault.marketCap = convertTokenToDecimal(
+      totalAssets.value,
+      BigInt.fromI32(usdcDec),
     );
   }
 }
@@ -56,18 +45,10 @@ export function updateVaultPrice(fVault: SVVault, ts: BigInt): void {
     return;
   }
 
-  let basePrice = calculateChainLinkPrice(
-    loadOrCreateChainLink(
-      Address.fromString(ChainLinkAssetMap.mustGet(BASE_ADDRESS)),
-    ),
-  );
-
   if (fVault.decimals && !fVault.totalSupply.isZero()) {
-    fVault.basePrice = basePrice.times(
-      fVault.totalAssets
-        .toBigDecimal()
-        .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12))),
-    );
+    fVault.basePrice = fVault.totalAssets
+      .toBigDecimal()
+      .div(convertTokenToDecimal(fVault.totalSupply, BigInt.fromI32(12)));
     fVault.basePriceETH = convertUSDToETH(fVault.basePrice);
   }
 
