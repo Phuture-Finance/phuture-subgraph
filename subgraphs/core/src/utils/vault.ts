@@ -7,7 +7,6 @@ import {
   SV_VIEW_V2,
   SV_VIEW_V2_BLOCK_NUM,
 } from '../../consts';
-import { convertUSDToETH } from '../mappings/entities';
 import { updateSVDailyStat } from '../mappings/phuture/stats';
 import { SVVault } from '../types/schema';
 import { Vault } from '../types/SVault/Vault';
@@ -15,6 +14,7 @@ import { SVView } from '../types/SVault/SVView';
 
 import { convertTokenToDecimal } from './calc';
 import { ZERO_ADDRESS } from '@phuture/subgraph-helpers';
+import { convertUSDToETH } from './pricing';
 
 // TODO: use decimals from the contract.
 const usdcDec = 6;

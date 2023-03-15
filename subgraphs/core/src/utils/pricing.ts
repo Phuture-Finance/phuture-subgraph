@@ -1,6 +1,6 @@
 import { AggregatorInterface } from '../types/PhuturePriceOracle/AggregatorInterface';
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { BASE_ADDRESS, ChainLinkAssetMap } from '../../consts';
+import { BASE_ADDRESS, BNA_ADDRESS, ChainLinkAssetMap } from '../../consts';
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
 import { BigDecimal } from '@graphprotocol/graph-ts/index';
 import { PhuturePriceOracle } from '../types/PhuturePriceOracle/PhuturePriceOracle';
@@ -35,4 +35,15 @@ export function getAssetPrice(
       .div(new BigDecimal(assetPriceInUQ.value));
   }
   return BigDecimal.zero();
+}
+
+export function convertUSDToETH(usdPrice: BigDecimal): BigDecimal {
+  let networkAssetPriceAggregatorContract = AggregatorInterface.bind(
+    Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
+  );
+  let networkAssetPrice = convertTokenToDecimal(
+    networkAssetPriceAggregatorContract.latestAnswer(),
+    BigInt.fromI32(8), // Either hardcode or call decimals() on the contract.
+  );
+  return usdPrice.div(networkAssetPrice);
 }

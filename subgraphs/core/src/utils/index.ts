@@ -1,6 +1,5 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
-import { convertUSDToETH } from '../mappings/entities';
 import {
   updateDailyIndexStat,
   updateHourlyIndexStat,
@@ -10,13 +9,8 @@ import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
 import { Address, log } from '@graphprotocol/graph-ts';
 import { PhuturePriceOracle } from '../types/PhuturePriceOracle/PhuturePriceOracle';
-import { AggregatorInterface } from '../types/PhuturePriceOracle/AggregatorInterface';
-import {
-  BASE_ADDRESS,
-  ChainLinkAssetMap,
-  PHUTURE_PRICE_ORACLE,
-} from '../../consts';
-import { getAssetPrice, getBasePrice } from './pricing';
+import { PHUTURE_PRICE_ORACLE } from '../../consts';
+import { convertUSDToETH, getAssetPrice, getBasePrice } from './pricing';
 
 export function updateAllIndexPrices(index: Index, ts: BigInt): void {
   const assets = index._assets;

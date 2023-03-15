@@ -1,10 +1,6 @@
-import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
+import { BigInt, ethereum, log } from '@graphprotocol/graph-ts';
 import { Index, SVVault } from '../types/schema';
-import {
-  BASE_ADDRESS,
-  ChainLinkAssetMap,
-  MANAGED_INDEX_FACTORY,
-} from '../../consts';
+import { MANAGED_INDEX_FACTORY } from '../../consts';
 import { IndexFactory } from '../types/schema';
 import { updateAllIndexPrices } from '../utils';
 import {
@@ -13,8 +9,6 @@ import {
   updateVaultTotals,
 } from '../utils/vault';
 import { USV } from '../../consts';
-import { AggregatorInterface } from '../types/PhuturePriceOracle/AggregatorInterface';
-import { convertTokenToDecimal } from '../utils/calc';
 import { getBasePrice } from '../utils/pricing';
 
 export function handleBlockUpdatePrices(block: ethereum.Block): void {
