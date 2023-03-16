@@ -15,20 +15,18 @@ export function handleBlockUpdatePrices(block: ethereum.Block): void {
   // Update prices only every 10 blocks
   if (!block.number.mod(BigInt.fromI32(10)).equals(BigInt.fromI32(0))) return;
 
-  // Load all the indexes
+  // Update index prices
   let indexFactory = IndexFactory.load(MANAGED_INDEX_FACTORY);
-  if (!indexFactory) return;
-  let indexes = indexFactory.indexes;
-  if (indexes.length == 0) return;
-
-  // Update index and asset prices
-  for (let i = 0; i < indexes.length; i++) {
-    let index = Index.load(indexes[i]);
-    if (!index) {
-      log.error('Index not found', [indexes[i]]);
-      continue;
+  if (indexFactory != null && indexFactory.indexes.length != 0) {
+    // Update index and asset prices
+    for (let i = 0; i < indexFactory.indexes.length; i++) {
+      let index = Index.load(indexFactory.indexes[i]);
+      if (!index) {
+        log.error('Index not found', [indexFactory.indexes[i]]);
+        continue;
+      }
+      updateAllIndexPrices(index, block.timestamp);
     }
-    updateAllIndexPrices(index, block.timestamp);
   }
 
   // Update USV related pricing
