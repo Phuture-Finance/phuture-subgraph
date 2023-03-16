@@ -64,6 +64,8 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: ManagedIndexCreated(address,address[],uint8[])
           handler: handleManagedIndexCreated
@@ -91,6 +93,8 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: VTokenCreated(address,address)
           handler: handleStaticVTokenCreated
@@ -155,6 +159,8 @@ dataSources:
           file: ../abis/ERC20/ERC20NameBytes.json
         - name: SVView
           file: ../abis/SV/View.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -215,6 +221,8 @@ templates:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -311,6 +319,8 @@ templates:
       abis:
         - name: BaseIndex
           file: ../abis/Phuture/BaseIndex.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: AssetRemoved(address)
           handler: handleAssetRemoved
