@@ -233,6 +233,32 @@ dataSources:
   {{/SVault}}
 
 #-------------------------------------------------------------------------------
+#                               Call Handlers
+#-------------------------------------------------------------------------------
+
+  - kind: ethereum/contract
+    name: PhuturePriceOracle
+    network: {{network}}
+    source:
+      abi: PhuturePriceOracle
+      address: '{{PhuturePriceOracle}}'
+      startBlock: {{PhuturePriceOracleBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Index
+        - Asset
+      abis:
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
+      callHandlers:
+        - function: setOracleOf(address,address)
+          handler: handleSetOracleOf
+      file: ./src/mappings/phuture/phuturePriceOracle.ts
+
+#-------------------------------------------------------------------------------
 #                               Template section
 #-------------------------------------------------------------------------------
 templates:
