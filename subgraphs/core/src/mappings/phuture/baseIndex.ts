@@ -3,7 +3,7 @@ import { BigDecimal } from '@graphprotocol/graph-ts/index';
 
 import { IndexAsset, UserIndex, Index } from '../../types/schema';
 import { ManagedIndex } from '../../types/templates';
-import { updateIndexBasePriceByIndex } from '../../utils';
+import { updateAllIndexPrices } from '../../utils';
 import {
   loadOrCreateAccount,
   loadOrCreateAsset,
@@ -44,7 +44,7 @@ export function handleIndexCreation(
   }
 
   index.save();
-  updateIndexBasePriceByIndex(index, event.block.timestamp);
+  updateAllIndexPrices(index, event.block.timestamp);
 
   loadOrCreateAccount(event.transaction.from);
 

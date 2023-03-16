@@ -1,11 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { BNA_ADDRESS, ChainLinkAssetMap } from '../../../consts';
 import { SVVault } from '../../types/schema';
 import { Vault } from '../../types/SVault/Vault';
 import { feeInBP } from '../../utils/calc';
-
-import { loadOrCreateChainLink } from './ChainLink';
 
 export function loadOrCreateSVVault(addr: Address, ts: BigInt): SVVault {
   let id = addr.toHexString();
@@ -54,21 +51,6 @@ export function loadOrCreateSVVault(addr: Address, ts: BigInt): SVVault {
     vault.created = ts;
 
     vault.save();
-
-    // Attach base asset ChainLink aggregator to update vaults prices.
-    let aggregator = loadOrCreateChainLink(
-      Address.fromString(ChainLinkAssetMap.mustGet(BNA_ADDRESS)),
-    );
-
-    let vaults = aggregator.vaults;
-    if (vaults) {
-      vaults.push(vault.id);
-    } else {
-      vaults = [vault.id];
-    }
-    aggregator.vaults = vaults;
-
-    aggregator.save();
   }
 
   return vault;

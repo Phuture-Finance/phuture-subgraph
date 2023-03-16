@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { BigInt } from '@graphprotocol/graph-ts/index';
 
-import { updateIndexBasePriceByIndex } from '../../utils';
+import { updateAllIndexPrices } from '../../utils';
 import {
   loadOrCreateAsset,
   loadOrCreateIndex,
@@ -71,5 +71,5 @@ export function updateAnatomy(
   index._assets = assetsAddr;
   index.save();
 
-  updateIndexBasePriceByIndex(index, ts);
+  updateAllIndexPrices(index, ts);
 }

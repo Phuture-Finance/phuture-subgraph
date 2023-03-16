@@ -1,41 +1,51 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts/index';
 
-import { convertUSDToETH } from '../mappings/entities';
-import { updateDailyIndexStat, updateHourlyIndexStat } from '../mappings/phuture/stats';
+import {
+  updateDailyIndexStat,
+  updateHourlyIndexStat,
+} from '../mappings/phuture/stats';
 import { Asset, Index, IndexAsset, vToken } from '../types/schema';
 
 import { convertTokenToDecimal, exponentToBigDecimal } from './calc';
+import { Address, log } from '@graphprotocol/graph-ts';
+import { PhuturePriceOracle } from '../types/PhuturePriceOracle/PhuturePriceOracle';
+import { PHUTURE_PRICE_ORACLE } from '../../consts';
+import { convertUSDToETH, getAssetPrice, getBasePrice } from './pricing';
 
-// Updating the index values after changing the base price.
-export function updateIndexBasePriceByAsset(asset: Asset, ts: BigInt): void {
-  for (let i = 0; i < asset._indexes.length; i++) {
-    let index = Index.load(asset._indexes[i]);
-    if (index) {
-      updateIndexBasePriceByIndex(index, ts);
-    }
+export function updateAllIndexPrices(index: Index, ts: BigInt): void {
+  const assets = index._assets;
+  if (assets.length == 0 || index.totalSupply.isZero()) {
+    log.error('Index has no assets', [index.id]); // Index name
+    return;
   }
-}
 
-export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
-  if (index._assets.length == 0 || index.totalSupply.isZero()) return;
+  let phuturePriceOracle = PhuturePriceOracle.bind(
+    Address.fromString(PHUTURE_PRICE_ORACLE),
+  );
+  let basePrice = getBasePrice();
 
-  let assetValue = BigDecimal.zero();
+  let totalAssets = BigDecimal.zero();
 
   // APY * assetQuantityInUSD / totalCapitalizationInUSD * depositedAssetQuantity / totalAssetQuantity
-
   index.basePrice = BigDecimal.zero();
   index.apy = BigDecimal.zero();
 
-  for (let i = 0; i < index._assets.length; i++) {
-    let asset = Asset.load(index._assets[i]);
+  for (let i = 0; i < assets.length; i++) {
+    let asset = Asset.load(assets[i]);
     if (!asset) continue;
 
     let indexAsset = IndexAsset.load(index.id.concat('-').concat(asset.id));
     if (!indexAsset) continue;
 
+    let assetPrice = getAssetPrice(phuturePriceOracle, asset, basePrice);
+    if (assetPrice.notEqual(BigDecimal.zero())) {
+      asset.basePrice = assetPrice;
+      asset.save();
+    }
+
     let reserve = BigInt.fromI32(0);
-    for (let i2 = 0; i2 < asset._vTokens.length; i2++) {
-      let vt = vToken.load(asset._vTokens[i2]);
+    for (let j = 0; j < asset._vTokens.length; j++) {
+      let vt = vToken.load(asset._vTokens[j]);
       if (vt && !vt.platformTotalSupply.isZero()) {
         reserve = indexAsset.shares
           .times(vt.totalAmount)
@@ -56,17 +66,16 @@ export function updateIndexBasePriceByIndex(index: Index, ts: BigInt): void {
       }
     }
 
-    assetValue = assetValue.plus(
+    totalAssets = totalAssets.plus(
       convertTokenToDecimal(reserve, asset.decimals).times(asset.basePrice),
     );
   }
 
-  // index.basePrice = assetValue.div(index.totalSupply.toBigDecimal());
-  index.basePrice = assetValue
+  index.basePrice = totalAssets
     .times(exponentToBigDecimal(index.decimals))
     .div(index.totalSupply.toBigDecimal());
   index.basePriceETH = convertUSDToETH(index.basePrice);
-  index.marketCap = assetValue;
+  index.marketCap = totalAssets;
 
   index.save();
 

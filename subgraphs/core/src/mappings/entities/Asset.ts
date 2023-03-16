@@ -1,12 +1,12 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-import { ChainLinkAssetMap } from '../../../consts';
 import { Asset } from '../../types/schema';
 import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
-
-import { calculateChainLinkPrice, loadOrCreateChainLink } from './ChainLink';
+import { PhuturePriceOracle } from '../../types/PhuturePriceOracle/PhuturePriceOracle';
+import { PHUTURE_PRICE_ORACLE } from '../../../consts';
+import { getAssetPrice, getBasePrice } from '../../utils/pricing';
 
 export function loadOrCreateAsset(address: Address): Asset {
   let id = address.toHexString();
@@ -19,20 +19,18 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.symbol = fetchTokenSymbol(address);
     asset.name = fetchTokenName(address);
     asset.decimals = fetchTokenDecimals(address);
-    // asset.indexCount = BigInt.zero();
     asset._indexes = [];
 
-    let aggregatorAddr = ChainLinkAssetMap.get(asset.id);
-    if (aggregatorAddr) {
-      let aggregator = loadOrCreateChainLink(
-        Address.fromString(aggregatorAddr),
-      );
-      aggregator.asset = asset.id;
-      aggregator.save();
+    let basePrice = getBasePrice();
 
-      asset.basePrice = calculateChainLinkPrice(aggregator);
+    let assetPrice = getAssetPrice(
+      PhuturePriceOracle.bind(Address.fromString(PHUTURE_PRICE_ORACLE)),
+      asset,
+      basePrice,
+    );
+    if (assetPrice.notEqual(BigDecimal.zero())) {
+      asset.basePrice = assetPrice;
     }
-
     asset.save();
   }
 
