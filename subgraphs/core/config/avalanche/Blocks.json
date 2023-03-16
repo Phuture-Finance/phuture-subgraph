@@ -1,9 +1,9 @@
 {
-  "ChainlinkPriceOracleBlockNumber": 19400000,
   "ManagedIndexFactoryBlockNumber": 19403311,
   "ManagedVTokenFactoryBlockNumber": 19403158,
   "RegistryBlockNumber": 19400000,
-  "SVaultBlockNumber": 25358173,
-  "SVViewV1BlockNumber": 25358173,
-  "SVViewV2BlockNumber": 25358173
+  "PhuturePriceOracleBlockNumber": 19402698,
+  "SVaultBlockNumber": 27506088,
+  "SVViewV1BlockNumber": 27506088,
+  "SVViewV2BlockNumber": 27506088
 }

@@ -5,13 +5,7 @@ import { ERC20 } from '../../types/templates/Asset/ERC20';
 import { ERC20NameBytes } from '../../types/templates/Asset/ERC20NameBytes';
 import { ERC20SymbolBytes } from '../../types/templates/Asset/ERC20SymbolBytes';
 import { PhuturePriceOracle } from '../../types/PhuturePriceOracle/PhuturePriceOracle';
-import {
-  BASE_ADDRESS,
-  ChainLinkAssetMap,
-  PHUTURE_PRICE_ORACLE,
-} from '../../../consts';
-import { AggregatorInterface } from '../../types/PhuturePriceOracle/AggregatorInterface';
-import { convertTokenToDecimal } from '../../utils/calc';
+import { PHUTURE_PRICE_ORACLE } from '../../../consts';
 import { getAssetPrice, getBasePrice } from '../../utils/pricing';
 
 export function loadOrCreateAsset(address: Address): Asset {
