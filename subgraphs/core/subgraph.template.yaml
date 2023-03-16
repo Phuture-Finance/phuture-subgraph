@@ -95,6 +95,8 @@ dataSources:
           file: ../abis/ERC20/ERC20NameBytes.json
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
       eventHandlers:
         - event: VTokenCreated(address,address)
           handler: handleStaticVTokenCreated
@@ -223,6 +225,8 @@ templates:
           file: ../abis/ERC20/ERC20NameBytes.json
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
