@@ -259,6 +259,16 @@ dataSources:
           file: ../abis/Chainlink/ChainLink.json
         - name: AggregatorInterface
           file: ../abis/Chainlink/AggregatorInterface.json
+        - name: UniswapV3PriceOracle
+          file: ../abis/Uniswap/UniswapV3PriceOracle.json
+        - name: UniswapPathPriceOracle
+          file: ../abis/Uniswap/UniswapPathPriceOracle.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
       callHandlers:
         - function: setOracleOf(address,address)
           handler: handleSetOracleOf
