@@ -1,5 +1,5 @@
 import { SetOracleOfCall } from '../../types/PhuturePriceOracle/PhuturePriceOracle';
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { loadOrCreateAsset } from '../entities';
 import { UniV3PathPriceOracle, UniV3PriceOracle } from '../../types/schema';
 import { BASE_ASSETS } from '../../../consts';
