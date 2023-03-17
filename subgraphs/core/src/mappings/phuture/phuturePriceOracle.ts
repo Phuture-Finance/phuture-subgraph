@@ -31,9 +31,10 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
       let tPool = uniV3Contract.try_pool(); // This is checking if it is uniV3 or Chainlink
       if (!tPool.reverted) {
         let uniV3Oracle = new UniV3PathPriceOracle(tPool.value.toHexString()); // So we can track this pool and update the assets
-        uniV3Oracle.asset0 = anatomy.value.value0[i].toHexString();
-        uniV3Oracle.asset1 = anatomy.value.value0[i + 1].toHexString();
+        uniV3Oracle.asset0 = asset0.toHexString();
+        uniV3Oracle.asset1 = asset1.toHexString();
         uniV3Oracle.pathPriceOracle = oracle; // Price oracle is always the contract, so we can query this to get the price
+        uniV3Oracle.save();
 
         PoolTemplate.create(tPool.value); // We create a new one to track events that are emitted
       }
