@@ -250,9 +250,15 @@ dataSources:
       entities:
         - Index
         - Asset
+        - UniV3PriceOracle
+        - UniV3PathPriceOracle
       abis:
         - name: PhuturePriceOracle
           file: ../abis/Phuture/PhuturePriceOracle.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       callHandlers:
         - function: setOracleOf(address,address)
           handler: handleSetOracleOf

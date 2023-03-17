@@ -35,7 +35,7 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
         uniV3Oracle.asset1 = anatomy.value.value0[i + 1].toHexString();
         uniV3Oracle.pathPriceOracle = oracle; // Price oracle is always the contract, so we can query this to get the price
 
-        PoolTemplate.create(tPool.value); // We create a new one to track if events are emitted
+        PoolTemplate.create(tPool.value); // We create a new one to track events that are emitted
       }
     }
 
@@ -61,7 +61,7 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
   let uniV3Contract = UniswapV3PriceOracle.bind(Address.fromString(oracle));
   let tPool = uniV3Contract.try_pool();
   if (tPool.reverted) {
-    // It's not a uniswap v3 oracle
+    // It's not uniswap v3 oracle
     return;
   }
   // delete the old oracle for the asset
