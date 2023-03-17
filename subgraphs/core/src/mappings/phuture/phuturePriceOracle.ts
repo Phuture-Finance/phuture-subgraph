@@ -1,13 +1,13 @@
 import { SetOracleOfCall } from '../../types/PhuturePriceOracle/PhuturePriceOracle';
-import { UniswapPathPriceOracle } from '../../types/IndexRegistry/UniswapPathPriceOracle';
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
-import { UniswapV3PriceOracle } from '../../types/IndexRegistry/UniswapV3PriceOracle';
 import { loadOrCreateAsset } from '../entities';
 import { UniV3PathPriceOracle, UniV3PriceOracle } from '../../types/schema';
 import { BASE_ASSETS } from '../../../consts';
 import { exponentToBigDecimal } from '../../utils/calc';
 import { Pool as PoolTemplate } from '../../types/templates';
 import { store } from '@graphprotocol/graph-ts';
+import { UniswapPathPriceOracle } from '../../types/PhuturePriceOracle/UniswapPathPriceOracle';
+import { UniswapV3PriceOracle } from '../../types/PhuturePriceOracle/UniswapV3PriceOracle';
 
 export function handleSetOracleOf(call: SetOracleOfCall): void {
   let asset = loadOrCreateAsset(call.inputs._asset);

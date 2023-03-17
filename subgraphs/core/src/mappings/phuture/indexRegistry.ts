@@ -1,33 +1,18 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
-
-import {
-  ASSET_ROLE,
-  UNI_V3_ORACLE_ROLE,
-  UNI_V3_PATH_ORACLE_ROLE,
-} from '../../../../helpers';
-import { BASE_ASSETS } from '../../../consts';
+import { ASSET_ROLE } from '../../../../helpers';
 import { UpdateAsset } from '../../types/IndexRegistry/IndexRegistry';
 import {
   RoleGranted,
   RoleRevoked,
 } from '../../types/IndexRegistry/IndexRegistry';
-import { UniswapPathPriceOracle } from '../../types/IndexRegistry/UniswapPathPriceOracle';
-import { UniswapV3PriceOracle } from '../../types/IndexRegistry/UniswapV3PriceOracle';
-import {
-  Index,
-  UniV3PathPriceOracle,
-  UniV3PriceOracle,
-} from '../../types/schema';
+import { Index } from '../../types/schema';
 import {
   Asset as AssetTemplate,
   erc20 as erc20tpl,
-  Pool as PoolTemplate,
 } from '../../types/templates';
 import {
   SetName,
   SetSymbol,
 } from '../../types/templates/ManagedIndex/IndexRegistry';
-import { exponentToBigDecimal } from '../../utils/calc';
 import { loadOrCreateAsset } from '../entities';
 
 export function handleUpdateAsset(event: UpdateAsset): void {
