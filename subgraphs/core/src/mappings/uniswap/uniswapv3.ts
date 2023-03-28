@@ -54,11 +54,6 @@ export function priceUpdate(a: Address): void {
     log.error('UniV3PriceOracle lastAssetPerBaseInUQ reverted', []);
     return;
   }
-  let asset = loadOrCreateAsset(Address.fromString(pool.asset0));
-  if (asset.oracle != pool.priceOracle) {
-    log.warning('skip the overridden price oracle: {}', [pool.priceOracle]);
-    return;
-  }
 
   let po = UniswapV3PriceOracle.bind(Address.fromString(pool.priceOracle));
 

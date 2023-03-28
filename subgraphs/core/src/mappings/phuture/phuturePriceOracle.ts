@@ -20,17 +20,19 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
     // delete the old oracle for the asset
     if (asset.oracle) {
       store.remove('UniV3PriceOracle', asset.oracle!);
+      // store.remove('UniV3PathPriceOracle', asset.oracle!); // TODO: add removal for both
     }
 
     // handle path
     let asset0 = anatomy.value.value0[anatomy.value.value0.length - 1]; // This should be my asset
     let asset1 = anatomy.value.value0[0]; // This should be the base asset
 
+    let uniV3Oracle: UniV3PathPriceOracle | null = null;
     for (let i = 0; i < anatomy.value.value1.length; i++) {
       let uniV3Contract = UniswapV3PriceOracle.bind(anatomy.value.value1[i]); // Our deployed uniV3 oracle
       let tPool = uniV3Contract.try_pool(); // This is checking if it is uniV3 or Chainlink
       if (!tPool.reverted) {
-        let uniV3Oracle = new UniV3PathPriceOracle(tPool.value.toHexString()); // So we can track this pool and update the assets
+        uniV3Oracle = new UniV3PathPriceOracle(tPool.value.toHexString()); // So we can track this pool and update the assets
         uniV3Oracle.asset0 = asset0.toHexString();
         uniV3Oracle.asset1 = asset1.toHexString();
         uniV3Oracle.pathPriceOracle = oracle; // Price oracle is always the contract, so we can query this to get the price
@@ -38,6 +40,9 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
 
         PoolTemplate.create(tPool.value); // We create a new one to track events that are emitted
       }
+    }
+    if (uniV3Oracle == null) {
+      throw new Error('Path does not contain any UniV3 oracle');
     }
 
     let dt = pathContract.try_lastAssetPerBaseInUQ(asset0);
@@ -53,6 +58,7 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
       )
         .div(new BigDecimal(dt.value))
         .times(exp);
+      a0.oracle = uniV3Oracle.id;
       a0.save();
     }
 
@@ -68,6 +74,7 @@ export function handleSetOracleOf(call: SetOracleOfCall): void {
   // delete the old oracle for the asset
   if (asset.oracle) {
     store.remove('UniV3PriceOracle', asset.oracle!);
+    // store.remove('UniV3PathPriceOracle', asset.oracle!); // TODO: add removal for both
   }
 
   let uniV3Oracle = new UniV3PriceOracle(tPool.value.toHexString());
