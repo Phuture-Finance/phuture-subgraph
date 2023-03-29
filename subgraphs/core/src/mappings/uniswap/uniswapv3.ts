@@ -14,7 +14,7 @@ import {
   Initialize,
   Mint as MintEvent,
 } from '../../types/templates/Pool/Pool';
-import { exponentToBigDecimal } from '../../utils/calc';
+import { exponentToBigDecimal, Q112 } from '../../utils/calc';
 import { loadOrCreateAsset } from '../entities';
 import { updateDailyIndexStat, updateHourlyIndexStat } from '../phuture/stats';
 
@@ -65,12 +65,7 @@ export function priceUpdate(a: Address): void {
     let exp = exponentToBigDecimal(asset0.decimals).div(
       exponentToBigDecimal(asset1.decimals),
     );
-    // TODO: move magic number to constants
-    asset0.basePrice = new BigDecimal(
-      BigInt.fromString('5192296858534827628530496329220096'),
-    )
-      .div(new BigDecimal(uq.value))
-      .times(exp);
+    asset0.basePrice = Q112.div(new BigDecimal(uq.value)).times(exp);
     asset0.save();
   }
 }
@@ -94,12 +89,7 @@ export function pricePathUpdate(a: Address): void {
     let exp = exponentToBigDecimal(asset0.decimals).div(
       exponentToBigDecimal(asset1.decimals),
     );
-    // TODO: move magic number to constants
-    asset0.basePrice = new BigDecimal(
-      BigInt.fromString('5192296858534827628530496329220096'),
-    )
-      .div(new BigDecimal(uq.value))
-      .times(exp);
+    asset0.basePrice = Q112.div(new BigDecimal(uq.value)).times(exp);
     asset0.save();
   }
 }
