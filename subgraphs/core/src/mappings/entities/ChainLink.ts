@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 import { ChainLinkAssetMap, BNA_ADDRESS } from '../../../consts';
 import { AggregatorInterface } from '../../types/ChainlinkPriceOracle/AggregatorInterface';
@@ -14,29 +14,17 @@ export function loadOrCreateChainLinkAgg(addr: Address): ChainLinkAggregator {
   if (!aggregator) {
     aggregator = new ChainLinkAggregator(addr.toHexString());
 
-    log.info('aggregatorContract.try_latestAnswer: {}', [addr.toString()]);
     let answer = aggregatorContract.try_latestAnswer();
-    log.info('aggregatorContract.try_latestAnswer is success: {}', [
-      (!answer.reverted).toString(),
-    ]);
     if (!answer.reverted) {
       aggregator.answer = answer.value;
     }
 
-    log.info('aggregatorContract.try_decimals: {}', [addr.toString()]);
     let decimals = aggregatorContract.try_decimals();
-    log.info('aggregatorContract.try_decimals is success: {}', [
-      (!decimals.reverted).toString(),
-    ]);
     if (!decimals.reverted) {
       aggregator.decimals = BigInt.fromI32(decimals.value);
     }
 
-    log.info('aggregatorContract.try_description: {}', [addr.toString()]);
     let description = aggregatorContract.try_description();
-    log.info('aggregatorContract.try_description is success: {}', [
-      (!description.reverted).toString(),
-    ]);
     if (!description.reverted) {
       aggregator.description = description.value;
     }
@@ -67,14 +55,7 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAggregator {
   if (!chainlink) {
     chainlink = new ChainLink(id);
 
-    log.info('Calling aggregatorContract.try_aggregator(): {}', [
-      addr.toString(),
-      id,
-    ]);
     let aggregatorAddress = aggregatorContract.try_aggregator();
-    log.info('aggregatorContract.try_aggregator() call is success: {}', [
-      (!aggregatorAddress.reverted).toString(),
-    ]);
     if (!aggregatorAddress.reverted) {
       AggregatorInterfaceTemplate.create(aggregatorAddress.value);
       chainlink.aggregator = aggregatorAddress.value.toHexString();
