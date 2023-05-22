@@ -1,10 +1,14 @@
 import { AssetAdded } from '../../types/ChainlinkPriceOracle/ChainlinkPriceOracle';
-import { ChainLinkAggregator } from '../../types/schema';
+import { ChainLink, ChainLinkAggregator } from '../../types/schema';
 import {
   calculateChainLinkPrice,
   loadOrCreateAsset,
   loadOrCreateChainLink,
+  loadOrCreateChainLinkAgg,
 } from '../entities';
+import { ConfirmAggregatorCall } from '../../types/templates/ChainlinkTemplate/ChainLink';
+import { store } from '@graphprotocol/graph-ts';
+import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
 
 export function handleAssetAdded(event: AssetAdded): void {
   let asset = loadOrCreateAsset(event.params._asset);
@@ -26,4 +30,18 @@ export function handleAssetAdded(event: AssetAdded): void {
 
   asset.basePrice = calculateChainLinkPrice(aggregator);
   asset.save();
+}
+
+export function handleConfirmAggregator(call: ConfirmAggregatorCall): void {
+  let chainlink = ChainLink.load(call.to.toHexString());
+  if (chainlink) {
+    let aggregator = call.inputs._aggregator;
+    // delete the aggregator for the oracle
+    store.remove('ChainLinkAggregator', chainlink.aggregator);
+
+    AggregatorInterfaceTemplate.create(aggregator);
+    chainlink.aggregator = aggregator.toHexString();
+
+    loadOrCreateChainLinkAgg(aggregator);
+  }
 }
