@@ -7,7 +7,7 @@ import {
   loadOrCreateChainLinkAgg,
 } from '../entities';
 import { ConfirmAggregatorCall } from '../../types/templates/ChainlinkTemplate/ChainLink';
-import { store } from '@graphprotocol/graph-ts';
+import { Address, store } from '@graphprotocol/graph-ts';
 import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
 
 export function handleAssetAdded(event: AssetAdded): void {
@@ -35,13 +35,23 @@ export function handleAssetAdded(event: AssetAdded): void {
 export function handleConfirmAggregator(call: ConfirmAggregatorCall): void {
   let chainlink = ChainLink.load(call.to.toHexString());
   if (chainlink) {
-    let aggregator = call.inputs._aggregator;
+    let oldAggregator = loadOrCreateChainLinkAgg(
+      Address.fromString(chainlink.aggregator),
+    );
+    let vaults = oldAggregator.vaults;
     // delete the aggregator for the oracle
     store.remove('ChainLinkAggregator', chainlink.aggregator);
 
-    AggregatorInterfaceTemplate.create(aggregator);
-    chainlink.aggregator = aggregator.toHexString();
+    let newAggregatorAddress = call.inputs._aggregator;
 
-    loadOrCreateChainLinkAgg(aggregator);
+    AggregatorInterfaceTemplate.create(newAggregatorAddress);
+
+    chainlink.aggregator = newAggregatorAddress.toHexString();
+    chainlink.save();
+
+    let newAggregator = loadOrCreateChainLinkAgg(newAggregatorAddress);
+    newAggregator.chainLink = chainlink.id;
+    newAggregator.vaults = vaults;
+    newAggregator.save();
   }
 }
