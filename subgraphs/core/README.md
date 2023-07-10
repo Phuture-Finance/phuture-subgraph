@@ -32,7 +32,6 @@ npm run deploy:avalanche
 ```bash
 # Authenticate your local machine with the service
 graph auth --product ${AUTH_TOKEN}
-
 # Deploy the subgraph
 graph deploy --product hosted-service phuture-finance/phuture-v1
 graph deploy --product hosted-service phuture-finance/phuture-avax-core
