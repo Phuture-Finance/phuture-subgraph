@@ -57,8 +57,8 @@ type Asset @entity {
   "Daily stats of the asset"
   dailyStats: [DailyAssetStat!]! @derivedFrom(field: "asset")
 
-  "Uniswap V3 price oracle for this asset"
-  oracle: UniV3PriceOracle
+  "UniswapV3/UniswapPath price oracle for this asset"
+  oracle: String
 }
 
 type ChainLink @entity {
