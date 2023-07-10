@@ -1,5 +1,5 @@
 import { PricesHourlyStat } from '../types/schema';
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { getStartingTimestamp, SECONDS_IN_HOUR } from '../utils/timestamp';
 import { Chainlink } from '../types/UniswapV2Pool/Chainlink';
 import { DPI_PRICE_FEED } from '../../consts';
