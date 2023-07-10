@@ -19,7 +19,6 @@ export function loadOrCreateAsset(address: Address): Asset {
     asset.symbol = fetchTokenSymbol(address);
     asset.name = fetchTokenName(address);
     asset.decimals = fetchTokenDecimals(address);
-    // asset.indexCount = BigInt.zero();
     asset._indexes = [];
 
     let aggregatorAddr = ChainLinkAssetMap.get(asset.id);
