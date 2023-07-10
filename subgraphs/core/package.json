@@ -8,7 +8,9 @@
     "build": "graph build",
     "test": "graph test -r",
     "create:local": "graph create phuture/ia --node http://0.0.0.0:8020",
-    "deploy:avalanche": "graph deploy --studio phuture-v1-avalanche"
+    "deploy:local": "graph deploy phuture/ia --ipfs http://0.0.0.0:5001 --node http://0.0.0.0:8020",
+    "deploy:avalanche": "graph deploy --studio phuture-v1-avalanche",
+    "deploy:mainnet": "graph deploy --studio phuture-v1-mainnet-ethereum"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.49.0",

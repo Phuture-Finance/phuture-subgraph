@@ -1,16 +1,18 @@
-# MVP Subgraph
+# Index Betting Subgraph
+
+### Set appropriate network:
+Set the path inside the [config](config/config.js) to one of the networks defined inside the [config](config) folder.
+```shell
+let defaultPath = './mainnet/';
+```
+
+### Building the project
 
 ```bash
-# generate config
-npm run config
 # run pre codegen
 npm run precodegen
 # run codegen
 npm run codegen
-# unit testing
-graph test -r
-# local create
-make create
-# local deploy
-make deploy
+# run build
+npm run build
 ```

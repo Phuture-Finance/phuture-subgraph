@@ -270,4 +270,4 @@ export function handleVTokenCreated(event: VTokenCreated): void {
 }
 ```
 
-##### In this example a node receives the data from event, does some business logic relevant to this entity and makes a save request to the database. Making it available for clinets to query this data.
+##### In this example a node receives the data from event, does some business logic relevant to this entity and makes a save request to the database. Making it available for clients to query this data.
