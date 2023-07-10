@@ -224,6 +224,10 @@ dataSources:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -231,6 +235,48 @@ dataSources:
           handler: handleFCashMinted
       file: ./src/mappings/sv/vault.ts
   {{/SVault}}
+
+#-------------------------------------------------------------------------------
+#                               Call Handlers
+#-------------------------------------------------------------------------------
+
+  - kind: ethereum/contract
+    name: PhuturePriceOracle
+    network: {{network}}
+    source:
+      abi: PhuturePriceOracle
+      address: '{{PhuturePriceOracle}}'
+      startBlock: {{PhuturePriceOracleBlockNumber}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Index
+        - Asset
+        - UniV3PriceOracle
+        - UniV3PathPriceOracle
+      abis:
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
+        - name: UniswapV3PriceOracle
+          file: ../abis/Uniswap/UniswapV3PriceOracle.json
+        - name: UniswapPathPriceOracle
+          file: ../abis/Uniswap/UniswapPathPriceOracle.json
+        - name: ERC20
+          file: ../abis/ERC20/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ../abis/ERC20/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ../abis/ERC20/ERC20NameBytes.json
+      callHandlers:
+        - function: setOracleOf(address,address)
+          handler: handleSetOracleOf
+      file: ./src/mappings/phuture/phuturePriceOracle.ts
 
 #-------------------------------------------------------------------------------
 #                               Template section
@@ -257,6 +303,12 @@ templates:
           file: ../abis/ERC20/ERC20SymbolBytes.json
         - name: ERC20NameBytes
           file: ../abis/ERC20/ERC20NameBytes.json
+        - name: PhuturePriceOracle
+          file: ../abis/Phuture/PhuturePriceOracle.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -419,3 +471,24 @@ templates:
           handler: handleBurn
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash
+
+  - kind: ethereum/contract
+    name: ChainlinkTemplate
+    network: {{network}}
+    source:
+      abi: ChainLink
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ChainLink
+      abis:
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+      callHandlers:
+        - function: confirmAggregator(address)
+          handler: handleConfirmAggregator
+      file: ./src/mappings/phuture/chainlink.ts

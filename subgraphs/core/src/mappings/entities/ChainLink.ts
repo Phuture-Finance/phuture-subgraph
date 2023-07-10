@@ -1,9 +1,12 @@
-import {Address, BigDecimal, BigInt, log} from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 import { ChainLinkAssetMap, BNA_ADDRESS } from '../../../consts';
 import { AggregatorInterface } from '../../types/ChainlinkPriceOracle/AggregatorInterface';
 import { ChainLink, ChainLinkAggregator } from '../../types/schema';
-import { AggregatorInterface as AggregatorInterfaceTemplate } from '../../types/templates';
+import {
+  AggregatorInterface as AggregatorInterfaceTemplate,
+  ChainlinkTemplate,
+} from '../../types/templates';
 import { ChainLink as ChainLinkAggTemplate } from '../../types/templates/AggregatorInterface/ChainLink';
 import { convertTokenToDecimal } from '../../utils/calc';
 
@@ -54,6 +57,8 @@ export function loadOrCreateChainLink(addr: Address): ChainLinkAggregator {
   let chainlink = ChainLink.load(id);
   if (!chainlink) {
     chainlink = new ChainLink(id);
+
+    ChainlinkTemplate.create(addr);
 
     let aggregatorAddress = aggregatorContract.try_aggregator();
     if (!aggregatorAddress.reverted) {

@@ -77,3 +77,7 @@ export function exponentToBigInt(decimals: BigInt): BigInt {
 
   return int;
 }
+
+export let Q112 = new BigDecimal(
+  BigInt.fromString('5192296858534827628530496329220096'),
+);
