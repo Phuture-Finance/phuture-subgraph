@@ -471,3 +471,24 @@ templates:
           handler: handleBurn
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash
+
+  - kind: ethereum/contract
+    name: ChainlinkTemplate
+    network: {{network}}
+    source:
+      abi: ChainLink
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ChainLink
+      abis:
+        - name: AggregatorInterface
+          file: ../abis/Chainlink/AggregatorInterface.json
+        - name: ChainLink
+          file: ../abis/Chainlink/ChainLink.json
+      callHandlers:
+        - function: confirmAggregator(address)
+          handler: handleConfirmAggregator
+      file: ./src/mappings/phuture/chainlink.ts
