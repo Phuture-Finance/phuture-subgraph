@@ -16,3 +16,9 @@ npm run codegen
 # run build
 npm run build
 ```
+
+### Local Deployment
+
+```bash
+npm run create:local && npm run deploy:local
+```

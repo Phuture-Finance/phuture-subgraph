@@ -17,6 +17,12 @@ npm run codegen
 npm run build
 ```
 
+### Local Deployment
+    
+```bash
+npm run create:local && npm run deploy:local
+```
+
 ### Deploying to Mainnet Service
 
 ```bash
