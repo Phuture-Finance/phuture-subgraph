@@ -2,7 +2,7 @@ import {TypedMap} from "@graphprotocol/graph-ts/index";
 
 export const BNA_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
-export const BASE_ADDRESS = '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E';
+export const BASE_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 export const SV_VIEW = '0xE574beBdDB460e3E0588F1001D24441102339429';
 export const SV_VIEW_V2 = '0x37d57E43EDD5AE0F52248693B7AbD3F9ceC01239';
